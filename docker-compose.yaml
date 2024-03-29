@@ -41,6 +41,18 @@ services:
       - maildev
       # Uncomment to use redis
       # - redis
-
+  metrics:
+    image: prom/node-exporter
+    ports:
+      - 9100:9100
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    depends_on:
+      - api
+      - metrics
 volumes:
   boilerplate-db:
