@@ -28,3 +28,16 @@ services:
       dockerfile: relational.e2e.Dockerfile
     env_file:
       - env
+  metrics:
+    image: prom/node-exporter
+    ports:
+      - 9100:9100
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    depends_on:
+      - api
+      - metrics

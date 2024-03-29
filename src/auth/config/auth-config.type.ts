@@ -1,3 +1,5 @@
+import { CookieOptions } from 'express';
+
 export type AuthConfig = {
   secret?: string;
   expires?: string;
@@ -7,4 +9,5 @@ export type AuthConfig = {
   forgotExpires?: string;
   confirmEmailSecret?: string;
   confirmEmailExpires?: string;
+  cookies?: CookieOptions;
 };

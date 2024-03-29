@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
 import { RoleDto } from 'src/routes/roles/dto/role.dto';
-import { StatusDto } from 'src/shared/statuses/dto/status.dto';
+import { StatusDto } from 'src/routes/statuses/dto/status.dto';
 import { FileDto } from 'src/routes/files/dto/file.dto';
 import { User } from '../domain/user';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';

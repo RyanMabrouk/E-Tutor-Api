@@ -68,9 +68,9 @@ export class ChatController {
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateTasktDto: UpdateChatDto,
+    @Body() updateChattDto: UpdateChatDto,
   ) {
-    return this.chatService.update(id, updateTasktDto);
+    return this.chatService.update(id, updateChattDto);
   }
 
   @Delete(':id')

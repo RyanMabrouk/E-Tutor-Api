@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
-import { StatusEntity } from '../../../../../../shared/statuses/infrastructure/persistence/relational/entities/status.entity';
+import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
 import { FileEntity } from '../../../../../files/infrastructure/persistence/relational/entities/file.entity';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
 // We use class-transformer in ORM entity and domain entity.

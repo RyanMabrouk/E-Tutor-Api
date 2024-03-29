@@ -64,7 +64,7 @@ export class ChatRelationalRepository implements ChatRepository {
     });
 
     if (!entity) {
-      throw new Error('Task not found');
+      throw new Error('Chat not found');
     }
 
     const updatedEntity = await this.chatRepository.save(

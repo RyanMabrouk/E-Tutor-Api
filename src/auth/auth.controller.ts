@@ -9,6 +9,7 @@ import {
   Patch,
   Delete,
   SerializeOptions,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
@@ -23,24 +24,46 @@ import { NullableType } from '../utils/types/nullable.type';
 import { successResponse } from './constants/response';
 import { User as ReqUser } from 'src/shared/decorators/user.decorator';
 import { User } from 'src/routes/users/domain/user';
+import { ConfigService } from '@nestjs/config';
+import { AllConfigType } from 'src/config/config.type';
+import { Response } from 'express';
+import { AccessTokenName, RefreshTokenName } from './constants/token-names';
+import { JwtPayloadType } from './strategies/types/jwt-payload.type';
+import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
 
-//@ApiTags('Auth')
 @Controller({
   path: 'auth',
   version: '1',
 })
 export class AuthController {
-  constructor(private readonly service: AuthService) {}
+  constructor(
+    private readonly service: AuthService,
+    private configService: ConfigService<AllConfigType>,
+  ) {}
+  readonly cookiesOptions = this.configService.getOrThrow('auth.cookies', {
+    infer: true,
+  });
 
   @SerializeOptions({
     groups: ['me'],
   })
   @Post('email/login')
   @HttpCode(HttpStatus.OK)
-  public login(
+  public async login(
     @Body() loginDto: AuthEmailLoginDto,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<LoginResponseType> {
-    return this.service.validateLogin(loginDto);
+    const { refreshToken, token, tokenExpires, ...rest } =
+      await this.service.validateLogin(loginDto);
+    res.cookie(AccessTokenName, token, {
+      ...this.cookiesOptions,
+      expires: new Date(Date.now() + tokenExpires),
+    });
+    res.cookie(RefreshTokenName, refreshToken, {
+      ...this.cookiesOptions,
+      expires: new Date(Date.now() + tokenExpires),
+    });
+    return { tokenExpires, ...rest };
   }
 
   @Post('email/register')
@@ -86,44 +109,57 @@ export class AuthController {
     };
   }
 
-  //@ApiBearerAuth()
   @SerializeOptions({
     groups: ['me'],
   })
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
-  public me(@ReqUser() user): Promise<NullableType<User>> {
+  public me(@ReqUser() user: JwtPayloadType): Promise<NullableType<User>> {
     return this.service.me(user);
   }
 
-  //@ApiBearerAuth()
   @SerializeOptions({
     groups: ['me'],
   })
   @Post('refresh')
   @UseGuards(AuthGuard('jwt-refresh'))
   @HttpCode(HttpStatus.OK)
-  public refresh(@ReqUser() user): Promise<Omit<LoginResponseType, 'user'>> {
-    return this.service.refreshToken({
-      sessionId: user.sessionId,
-      hash: user.hash,
+  public async refresh(
+    @ReqUser() user: JwtRefreshPayloadType,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    const { refreshToken, token, tokenExpires } =
+      await this.service.refreshToken({
+        sessionId: user.sessionId,
+        hash: user.hash,
+      });
+    res.cookie(AccessTokenName, token, {
+      ...this.cookiesOptions,
+      expires: new Date(Date.now() + tokenExpires),
+    });
+    res.cookie(RefreshTokenName, refreshToken, {
+      ...this.cookiesOptions,
+      expires: new Date(Date.now() + tokenExpires),
     });
   }
 
-  //@ApiBearerAuth()
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
-  public async logout(@ReqUser() user): Promise<SuccessResponseType> {
+  public async logout(
+    @ReqUser() user: JwtPayloadType,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<SuccessResponseType> {
     await this.service.logout({
       sessionId: user.sessionId,
     });
+    res.clearCookie(AccessTokenName);
+    res.clearCookie(RefreshTokenName);
     return {
       ...successResponse,
     };
   }
 
-  //@ApiBearerAuth()
   @SerializeOptions({
     groups: ['me'],
   })
@@ -131,17 +167,18 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
   public update(
-    @ReqUser() user,
+    @ReqUser() user: JwtPayloadType,
     @Body() userDto: AuthUpdateDto,
   ): Promise<NullableType<User>> {
     return this.service.update(user, userDto);
   }
 
-  //@ApiBearerAuth()
   @Delete('me')
   @UseGuards(AuthGuard('jwt'))
-  public async delete(@ReqUser() user): Promise<SuccessResponseType> {
-    await this.service.softDelete(user);
+  public async delete(
+    @ReqUser() user: JwtPayloadType,
+  ): Promise<SuccessResponseType> {
+    await this.service.softDelete(user.id);
     return {
       ...successResponse,
     };

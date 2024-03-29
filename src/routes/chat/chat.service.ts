@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { NullableType } from 'src/utils/types/nullable.type';
-import { ValidateData } from 'src/utils/validation/vlalidate-data';
+import { ValidateMembers } from 'src/utils/validation/vlalidate-members';
 import { Chat } from './domain/chat';
 import { ChatRepository } from './infastructure/persistence/chat.repository';
 import { CreateChatDto } from './dto/create-chat.dto';
@@ -18,7 +18,7 @@ import { User } from '../users/domain/user';
 @Injectable()
 export class ChatService {
   constructor(
-    private readonly validateData: ValidateData,
+    private readonly vlaidateMembers: ValidateMembers,
     private readonly chatRepository: ChatRepository,
   ) {}
 
@@ -26,9 +26,7 @@ export class ChatService {
     createPayload: CreateChatDto,
     ownerId: User['id'],
   ): Promise<Chat> {
-    await Promise.all([
-      this.validateData.vlaidateMembers(createPayload.members),
-    ]);
+    await Promise.all([this.vlaidateMembers.validate(createPayload.members)]);
     try {
       const created = await this.chatRepository.create({
         ...createPayload,
@@ -68,7 +66,7 @@ export class ChatService {
     const validationPromises: Promise<void>[] = [];
     if (updatePayload.members) {
       validationPromises.push(
-        this.validateData.vlaidateMembers(updatePayload.members),
+        this.vlaidateMembers.validate(updatePayload.members),
       );
     }
     await Promise.all(validationPromises);
@@ -80,7 +78,7 @@ export class ChatService {
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            id: 'Task doesnt exist',
+            id: 'Chat doesnt exist',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,

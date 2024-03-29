@@ -3,18 +3,17 @@ import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
 import databaseConfig from 'src/database/config/database.config';
 import { DatabaseConfig } from 'src/database/config/database-config.type';
-import { ValidateData } from 'src/utils/validation/vlalidate-data';
-import { ProjectsModule } from 'src/routes/projects/projects.module';
 import { UsersModule } from 'src/routes/users/users.module';
 import { RelationalChatPersistenceModule } from './infastructure/persistence/relational/relational-persistence.module';
+import { ValidateMembers } from 'src/utils/validation/vlalidate-members';
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
   ? class DocumentChatPersistenceModule {}
   : RelationalChatPersistenceModule;
 @Module({
-  imports: [infrastructurePersistenceModule, ProjectsModule, UsersModule],
+  imports: [infrastructurePersistenceModule, UsersModule],
   controllers: [ChatController],
-  providers: [ChatService, ValidateData],
+  providers: [ChatService, ValidateMembers],
   exports: [ChatService, infrastructurePersistenceModule],
 })
 export class ChatModule {}

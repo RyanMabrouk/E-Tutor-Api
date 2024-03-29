@@ -12,13 +12,13 @@ import bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from './dto/auth-email-login.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
 import { RoleEnum } from 'src/routes/roles/roles.enum';
-import { StatusEnum } from 'src/shared/statuses/statuses.enum';
+import { StatusEnum } from 'src/routes/statuses/statuses.enum';
 import { AuthProvidersEnum } from './auth-providers.enum';
 import { SocialInterface } from '../shared/social/interfaces/social.interface';
 import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
 import { MailService } from 'src/shared/services/mail/mail.service';
 import { NullableType } from '../utils/types/nullable.type';
-import { LoginResponseType } from './types/response.type';
+import { LoginServiceResponseType } from './types/response.type';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from 'src/config/config.type';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
@@ -38,7 +38,9 @@ export class AuthService {
     private configService: ConfigService<AllConfigType>,
   ) {}
 
-  async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseType> {
+  async validateLogin(
+    loginDto: AuthEmailLoginDto,
+  ): Promise<LoginServiceResponseType> {
     const user = await this.usersService.findOne({
       email: loginDto.email,
     });
@@ -124,7 +126,7 @@ export class AuthService {
   async validateSocialLogin(
     authProvider: string,
     socialData: SocialInterface,
-  ): Promise<LoginResponseType> {
+  ): Promise<LoginServiceResponseType> {
     let user: NullableType<User> = null;
     const socialEmail = socialData.email?.toLowerCase();
     let userByEmail: NullableType<User> = null;
@@ -400,7 +402,6 @@ export class AuthService {
     userJwtPayload: JwtPayloadType,
     userDto: AuthUpdateDto,
   ): Promise<NullableType<User>> {
-    console.log('🚀 ~ AuthService ~ userDto:', userDto);
     if (userDto.password) {
       if (!userDto.oldPassword) {
         throw new HttpException(
@@ -417,7 +418,6 @@ export class AuthService {
       const currentUser = await this.usersService.findOne({
         id: userJwtPayload.id,
       });
-      console.log('🚀 ~ AuthService ~ currentUser:', currentUser);
 
       if (!currentUser) {
         throw new HttpException(
@@ -467,15 +467,13 @@ export class AuthService {
         });
       }
     }
-    console.log('🚀 ~ AuthService ~ success:');
     const updated = await this.usersService.update(userJwtPayload.id, userDto);
-    console.log('🚀 ~ AuthService ~ updated:', updated);
     return updated;
   }
 
   async refreshToken(
     data: Pick<JwtRefreshPayloadType, 'sessionId' | 'hash'>,
-  ): Promise<Omit<LoginResponseType, 'user'>> {
+  ): Promise<Omit<LoginServiceResponseType, 'user'>> {
     const session = await this.sessionService.findOne({
       id: data.sessionId,
     });
@@ -511,8 +509,8 @@ export class AuthService {
     };
   }
 
-  async softDelete(user: User): Promise<void> {
-    await this.usersService.softDelete(user.id);
+  async softDelete(userId: User['id']): Promise<void> {
+    await this.usersService.softDelete(userId);
   }
 
   async logout(data: Pick<JwtRefreshPayloadType, 'sessionId'>) {

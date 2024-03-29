@@ -2,7 +2,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { FileType } from 'src/routes/files/domain/file';
 import { Role } from 'src/routes/roles/domain/role';
 import { GeneralDomain } from 'src/shared/domain/general.domain';
-import { Status } from 'src/shared/statuses/domain/status';
+import { Status } from 'src/routes/statuses/domain/status';
 
 export class User extends GeneralDomain {
   id: number | string;

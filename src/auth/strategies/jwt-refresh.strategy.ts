@@ -5,6 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import { JwtRefreshPayloadType } from './types/jwt-refresh-payload.type';
 import { OrNeverType } from '../../utils/types/or-never.type';
 import { AllConfigType } from 'src/config/config.type';
+import { Request } from 'express';
+import { RefreshTokenName } from '../constants/token-names';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
@@ -13,7 +15,12 @@ export class JwtRefreshStrategy extends PassportStrategy(
 ) {
   constructor(configService: ConfigService<AllConfigType>) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: Request) => {
+          return request?.cookies?.[RefreshTokenName];
+        },
+      ]),
+      ignoreExpiration: false,
       secretOrKey: configService.get('auth.refreshSecret', { infer: true }),
     });
   }

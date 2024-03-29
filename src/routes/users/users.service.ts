@@ -12,7 +12,7 @@ import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
 import { UserRepository } from './infrastructure/persistence/user.repository';
 import { DeepPartial } from 'src/utils/types/deep-partial.type';
 import { User } from './domain/user';
-import { StatusEnum } from 'src/shared/statuses/statuses.enum';
+import { StatusEnum } from 'src/routes/statuses/statuses.enum';
 import { RoleEnum } from 'src/routes/roles/roles.enum';
 import { FilesService } from 'src/routes/files/files.service';
 import bcrypt from 'bcryptjs';
@@ -20,7 +20,7 @@ import { isUUID } from 'validator';
 import { UUID } from 'crypto';
 import { FileDto } from 'src/routes/files/dto/file.dto';
 import { RoleDto } from 'src/routes/roles/dto/role.dto';
-import { StatusDto } from 'src/shared/statuses/dto/status.dto';
+import { StatusDto } from 'src/routes/statuses/dto/status.dto';
 
 @Injectable()
 export class UsersService {

@@ -72,9 +72,9 @@ export class NotificationController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateTasktDto: UpdateNotificationsDto,
+    @Body() updateNotiftDto: UpdateNotificationsDto,
   ) {
-    const notif = await this.notificationService.update(id, updateTasktDto);
+    const notif = await this.notificationService.update(id, updateNotiftDto);
     if (notif) {
       this.notifSocket.emitUpdate(notif);
     }

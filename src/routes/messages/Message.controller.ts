@@ -79,9 +79,9 @@ export class MessageController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateTasktDto: UpdateMessageDto,
+    @Body() updateMsgDto: UpdateMessageDto,
   ) {
-    const msg = await this.msgService.update(id, updateTasktDto);
+    const msg = await this.msgService.update(id, updateMsgDto);
     if (msg) {
       this.msgSocket.emitUpdate(msg);
     }

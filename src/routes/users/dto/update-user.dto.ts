@@ -4,7 +4,7 @@ import { Transform, Type } from 'class-transformer';
 import { IsEmail, IsOptional, MinLength } from 'class-validator';
 import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
 import { RoleDto } from 'src/routes/roles/dto/role.dto';
-import { StatusDto } from 'src/shared/statuses/dto/status.dto';
+import { StatusDto } from 'src/routes/statuses/dto/status.dto';
 import { FileDto } from 'src/routes/files/dto/file.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {

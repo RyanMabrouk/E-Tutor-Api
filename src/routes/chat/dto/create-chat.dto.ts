@@ -1,8 +1,8 @@
 import { IsString, IsArray, ArrayNotEmpty, Validate } from 'class-validator';
-import { IsUserConstraint } from 'src/routes/projects/dto/create-project.dto';
 import { User } from 'src/routes/users/domain/user';
 import { Chat } from '../domain/chat';
 import { GeneralDomainKeysWithId } from 'src/shared/domain/general.domain';
+import { IsUserConstraint } from 'src/routes/notifications/dto/create-notifications.dto';
 
 export class CreateChatDto implements Omit<Chat, GeneralDomainKeysWithId> {
   @IsString()

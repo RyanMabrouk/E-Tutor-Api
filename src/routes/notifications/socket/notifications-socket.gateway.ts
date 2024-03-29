@@ -7,7 +7,6 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Notification } from '../domain/notifications';
-import { NotificationsSocketService } from './notifications-socket.service';
 
 @WebSocketGateway({
   namespace: 'NotificationsSoket',
@@ -19,21 +18,21 @@ export class NotificationsSocketGateway {
   @WebSocketServer()
   server: Server;
 
-  constructor(
-    private readonly notifSocketService: NotificationsSocketService,
-  ) {}
-
   @SubscribeMessage('healthcheck')
   healthcheck() {
     return 'Ok';
   }
 
   emitCreate(payload: Notification): void {
-    this.server.emit('post', payload);
+    for (const receiver of payload.receivers) {
+      this.server.emit(`post-${receiver.id}`, payload);
+    }
   }
 
   emitUpdate(payload: Notification): void {
-    this.server.emit('patch', payload);
+    for (const receiver of payload.receivers) {
+      this.server.emit(`patch-${receiver.id}`, payload);
+    }
   }
 
   @SubscribeMessage('join')

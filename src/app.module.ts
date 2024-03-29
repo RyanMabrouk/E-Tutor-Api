@@ -22,8 +22,6 @@ import { MailerModule } from './shared/services/mailer/mailer.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './database/mongoose-config.service';
 import { DatabaseConfig } from './database/config/database-config.type';
-import { ProjectsModule } from './routes/projects/projects.module';
-import { TasksModule } from './routes/tasks/tasks.module';
 import { ChatModule } from './routes/chat/chat.module';
 import { MessageModule } from './routes/messages/message.module';
 import { NotificationModule } from './routes/notifications/notifications.module';
@@ -82,8 +80,6 @@ import { NotificationsSocketModule } from './routes/notifications/socket/notific
     MailModule,
     MailerModule,
     HomeModule,
-    ProjectsModule,
-    TasksModule,
     ChatModule,
     MessageModule,
     NotificationModule,

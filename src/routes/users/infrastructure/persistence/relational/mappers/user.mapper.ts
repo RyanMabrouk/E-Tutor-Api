@@ -2,21 +2,29 @@ import { RoleEntity } from 'src/routes/roles/infrastructure/persistence/relation
 import { User } from '../../../../domain/user';
 import { UserEntity } from '../entities/user.entity';
 import { FileEntity } from 'src/routes/files/infrastructure/persistence/relational/entities/file.entity';
-import { StatusEntity } from 'src/shared/statuses/infrastructure/persistence/relational/entities/status.entity';
+import { StatusEntity } from 'src/routes/statuses/infrastructure/persistence/relational/entities/status.entity';
 import { FileMapper } from 'src/routes/files/infrastructure/persistence/relational/mappers/file.mapper';
+import { RolesMapper } from 'src/routes/roles/infrastructure/persistence/relational/role.mapper';
+import { StatusMapper } from 'src/routes/statuses/infrastructure/persistence/relational/entities/status.mapper';
 
 export class UserMapper {
-  static toDomain(raw: UserEntity): User {
+  static toDomain(raw: Partial<UserEntity>): User {
     const user = new User();
     delete raw.__entity;
     Object.assign(user, raw);
     if (raw.photo) {
       user.photo = FileMapper.toDomain(raw.photo);
     }
+    if (raw.role) {
+      user.role = RolesMapper.toDomain(raw.role);
+    }
+    if (raw.status) {
+      user.status = StatusMapper.toDomain(raw.status);
+    }
     return user;
   }
 
-  static toPersistence(user: User): UserEntity {
+  static toPersistence(user: Partial<User>): UserEntity {
     let role: RoleEntity | undefined = undefined;
 
     if (user.role) {

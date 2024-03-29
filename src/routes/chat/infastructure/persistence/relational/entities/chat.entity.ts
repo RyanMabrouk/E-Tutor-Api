@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Chat } from 'src/routes/chat/domain/chat';
 @Entity({
-  name: 'task',
+  name: 'Chat',
 })
 export class ChatEntity extends GeneralEntity implements Chat {
   @PrimaryGeneratedColumn()

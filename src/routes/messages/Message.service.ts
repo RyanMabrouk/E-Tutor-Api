@@ -68,7 +68,7 @@ export class MessageService {
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            id: 'Task doesnt exist',
+            id: 'Message doesnt exist',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,

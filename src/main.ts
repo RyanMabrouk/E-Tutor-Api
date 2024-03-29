@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+//import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
 import validationOptions from './utils/validation-options';
@@ -18,10 +18,12 @@ import {
 } from './utils/metrics/metrics.service';
 import { Request, Response } from 'express';
 import responseTime from 'response-time';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  app.use(cookieParser());
   app.enableShutdownHooks();
   const configService = app.get(ConfigService<AllConfigType>);
   app.setGlobalPrefix(
@@ -40,7 +42,7 @@ async function bootstrap() {
     new ResolvePromisesInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
-  const options = new DocumentBuilder()
+  /* const options = new DocumentBuilder()
     .setTitle('API')
     .setDescription('API docs')
     .setVersion('1.0')
@@ -48,7 +50,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs', app, document);*/
   app.use(
     responseTime((req: Request, res: Response, time: number) => {
       if (req?.route?.path) {

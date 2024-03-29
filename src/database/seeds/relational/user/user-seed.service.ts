@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { StatusEnum } from 'src/shared/statuses/statuses.enum';
+import { StatusEnum } from 'src/routes/statuses/statuses.enum';
 import { Repository } from 'typeorm';
 import bcrypt from 'bcryptjs';
 import { UserEntity } from 'src/routes/users/infrastructure/persistence/relational/entities/user.entity';
