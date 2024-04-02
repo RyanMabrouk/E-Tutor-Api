@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
-//import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
 import validationOptions from './utils/validation-options';
@@ -16,56 +15,90 @@ import {
   restResponseTimeHistogram,
   startMetricsServer,
 } from './utils/metrics/metrics.service';
-import { Request, Response } from 'express';
-import responseTime from 'response-time';
-import cookieParser from 'cookie-parser';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
+import { fastifyCookie } from '@fastify/cookie';
+import helmet from '@fastify/helmet';
+import multiPart from '@fastify/multipart';
 
+export const appRoot = __dirname.substring(0, __dirname.lastIndexOf('/'));
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({ logger: true }),
+    { cors: true },
+  );
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
-  app.use(cookieParser());
+
+  // files
+  await app.register(multiPart);
+  // security
+  await app.register(helmet);
+  // cookies
+  await app.register(fastifyCookie, {
+    secret: process.env.COOKIES_SECRET, // for cookies signature
+  });
+
   app.enableShutdownHooks();
+
   const configService = app.get(ConfigService<AllConfigType>);
+
   app.setGlobalPrefix(
     configService.getOrThrow('app.apiPrefix', { infer: true }),
     {
       exclude: ['/'],
     },
   );
+
   app.enableVersioning({
     type: VersioningType.URI,
   });
+
   app.useGlobalPipes(new ValidationPipe(validationOptions));
+
   app.useGlobalInterceptors(
     // ResolvePromisesInterceptor is used to resolve promises in responses because class-transformer can't do it
     // https://github.com/typestack/class-transformer/issues/549
     new ResolvePromisesInterceptor(),
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
-  /* const options = new DocumentBuilder()
-    .setTitle('API')
-    .setDescription('API docs')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
 
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('docs', app, document);*/
-  app.use(
-    responseTime((req: Request, res: Response, time: number) => {
-      if (req?.route?.path) {
+  // Add hooks to measure response time
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .addHook('onRequest', (request, reply, done) => {
+      request['startTime'] = process.hrtime();
+      done();
+    });
+
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .addHook('onSend', (request, reply, payload, done) => {
+      const diff = process.hrtime(request['startTime']);
+      const time = diff[0] * 1e3 + diff[1] * 1e-6; // Convert to milliseconds
+
+      if (request.raw.url) {
         restResponseTimeHistogram.observe(
           {
-            method: req.method,
-            route: req.route.path,
-            status_code: res.statusCode,
+            method: request.method,
+            route: request.raw.url,
+            status_code: reply.statusCode,
           },
-          time * 1000,
+          time,
         );
       }
-    }),
+
+      done();
+    });
+  await app.listen(
+    configService.getOrThrow('app.port', { infer: true }),
+    '0.0.0.0',
   );
-  await app.listen(configService.getOrThrow('app.port', { infer: true }));
   startMetricsServer();
 }
 void bootstrap();

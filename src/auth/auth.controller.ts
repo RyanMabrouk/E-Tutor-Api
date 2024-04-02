@@ -26,10 +26,10 @@ import { User as ReqUser } from 'src/shared/decorators/user.decorator';
 import { User } from 'src/routes/users/domain/user';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from 'src/config/config.type';
-import { Response } from 'express';
 import { AccessTokenName, RefreshTokenName } from './constants/token-names';
 import { JwtPayloadType } from './strategies/types/jwt-payload.type';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
+import { FastifyReply } from 'fastify';
 
 @Controller({
   path: 'auth',
@@ -51,18 +51,22 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   public async login(
     @Body() loginDto: AuthEmailLoginDto,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<LoginResponseType> {
     const { refreshToken, token, tokenExpires, ...rest } =
       await this.service.validateLogin(loginDto);
-    res.cookie(AccessTokenName, token, {
+    // Set cookies
+    void res.clearCookie(AccessTokenName);
+    void res.clearCookie(RefreshTokenName);
+    void res.setCookie(AccessTokenName, token, {
       ...this.cookiesOptions,
       expires: new Date(Date.now() + tokenExpires),
     });
-    res.cookie(RefreshTokenName, refreshToken, {
+    void res.setCookie(RefreshTokenName, refreshToken, {
       ...this.cookiesOptions,
       expires: new Date(Date.now() + tokenExpires),
     });
+    // Return response
     return { tokenExpires, ...rest };
   }
 
@@ -127,18 +131,21 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   public async refresh(
     @ReqUser() user: JwtRefreshPayloadType,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<void> {
     const { refreshToken, token, tokenExpires } =
       await this.service.refreshToken({
         sessionId: user.sessionId,
         hash: user.hash,
       });
-    res.cookie(AccessTokenName, token, {
+    // Set cookies
+    void res.clearCookie(AccessTokenName);
+    void res.clearCookie(RefreshTokenName);
+    void res.setCookie(AccessTokenName, token, {
       ...this.cookiesOptions,
       expires: new Date(Date.now() + tokenExpires),
     });
-    res.cookie(RefreshTokenName, refreshToken, {
+    void res.setCookie(RefreshTokenName, refreshToken, {
       ...this.cookiesOptions,
       expires: new Date(Date.now() + tokenExpires),
     });
@@ -148,13 +155,15 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   public async logout(
     @ReqUser() user: JwtPayloadType,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<SuccessResponseType> {
     await this.service.logout({
       sessionId: user.sessionId,
     });
-    res.clearCookie(AccessTokenName);
-    res.clearCookie(RefreshTokenName);
+    // Clear cookies
+    void res.clearCookie(AccessTokenName);
+    void res.clearCookie(RefreshTokenName);
+    // Return response
     return {
       ...successResponse,
     };
