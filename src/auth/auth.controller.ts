@@ -70,6 +70,7 @@ export class AuthController {
   async register(
     @Body() createUserDto: AuthRegisterLoginDto,
   ): Promise<SuccessResponseType> {
+    console.log('createUserDto', createUserDto);
     await this.service.register(createUserDto);
     return {
       ...successResponse,
