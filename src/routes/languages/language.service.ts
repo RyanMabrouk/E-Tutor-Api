@@ -46,6 +46,9 @@ export class LanguageService {
       paginationOptions,
     });
   }
+  async findOne({ id: id }: { id: number }): Promise<Language | null> {
+    return this.langRepository.findOne({ id: id });
+  }
 
   async update(
     id: number,
