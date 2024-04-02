@@ -8,12 +8,11 @@ import { AllConfigType } from 'src/config/config.type';
 import { FilesLocalService } from './files.service';
 import databaseConfig from 'src/database/config/database.config';
 import { DatabaseConfig } from 'src/database/config/database-config.type';
-import { DocumentFilePersistenceModule } from '../../persistence/document/document-persistence.module';
 import { RelationalFilePersistenceModule } from '../../persistence/relational/relational-persistence.module';
 
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
-  ? DocumentFilePersistenceModule
+  ? class DocumentFilePersistenceModule {}
   : RelationalFilePersistenceModule;
 
 @Module({

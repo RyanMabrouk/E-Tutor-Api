@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from 'src/config/config.type';
 import { FileRepository } from '../../persistence/file.repository';
 import { FileType } from 'src/routes/files/domain/file';
+import { MemoryStorageFile } from '@blazity/nest-file-fastify';
 
 @Injectable()
 export class FilesLocalService {
@@ -11,13 +12,13 @@ export class FilesLocalService {
     private readonly fileRepository: FileRepository,
   ) {}
 
-  async create(file: Express.Multer.File): Promise<{ file: FileType }> {
+  async create(file: MemoryStorageFile): Promise<{ file: FileType }> {
     if (!file) {
       throw new HttpException(
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            file: 'selectFile',
+            file: 'Select a file',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -28,7 +29,7 @@ export class FilesLocalService {
       file: await this.fileRepository.create({
         path: `/${this.configService.get('app.apiPrefix', {
           infer: true,
-        })}/v1/${file.path}`,
+        })}/v1/files/${file.fieldname}`,
       }),
     };
   }

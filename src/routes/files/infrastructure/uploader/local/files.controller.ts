@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   Param,
@@ -8,18 +9,13 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiConsumes,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesLocalService } from './files.service';
-
-@ApiTags('Files')
+import { FileInterceptor, MemoryStorageFile } from '@blazity/nest-file-fastify';
+import { FastifyReply } from 'fastify';
+import { join } from 'path';
+import { appRoot } from 'src/main';
+import { createReadStream } from 'fs';
 @Controller({
   path: 'files',
   version: '1',
@@ -27,32 +23,22 @@ import { FilesLocalService } from './files.service';
 export class FilesLocalController {
   constructor(private readonly filesService: FilesLocalService) {}
 
-  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('upload')
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(@UploadedFile() file: MemoryStorageFile) {
+    console.log('🚀 ~ FilesLocalController ~ uploadFile ~ file:', { ...file });
     return this.filesService.create(file);
   }
 
   @Get(':path')
-  @ApiParam({
-    name: 'path',
-    type: 'string',
-  })
-  download(@Param('path') path, @Response() response) {
-    return response.sendFile(path, { root: './files' });
+  download(@Param('path') path: string, @Response() res: FastifyReply) {
+    try {
+      const filePath = join(appRoot, 'files', path); // Adjust the path as needed
+      const stream = createReadStream(filePath);
+      void res.send(stream);
+    } catch (err) {
+      throw new BadRequestException("File doesn't exist");
+    }
   }
 }

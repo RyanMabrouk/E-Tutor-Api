@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import databaseConfig from 'src/database/config/database.config';
 import { DatabaseConfig } from 'src/database/config/database-config.type';
-import { DocumentFilePersistenceModule } from './infrastructure/persistence/document/document-persistence.module';
 import { RelationalFilePersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
 import { FilesService } from './files.service';
 import fileConfig from './config/file.config';
@@ -12,7 +11,7 @@ import { FilesS3PresignedModule } from './infrastructure/uploader/s3-presigned/f
 
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
-  ? DocumentFilePersistenceModule
+  ? class DocumentFilePersistenceModule {}
   : RelationalFilePersistenceModule;
 
 const infrastructureUploaderModule =

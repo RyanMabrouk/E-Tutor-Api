@@ -1,4 +1,4 @@
-import { CookieOptions } from 'express';
+import { CookieSerializeOptions } from '@fastify/cookie';
 
 export type AuthConfig = {
   secret?: string;
@@ -9,5 +9,5 @@ export type AuthConfig = {
   forgotExpires?: string;
   confirmEmailSecret?: string;
   confirmEmailExpires?: string;
-  cookies?: CookieOptions;
+  cookies?: CookieSerializeOptions;
 };
