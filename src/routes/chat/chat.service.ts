@@ -5,9 +5,9 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { NullableType } from 'src/utils/types/nullable.type';
-import { ValidateMembers } from 'src/utils/validation/vlalidate-members';
+import { IPaginationOptions } from '../../utils/types/pagination-options';
+import { NullableType } from '../../utils/types/nullable.type';
+import { ValidateMembers } from '../../utils/validation/vlalidate-members';
 import { Chat } from './domain/chat';
 import { ChatRepository } from './infastructure/persistence/chat.repository';
 import { CreateChatDto } from './dto/create-chat.dto';

@@ -22,10 +22,10 @@ import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
 import { LoginResponseType, SuccessResponseType } from './types/response.type';
 import { NullableType } from '../utils/types/nullable.type';
 import { successResponse } from './constants/response';
-import { User as ReqUser } from 'src/shared/decorators/user.decorator';
-import { User } from 'src/routes/users/domain/user';
+import { User as ReqUser } from '../shared/decorators/user.decorator';
+import { User } from '../routes/users/domain/user';
 import { ConfigService } from '@nestjs/config';
-import { AllConfigType } from 'src/config/config.type';
+import { AllConfigType } from '../config/config.type';
 import { AccessTokenName, RefreshTokenName } from './constants/token-names';
 import { JwtPayloadType } from './strategies/types/jwt-payload.type';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
@@ -74,6 +74,7 @@ export class AuthController {
   async register(
     @Body() createUserDto: AuthRegisterLoginDto,
   ): Promise<SuccessResponseType> {
+    console.log('createUserDto', createUserDto);
     await this.service.register(createUserDto);
     return {
       ...successResponse,

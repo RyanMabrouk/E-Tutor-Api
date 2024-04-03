@@ -4,8 +4,8 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { User } from 'src/routes/users/domain/user';
-import { UsersService } from 'src/routes/users/users.service';
+import { User } from '../../routes/users/domain/user';
+import { UsersService } from '../../routes/users/users.service';
 
 @Injectable()
 export class ValidateMembers {

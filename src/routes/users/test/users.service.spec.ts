@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../users.service';
 import { UserRepository } from '../infrastructure/persistence/user.repository';
-import { FilesService } from 'src/routes/files/files.service';
+import { FilesService } from '../../../routes/files/files.service';
 
 describe('UsersService', () => {
   let service: UsersService;

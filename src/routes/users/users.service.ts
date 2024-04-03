@@ -4,23 +4,23 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { EntityCondition } from 'src/utils/types/entity-condition.type';
-import { IPaginationOptions } from 'src/utils/types/pagination-options';
+import { EntityCondition } from '../../utils/types/entity-condition.type';
+import { IPaginationOptions } from '../../utils/types/pagination-options';
 import { CreateUserDto } from './dto/create-user.dto';
 import { NullableType } from '../../utils/types/nullable.type';
 import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
 import { UserRepository } from './infrastructure/persistence/user.repository';
-import { DeepPartial } from 'src/utils/types/deep-partial.type';
+import { DeepPartial } from '../../utils/types/deep-partial.type';
 import { User } from './domain/user';
-import { StatusEnum } from 'src/routes/statuses/statuses.enum';
-import { RoleEnum } from 'src/routes/roles/roles.enum';
-import { FilesService } from 'src/routes/files/files.service';
+import { StatusEnum } from '../../routes/statuses/statuses.enum';
+import { RoleEnum } from '../../routes/roles/roles.enum';
+import { FilesService } from '../../routes/files/files.service';
 import bcrypt from 'bcryptjs';
 import { isUUID } from 'validator';
 import { UUID } from 'crypto';
-import { FileDto } from 'src/routes/files/dto/file.dto';
-import { RoleDto } from 'src/routes/roles/dto/role.dto';
-import { StatusDto } from 'src/routes/statuses/dto/status.dto';
+import { FileDto } from '../../routes/files/dto/file.dto';
+import { RoleDto } from '../../routes/roles/dto/role.dto';
+import { StatusDto } from '../../routes/statuses/dto/status.dto';
 
 @Injectable()
 export class UsersService {
