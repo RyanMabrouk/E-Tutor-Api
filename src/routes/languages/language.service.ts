@@ -5,7 +5,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { User } from '../users/domain/user';
 import { LanguageRepository } from './infastructure/persistence/language.repository';
 import { Language } from './domain/language';
 import { CreateLanguageDto } from './dto/create-language.dto';
@@ -14,9 +13,7 @@ import { UpdateLanguageDto } from './dto/update-language.dto';
 
 @Injectable()
 export class LanguageService {
-  constructor(
-    private readonly langRepository: LanguageRepository,
-  ) {}
+  constructor(private readonly langRepository: LanguageRepository) {}
 
   async create(createPayload: CreateLanguageDto): Promise<Language> {
     try {

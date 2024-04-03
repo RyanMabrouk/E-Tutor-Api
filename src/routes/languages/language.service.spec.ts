@@ -9,7 +9,6 @@ describe('LanguageService', () => {
   let repositoryMock: jest.Mock<Repository<LanguageEntity>>;
 
   beforeEach(async () => {
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LanguageService,
