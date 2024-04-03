@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/mapped-types';
 import { CreateLanguageDto } from './create-language.dto';
 import { Exclude } from 'class-transformer';
 

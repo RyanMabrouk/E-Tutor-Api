@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
 import { Transform } from 'class-transformer';
 import fileConfig from '../config/file.config';
@@ -12,7 +11,6 @@ import { PrimaryGeneratedColumn } from 'typeorm';
 import { GeneralDomain } from 'src/shared/domain/general.domain';
 
 export class FileType extends GeneralDomain {
-  @ApiProperty({ example: 'cbcfa8b8-3a25-4adb-a9c6-e325f0d0f3ae' })
   @Allow()
   @PrimaryGeneratedColumn('uuid')
   id: UUID;

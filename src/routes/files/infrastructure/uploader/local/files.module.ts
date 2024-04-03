@@ -30,7 +30,7 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
                   {
                     status: HttpStatus.UNPROCESSABLE_ENTITY,
                     errors: {
-                      file: `cantUploadFileType`,
+                      file: `Can't upload file type`,
                     },
                   },
                   HttpStatus.UNPROCESSABLE_ENTITY,

@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/mapped-types';
 import { CreateNotificationsDto } from './create-notifications.dto';
 import { Exclude } from 'class-transformer';
 

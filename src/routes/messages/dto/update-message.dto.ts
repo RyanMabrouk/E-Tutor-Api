@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/mapped-types';
 import { CreateMessageDto } from './create-message.dto';
 import { Exclude } from 'class-transformer';
 import { MessageTypes } from '../domain/message';
