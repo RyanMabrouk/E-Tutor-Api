@@ -10,6 +10,7 @@ import {
   BadRequestException,
   ParseIntPipe,
   UseGuards,
+  SerializeOptions,
 } from '@nestjs/common';
 import { infinityPagination } from 'src/utils/infinity-pagination';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
@@ -27,6 +28,9 @@ import { UpdateLanguageDto } from './dto/update-language.dto';
 export class LanguageController {
   constructor(private readonly langService: LanguageService) {}
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Post()
   async create(@Body() createDto: CreateLanguageDto): Promise<Language> {
     const lang = await this.langService.create(createDto);
@@ -56,6 +60,7 @@ export class LanguageController {
       throw new BadRequestException(err.message);
     }
   }
+
   @Get(':languageId')
   async findOne(
     @Param('languageId', ParseIntPipe) languageId: number,
@@ -71,6 +76,9 @@ export class LanguageController {
     }
   }
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -80,6 +88,9 @@ export class LanguageController {
     return lang;
   }
 
+  @SerializeOptions({
+    groups: ['admin'],
+  })
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.langService.remove(id);

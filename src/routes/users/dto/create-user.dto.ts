@@ -6,13 +6,13 @@ import {
   IsOptional,
   MinLength,
 } from 'class-validator';
-import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
-import { RoleDto } from 'src/routes/roles/dto/role.dto';
-import { StatusDto } from 'src/routes/statuses/dto/status.dto';
-import { FileDto } from 'src/routes/files/dto/file.dto';
+import { lowerCaseTransformer } from '../../../utils/transformers/lower-case.transformer';
+import { RoleDto } from '../../../routes/roles/dto/role.dto';
+import { StatusDto } from '../../../routes/statuses/dto/status.dto';
+import { FileDto } from '../../../routes/files/dto/file.dto';
 import { User } from '../domain/user';
-import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
-import { GeneralDomainKeysWithId } from 'src/shared/domain/general.domain';
+import { AuthProvidersEnum } from '../../../auth/auth-providers.enum';
+import { GeneralDomainKeysWithId } from '../../../shared/domain/general.domain';
 
 export class CreateUserDto implements Omit<User, GeneralDomainKeysWithId> {
   @Transform(lowerCaseTransformer)

@@ -3,7 +3,7 @@ import {
   FilterLanguageDto,
   SortLanguageDto,
 } from '../../dto/query-language.dto';
-import { GeneralRepositoryType } from 'src/shared/repositories/general.repository.type';
+import { GeneralRepositoryType } from '../../../../shared/repositories/general.repository.type';
 
 export abstract class LanguageRepository extends GeneralRepositoryType<
   Language,

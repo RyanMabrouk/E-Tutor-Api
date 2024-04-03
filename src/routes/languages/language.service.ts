@@ -11,13 +11,11 @@ import { Language } from './domain/language';
 import { CreateLanguageDto } from './dto/create-language.dto';
 import { FilterLanguageDto, SortLanguageDto } from './dto/query-language.dto';
 import { UpdateLanguageDto } from './dto/update-language.dto';
-import { ChatService } from '../chat/chat.service';
 
 @Injectable()
 export class LanguageService {
   constructor(
     private readonly langRepository: LanguageRepository,
-    private readonly chatService: ChatService,
   ) {}
 
   async create(createPayload: CreateLanguageDto): Promise<Language> {
@@ -72,11 +70,5 @@ export class LanguageService {
 
   async remove(id: number) {
     await this.langRepository.softDelete(id);
-  }
-  async validateChat(chatId: number, userId: User['id']) {
-    const chat = await this.chatService.findOne(chatId, userId);
-    if (!chat) {
-      throw new BadRequestException(`Chat with id ${chatId} not found`);
-    }
   }
 }
