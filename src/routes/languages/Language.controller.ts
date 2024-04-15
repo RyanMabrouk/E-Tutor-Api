@@ -24,7 +24,7 @@ import { Language } from './domain/language';
 import { UpdateLanguageDto } from './dto/update-language.dto';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@Controller({ path: 'language', version: '1' })
+@Controller({ path: 'languages', version: '1' })
 export class LanguageController {
   constructor(private readonly langService: LanguageService) {}
 
