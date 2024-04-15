@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { LanguageEntity } from './infastructure/persistence/relational/entities/language.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-describe('LanguageServiceeee', () => {
+describe('LanguageService', () => {
   let service: LanguageService;
   let langRepository: Repository<LanguageEntity>;
 
