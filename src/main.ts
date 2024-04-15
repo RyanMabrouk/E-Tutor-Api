@@ -21,8 +21,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { fastifyCookie } from '@fastify/cookie';
 import helmet from '@fastify/helmet';
-import multiPart from '@fastify/multipart';
-
+import fastifyMultipart from '@fastify/multipart';
 export const appRoot = __dirname.substring(0, __dirname.lastIndexOf('/'));
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -34,7 +33,7 @@ async function bootstrap() {
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // files
-  await app.register(multiPart);
+  await app.register(fastifyMultipart);
   // security
   await app.register(helmet);
   // cookies
