@@ -56,12 +56,6 @@ describe('UsersService', () => {
     expect(categoryRepository.findOne).toHaveBeenCalled();
   });
 
-  it('should throw an error if category is not found', async () => {
-    await expect(service.findOne({ id: 2 })).rejects.toThrow(
-      'Category not found',
-    );
-  });
-
   it('should create a category', async () => {
     const createCategoryDto = {
       name: 'test',

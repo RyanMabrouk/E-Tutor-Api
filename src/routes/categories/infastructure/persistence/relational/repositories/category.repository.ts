@@ -62,6 +62,10 @@ export class CategoryRelationalRepository implements CategoryRepository {
       where: fields as FindOptionsWhere<CategoryEntity>,
     });
 
+    if (!entity) {
+      throw new BadRequestException('Category not found');
+    }
+
     return entity ? CategoryMapper.toDomain(entity) : null;
   }
 
@@ -74,7 +78,7 @@ export class CategoryRelationalRepository implements CategoryRepository {
     });
 
     if (!entity) {
-      throw new BadRequestException('Language not found');
+      throw new BadRequestException('Category not found');
     }
 
     const updatedEntity = await this.categoryRepository.save(
