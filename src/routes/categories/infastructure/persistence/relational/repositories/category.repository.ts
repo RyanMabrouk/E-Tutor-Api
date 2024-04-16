@@ -71,11 +71,11 @@ export class CategoryRelationalRepository implements CategoryRepository {
   }
 
   async update(
-    id: Category['id'],
+    name: Category['name'],
     payload: Partial<Category>,
   ): Promise<Category> {
     const entity = await this.categoryRepository.findOne({
-      where: { id: Number(id) },
+      where: { name: name },
     });
 
     if (!entity) {
@@ -94,7 +94,7 @@ export class CategoryRelationalRepository implements CategoryRepository {
     return CategoryMapper.toDomain(updatedEntity);
   }
 
-  async softDelete(id: Category['id']): Promise<void> {
-    await this.categoryRepository.softDelete(id);
+  async softDelete(name: Category['name']): Promise<void> {
+    await this.categoryRepository.softDelete(name);
   }
 }
