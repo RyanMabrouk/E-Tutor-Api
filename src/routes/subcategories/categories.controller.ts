@@ -1,19 +1,13 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { CreateCategoryDto } from './dto/create-subcategory.dto';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { FilterCategoryDto, SortCategoryDto } from './dto/query-category.dto';
+import {
+  FilterCategoryDto,
+  SortCategoryDto,
+} from './dto/query-subcategory.dto';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'languages', version: '1' })
@@ -53,7 +47,7 @@ export class CategoriesController {
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Patch(':name')
+  @Post(':name')
   update(
     @Param('name') name: string,
     @Body() updateCategoryDto: CreateCategoryDto,
@@ -62,7 +56,7 @@ export class CategoriesController {
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Delete(':name')
+  @Post(':name')
   delete(@Param('name') name: string) {
     return this.categoryService.delete({ name });
   }

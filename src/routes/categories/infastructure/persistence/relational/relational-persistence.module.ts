@@ -14,4 +14,4 @@ import { CategoryRelationalRepository } from './repositories/category.repository
   ],
   exports: [CategoryRepository],
 })
-export class RelationalMessagePersistenceModule {}
+export class RelationalCategoryPersistenceModule {}
