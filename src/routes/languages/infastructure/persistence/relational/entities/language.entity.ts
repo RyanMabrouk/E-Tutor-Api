@@ -8,6 +8,6 @@ export class LanguageEntity extends GeneralEntity implements Language {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true, type: 'varchar' })
+  @Column({ type: 'varchar' })
   name: string;
 }

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,14 +8,17 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { FilterCategoryDto, SortCategoryDto } from './dto/query-category.dto';
+import { QueryCategoryDto } from './dto/query-category.dto';
+import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
+import { infinityPagination } from 'src/utils/infinity-pagination';
+import { Category } from './domain/category';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'categories', version: '1' })
@@ -22,21 +26,27 @@ export class CategoriesController {
   constructor(private readonly categoryService: CategoriesService) {}
 
   @Get()
-  findAll({
-    filterOptions,
-    sortOptions,
-    paginationOptions,
-  }: {
-    filterOptions?: FilterCategoryDto | null;
-    sortOptions?: SortCategoryDto[] | null;
-    paginationOptions: IPaginationOptions;
-  }) {
-    console.log({ filterOptions, sortOptions, paginationOptions });
-    return this.categoryService.findAll({
-      filterOptions,
-      sortOptions,
-      paginationOptions,
-    });
+  async findAll(
+    @Query() query: QueryCategoryDto,
+  ): Promise<InfinityPaginationResultType<Category>> {
+    const page = query?.page ?? 1;
+    const limit = query?.limit ? (query?.limit > 50 ? 50 : query?.limit) : 10;
+    try {
+      const data = infinityPagination(
+        await this.categoryService.findAll({
+          filterOptions: query?.filters ?? null,
+          sortOptions: query?.sort ?? null,
+          paginationOptions: {
+            page,
+            limit,
+          },
+        }),
+        { page, limit },
+      );
+      return data;
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Get(':id')
@@ -44,9 +54,9 @@ export class CategoriesController {
     return this.categoryService.findOne({ id });
   }
 
-  //create
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
+    console.log(createCategoryDto);
     return this.categoryService.create(createCategoryDto);
   }
 
