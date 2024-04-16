@@ -1,10 +1,8 @@
 import { IsString, IsNotEmpty } from 'class-validator';
-import { GeneralDomainKeysWithId } from 'src/shared/domain/general.domain';
+import { GeneralDomainKeys } from 'src/shared/domain/general.domain';
 import { Category } from '../domain/category';
 
-export class CreateCategoryDto
-  implements Omit<Category, GeneralDomainKeysWithId>
-{
+export class CreateCategoryDto implements Omit<Category, GeneralDomainKeys> {
   @IsString()
   @IsNotEmpty()
   name: string;

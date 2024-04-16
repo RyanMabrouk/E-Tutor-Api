@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { CategoriesService } from './categories.service';
@@ -39,9 +31,9 @@ export class CategoriesController {
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.categoryService.findOne({ id });
+  @Get(':name')
+  findOne(@Param('name') name: string) {
+    return this.categoryService.findOne({ name });
   }
 
   //create
@@ -52,17 +44,17 @@ export class CategoriesController {
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Post(':id')
+  @Post(':name')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('name') name: string,
     @Body() updateCategoryDto: CreateCategoryDto,
   ) {
-    return this.categoryService.update({ id }, updateCategoryDto);
+    return this.categoryService.update({ name }, updateCategoryDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Post(':id')
-  delete(@Param('id', ParseIntPipe) id: number) {
-    return this.categoryService.delete({ id });
+  @Post(':name')
+  delete(@Param('name') name: string) {
+    return this.categoryService.delete({ name });
   }
 }

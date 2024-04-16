@@ -26,8 +26,8 @@ export class CategoriesService {
     });
   }
 
-  async findOne({ id: id }: { id: number }): Promise<Category | null> {
-    return this.categoryRepository.findOne({ id: id });
+  async findOne({ name }: { name: string }): Promise<Category | null> {
+    return this.categoryRepository.findOne({ name: name });
   }
 
   async create(data: CreateCategoryDto): Promise<Category> {
@@ -35,13 +35,13 @@ export class CategoriesService {
   }
 
   async update(
-    { id: id }: { id: number },
+    { name }: { name: string },
     data: UpdateCategoryDto,
   ): Promise<Category | null> {
-    return this.categoryRepository.update(id, data);
+    return this.categoryRepository.update(name, data);
   }
 
-  async delete({ id: id }: { id: number }): Promise<void> {
-    return this.categoryRepository.softDelete(id);
+  async delete({ name }: { name: string }): Promise<void> {
+    return this.categoryRepository.softDelete(name);
   }
 }
