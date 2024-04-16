@@ -59,4 +59,9 @@ describe('CategoriesController', () => {
     const result = await controller.create(categoryMock);
     expect(result).toEqual(categoryMock);
   });
+
+  it('should update a category', async () => {
+    const result = await controller.update(1, categoryMock);
+    expect(result).toEqual(categoryMock);
+  });
 });
