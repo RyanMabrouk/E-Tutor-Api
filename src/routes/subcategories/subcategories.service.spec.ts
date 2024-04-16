@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CategoryRepository } from './infastructure/persistence/category.repository';
-import { CategoriesService } from './categories.service';
+import { SubcategoryRepository } from './infastructure/persistence/subcategories.repository';
+import { SubcategoryService } from './subcategories.service';
 
 describe('UsersService', () => {
-  let service: CategoriesService;
-  let categoryRepository: CategoryRepository;
+  let service: SubcategoryService;
+  let categoryRepository: SubcategoryRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CategoriesService,
+        SubcategoryService,
         {
-          provide: CategoryRepository,
+          provide: SubcategoryRepository,
           useValue: {
             create: jest.fn().mockResolvedValue({}),
             findManyWithPagination: jest.fn().mockResolvedValue([]),
@@ -23,8 +23,10 @@ describe('UsersService', () => {
       ],
     }).compile();
 
-    service = module.get<CategoriesService>(CategoriesService);
-    categoryRepository = module.get<CategoryRepository>(CategoryRepository);
+    service = module.get<SubcategoryService>(SubcategoryService);
+    categoryRepository = module.get<SubcategoryRepository>(
+      SubcategoryRepository,
+    );
   });
 
   it('should be defined', () => {

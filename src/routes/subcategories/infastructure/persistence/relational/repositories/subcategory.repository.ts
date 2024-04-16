@@ -11,7 +11,7 @@ import {
 import { Subcategory } from 'src/routes/subcategories/domain/subcategory';
 import { SubcategoryMapper } from '../mappers/subcategory.mapper';
 import { SubcategoryEntity } from '../entities/subcategory.entity';
-import { SubcategoryRepository } from '../../category.repository';
+import { SubcategoryRepository } from '../../subcategories.repository';
 
 @Injectable()
 export class SubcategoryRelationalRepository implements SubcategoryRepository {
@@ -38,7 +38,7 @@ export class SubcategoryRelationalRepository implements SubcategoryRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<Subcategory[]> {
     const entities = await this.categoryRepository
-      .createQueryBuilder('languages')
+      .createQueryBuilder('subcategories')
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .take(paginationOptions.limit)
       .where(filterOptions ?? {})
@@ -46,7 +46,7 @@ export class SubcategoryRelationalRepository implements SubcategoryRepository {
         sortOptions?.reduce(
           (accumulator, sort) => ({
             ...accumulator,
-            [`categories.${sort.orderBy}`]: sort.order,
+            [`subcategories.${sort.orderBy}`]: sort.order,
           }),
           {},
         ) ?? {},
@@ -63,22 +63,22 @@ export class SubcategoryRelationalRepository implements SubcategoryRepository {
     });
 
     if (!entity) {
-      throw new BadRequestException('Category not found');
+      throw new BadRequestException('Subcategory not found');
     }
 
     return entity ? SubcategoryMapper.toDomain(entity) : null;
   }
 
   async update(
-    name: Subcategory['name'],
+    id: Subcategory['id'],
     payload: Partial<Subcategory>,
   ): Promise<Subcategory> {
     const entity = await this.categoryRepository.findOne({
-      where: { name: name },
+      where: { id: id },
     });
 
     if (!entity) {
-      throw new BadRequestException('Category not found');
+      throw new BadRequestException('Subcategory not found');
     }
 
     const updatedEntity = await this.categoryRepository.save(
@@ -93,7 +93,7 @@ export class SubcategoryRelationalRepository implements SubcategoryRepository {
     return SubcategoryMapper.toDomain(updatedEntity);
   }
 
-  async softDelete(name: Subcategory['name']): Promise<void> {
-    await this.categoryRepository.softDelete(name);
+  async softDelete(id: Subcategory['id']): Promise<void> {
+    await this.categoryRepository.softDelete(id);
   }
 }

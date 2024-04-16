@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SubcategoryRepository } from '../category.repository';
+import { SubcategoryRepository } from '../subcategories.repository';
 import { SubcategoryEntity } from './entities/subcategory.entity';
 import { SubcategoryRelationalRepository } from './repositories/subcategory.repository';
 

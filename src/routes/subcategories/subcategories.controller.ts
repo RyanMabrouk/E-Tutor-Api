@@ -1,24 +1,29 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
-import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { FilterCategoryDto, SortCategoryDto } from './dto/query-category.dto';
+import {
+  FilterSubcategoryDto,
+  SortSubcategoryDto,
+} from './dto/query-subcategory.dto';
+import { CreateSubcategoryDto } from './dto/create-subcategory.dto';
+import { SubcategoryService } from './subcategories.service';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@Controller({ path: 'languages', version: '1' })
-@Controller('categories')
-export class CategoriesController {
-  constructor(private readonly categoryService: CategoriesService) {}
+@Controller({ path: 'subcategories', version: '1' })
+@Controller('subcategories')
+export class SubcategoryController {
+  constructor(private readonly subcategoryService: SubcategoryService) {}
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get()
@@ -27,11 +32,11 @@ export class CategoriesController {
     sortOptions,
     paginationOptions,
   }: {
-    filterOptions?: FilterCategoryDto | null;
-    sortOptions?: SortCategoryDto[] | null;
+    filterOptions?: FilterSubcategoryDto | null;
+    sortOptions?: SortSubcategoryDto[] | null;
     paginationOptions: IPaginationOptions;
   }) {
-    return this.categoryService.findAll({
+    return this.subcategoryService.findAll({
       filterOptions,
       sortOptions,
       paginationOptions,
@@ -41,28 +46,28 @@ export class CategoriesController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.categoryService.findOne({ id });
+    return this.subcategoryService.findOne({ id });
   }
 
   //create
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  create(@Body() createSubcategoryDto: CreateSubcategoryDto) {
+    return this.subcategoryService.create(createSubcategoryDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Post(':id')
+  @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateCategoryDto: CreateCategoryDto,
+    @Body() updateCategoryDto: CreateSubcategoryDto,
   ) {
-    return this.categoryService.update({ id }, updateCategoryDto);
+    return this.subcategoryService.update({ id }, updateCategoryDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Post(':id')
+  @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number) {
-    return this.categoryService.delete({ id });
+    return this.subcategoryService.delete({ id });
   }
 }

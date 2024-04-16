@@ -9,5 +9,5 @@ export abstract class SubcategoryRepository extends GeneralRepositoryType<
   Subcategory,
   FilterSubcategoryDto,
   SortSubcategoryDto,
-  Subcategory['name']
+  Subcategory['id']
 > {}
