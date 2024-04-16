@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,17 +8,19 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
-import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import {
-  FilterSubcategoryDto,
-  SortSubcategoryDto,
-} from './dto/query-subcategory.dto';
+import { QuerySubcategoryDto } from './dto/query-subcategory.dto';
 import { CreateSubcategoryDto } from './dto/create-subcategory.dto';
 import { SubcategoryService } from './subcategories.service';
+import { successResponse } from 'src/auth/constants/response';
+import { infinityPagination } from 'src/utils/infinity-pagination';
+import { Subcategory } from './domain/subcategory';
+import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
+import { UpdateSubcategoryDto } from './dto/update-subcategory.dto';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'subcategories', version: '1' })
@@ -27,20 +30,28 @@ export class SubcategoryController {
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get()
-  findAll({
-    filterOptions,
-    sortOptions,
-    paginationOptions,
-  }: {
-    filterOptions?: FilterSubcategoryDto | null;
-    sortOptions?: SortSubcategoryDto[] | null;
-    paginationOptions: IPaginationOptions;
-  }) {
-    return this.subcategoryService.findAll({
-      filterOptions,
-      sortOptions,
-      paginationOptions,
-    });
+  async findAll(
+    @Query() query: QuerySubcategoryDto,
+  ): Promise<InfinityPaginationResultType<Subcategory>> {
+    const page = query?.page ?? 1;
+    const limit = query?.limit ? (query?.limit > 50 ? 50 : query?.limit) : 10;
+    try {
+      const data = infinityPagination(
+        await this.subcategoryService.findAll({
+          filterOptions: query?.filters ?? null,
+          sortOptions: query?.sort ?? null,
+          paginationOptions: {
+            page,
+            limit,
+          },
+          categoryId: query?.categoryId,
+        }),
+        { page, limit },
+      );
+      return data;
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -60,14 +71,17 @@ export class SubcategoryController {
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateCategoryDto: CreateSubcategoryDto,
+    @Body() updateCategoryDto: UpdateSubcategoryDto,
   ) {
     return this.subcategoryService.update({ id }, updateCategoryDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id: number) {
-    return this.subcategoryService.delete({ id });
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    await this.subcategoryService.delete({ id });
+    return {
+      ...successResponse,
+    };
   }
 }
