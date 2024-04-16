@@ -7,8 +7,9 @@ import { DatabaseConfig } from 'src/database/config/database-config.type';
 import { UsersService } from './users.service';
 import { RelationalUserPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
 
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+export const infrastructurePersistenceModule = (
+  databaseConfig() as DatabaseConfig
+).isDocumentDatabase
   ? class DocumentUserPersistenceModule {}
   : RelationalUserPersistenceModule;
 

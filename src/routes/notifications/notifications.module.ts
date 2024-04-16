@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import databaseConfig from 'src/database/config/database.config';
 import { DatabaseConfig } from 'src/database/config/database-config.type';
 import { RelationalNotificationPersistenceModule } from './infastructure/persistence/relational/relational-persistence.module';
@@ -13,7 +13,7 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
 @Module({
   imports: [
     infrastructurePersistenceModule,
-    UsersModule,
+    forwardRef(() => UsersModule),
     NotificationsSocketModule,
   ],
   controllers: [NotificationController],

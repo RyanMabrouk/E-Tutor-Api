@@ -4,6 +4,8 @@ import {
   IsEnum,
   IsNotEmpty,
   IsOptional,
+  IsPhoneNumber,
+  IsUrl,
   MinLength,
 } from 'class-validator';
 import { lowerCaseTransformer } from '../../../utils/transformers/lower-case.transformer';
@@ -46,4 +48,43 @@ export class CreateUserDto implements Omit<User, GeneralDomainKeysWithId> {
   status?: StatusDto;
 
   hash?: string | null;
+
+  @IsOptional()
+  @IsNotEmpty()
+  username?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  title?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  bigoraphie?: string;
+
+  @IsOptional()
+  @IsUrl()
+  persenalWebsite?: string;
+
+  @IsOptional()
+  linkedin?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  twitter?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  facebook?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  instagram?: string;
+
+  @IsOptional()
+  @IsPhoneNumber()
+  whatsapp?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  youtube?: string;
 }

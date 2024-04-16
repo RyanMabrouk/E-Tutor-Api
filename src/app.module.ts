@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UsersModule } from './routes/users/users.module';
 import { FilesModule } from './routes/files/files.module';
 import { AuthModule } from './auth/auth.module';
@@ -19,9 +19,6 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { SessionModule } from './routes/session/session.module';
 import { MailerModule } from './shared/services/mailer/mailer.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { MongooseConfigService } from './database/mongoose-config.service';
-import { DatabaseConfig } from './database/config/database-config.type';
 import { ChatModule } from './routes/chat/chat.module';
 import { MessageModule } from './routes/messages/message.module';
 import { NotificationModule } from './routes/notifications/notifications.module';
@@ -39,50 +36,48 @@ import { CategoryModule } from './routes/categories/categories.module';
       load: [databaseConfig, authConfig, appConfig, mailConfig, fileConfig],
       envFilePath: ['.env'],
     }),
-    (databaseConfig() as DatabaseConfig).isDocumentDatabase
-      ? MongooseModule.forRootAsync({
-          useClass: MongooseConfigService,
-        })
-      : TypeOrmModule.forRootAsync({
-          useClass: TypeOrmConfigService,
-          dataSourceFactory: async (options: DataSourceOptions) => {
-            return new DataSource(options).initialize();
-          },
-        }),
-    I18nModule.forRootAsync({
-      useFactory: (configService: ConfigService<AllConfigType>) => ({
-        fallbackLanguage: configService.getOrThrow('app.fallbackLanguage', {
-          infer: true,
-        }),
-        loaderOptions: {
-          path: path.join(__dirname, '/shared/i18n/'),
-          watch: true,
-        },
-      }),
-      resolvers: [
-        {
-          use: HeaderResolver,
-          useFactory: (configService: ConfigService<AllConfigType>) => {
-            return [
-              configService.get('app.headerLanguage', {
-                infer: true,
-              }),
-            ];
-          },
-          inject: [ConfigService],
-        },
-      ],
-      imports: [ConfigModule],
-      inject: [ConfigService],
+    TypeOrmModule.forRootAsync({
+      useClass: TypeOrmConfigService,
+      dataSourceFactory: async (options: DataSourceOptions) => {
+        return new DataSource(options).initialize();
+      },
     }),
-    UsersModule,
-    FilesModule,
+    forwardRef(() =>
+      I18nModule.forRootAsync({
+        useFactory: (configService: ConfigService<AllConfigType>) => ({
+          fallbackLanguage: configService.getOrThrow('app.fallbackLanguage', {
+            infer: true,
+          }),
+          loaderOptions: {
+            path: path.join(__dirname, '/shared/i18n/'),
+            watch: true,
+          },
+        }),
+        resolvers: [
+          {
+            use: HeaderResolver,
+            useFactory: (configService: ConfigService<AllConfigType>) => {
+              return [
+                configService.get('app.headerLanguage', {
+                  infer: true,
+                }),
+              ];
+            },
+            inject: [ConfigService],
+          },
+        ],
+        imports: [ConfigModule],
+        inject: [ConfigService],
+      }),
+    ),
+    forwardRef(() => UsersModule),
+    forwardRef(() => FilesModule),
     AuthModule,
     SessionModule,
     MailModule,
     MailerModule,
     HomeModule,
-    ChatModule,
+    forwardRef(() => ChatModule),
     MessageModule,
     NotificationModule,
     MessagesSocketModule,

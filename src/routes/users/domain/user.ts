@@ -6,6 +6,19 @@ import { Status } from 'src/routes/statuses/domain/status';
 
 export class User extends GeneralDomain {
   id: number | string;
+  firstName: string | null;
+  lastName: string | null;
+  username?: string;
+  title?: string;
+  bigoraphie?: string;
+  persenalWebsite?: string;
+  linkedin?: string;
+  twitter?: string;
+  facebook?: string;
+  instagram?: string;
+  whatsapp?: string;
+  youtube?: string;
+  photo?: FileType | null;
 
   @Expose({ groups: ['me', 'admin'] })
   email: string | null;
@@ -20,10 +33,7 @@ export class User extends GeneralDomain {
   provider: string;
 
   @Expose({ groups: ['me', 'admin'] })
-  socialId?: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  photo?: FileType | null;
   role?: Role | null;
   status?: Status;
+  socialId?: string | null;
 }
