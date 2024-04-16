@@ -26,7 +26,7 @@ import { MessagesSocketModule } from './routes/messages/socket/messages-socket.m
 import { NotificationsSocketModule } from './routes/notifications/socket/notifications-socket.module';
 import { LanguageModule } from './routes/languages/language.module';
 import { SubcategoryModule } from './routes/subcategories/subcategories.module';
-import { CategoriesModule } from './routes/categories/categories.module';
+import { CategoryModule } from './routes/categories/categories.module';
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
@@ -85,7 +85,7 @@ import { CategoriesModule } from './routes/categories/categories.module';
     NotificationsSocketModule,
     LanguageModule,
     SubcategoryModule,
-    CategoriesModule,
+    CategoryModule,
   ],
   /* providers: [
     {

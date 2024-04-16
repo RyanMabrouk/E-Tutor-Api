@@ -9,4 +9,4 @@ const infrastructurePersistenceModule = RelationalCategoryPersistenceModule;
   providers: [CategoriesService],
   exports: [CategoriesService, infrastructurePersistenceModule],
 })
-export class CategoriesModule {}
+export class CategoryModule {}
