@@ -73,4 +73,34 @@ export class UserEntity extends GeneralEntity implements User {
     eager: true,
   })
   status?: StatusEntity;
+
+  @Column({ type: String })
+  username?: string;
+
+  @Column({ type: String })
+  title?: string;
+
+  @Column({ type: String })
+  bigoraphie?: string;
+
+  @Column({ type: String })
+  persenalWebsite?: string;
+
+  @Column({ type: String })
+  linkedin?: string;
+
+  @Column({ type: String })
+  twitter?: string;
+
+  @Column({ type: String })
+  facebook?: string;
+
+  @Column({ type: String })
+  instagram?: string;
+
+  @Column({ type: String })
+  whatsapp?: string;
+
+  @Column({ type: String })
+  youtube?: string;
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
 import databaseConfig from 'src/database/config/database.config';
@@ -11,7 +11,7 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   ? class DocumentChatPersistenceModule {}
   : RelationalChatPersistenceModule;
 @Module({
-  imports: [infrastructurePersistenceModule, UsersModule],
+  imports: [infrastructurePersistenceModule, forwardRef(() => UsersModule)],
   controllers: [ChatController],
   providers: [ChatService, ValidateMembers],
   exports: [ChatService, infrastructurePersistenceModule],

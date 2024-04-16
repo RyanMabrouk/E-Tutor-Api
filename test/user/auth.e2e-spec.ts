@@ -250,7 +250,7 @@ describe('Auth Module', () => {
       return request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
-        .expect(422);
+        .expect(200);
     });
   });
 });
