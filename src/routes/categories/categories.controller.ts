@@ -1,4 +1,10 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { CategoriesService } from './categories.service';
@@ -15,5 +21,11 @@ export class CategoriesController {
     return this.categoryService.findAll({
       paginationOptions: { page: 1, limit: 10 },
     });
+  }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.findOne({ id });
   }
 }

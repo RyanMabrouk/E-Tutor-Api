@@ -51,7 +51,7 @@ describe('CategoriesController', () => {
   });
 
   it('should return a category', async () => {
-    const result = await controller.findOne({ id: 1 });
+    const result = await controller.findOne(1);
     expect(result).toEqual(categoryMock);
   });
 });
