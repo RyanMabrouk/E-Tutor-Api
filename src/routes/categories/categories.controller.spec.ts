@@ -46,9 +46,7 @@ describe('CategoriesController', () => {
   });
 
   it('should return an array of categories', async () => {
-    const result = await controller.findAll({
-      paginationOptions: { page: 1, limit: 10 },
-    });
+    const result = await controller.findAll({ page: 1, limit: 10 });
     expect(result).toEqual([categoryMock]);
   });
 
