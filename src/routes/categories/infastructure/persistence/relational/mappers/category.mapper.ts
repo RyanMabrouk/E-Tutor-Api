@@ -1,4 +1,4 @@
-import { Category } from '../../../../../../routes/categories/domain/category';
+import { Category } from '../../../../../categories/domain/category';
 import { CategoryEntity } from '../entities/category.entity';
 
 export class CategoryMapper {

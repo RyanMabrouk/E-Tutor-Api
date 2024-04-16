@@ -20,7 +20,7 @@ export class CategoriesService {
     paginationOptions: IPaginationOptions;
   }): Promise<Category[]> {
     return this.categoryRepository.findManyWithPagination({
-      filterOptions: { ...filterOptions },
+      filterOptions,
       sortOptions,
       paginationOptions,
     });
@@ -31,7 +31,9 @@ export class CategoriesService {
   }
 
   async create(data: CreateCategoryDto): Promise<Category> {
-    return this.categoryRepository.create(data);
+    const category = await this.categoryRepository.create(data);
+    console.log(category);
+    return category;
   }
 
   async update(

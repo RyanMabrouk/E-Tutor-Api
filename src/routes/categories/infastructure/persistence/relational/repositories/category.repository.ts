@@ -37,6 +37,7 @@ export class CategoryRelationalRepository implements CategoryRepository {
     sortOptions?: SortCategoryDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Category[]> {
+    console.log({ filterOptions, sortOptions, paginationOptions });
     const entities = await this.categoryRepository
       .createQueryBuilder('categories')
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
