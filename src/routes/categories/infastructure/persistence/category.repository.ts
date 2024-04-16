@@ -9,5 +9,5 @@ export abstract class CategoryRepository extends GeneralRepositoryType<
   Category,
   FilterCategoryDto,
   SortCategoryDto,
-  Category['name']
+  Category['id']
 > {}

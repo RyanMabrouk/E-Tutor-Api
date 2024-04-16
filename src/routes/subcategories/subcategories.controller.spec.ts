@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CategoriesController } from './categories.controller';
-import { CategoriesService } from './categories.service';
+import { SubcategoryController } from './subcategories.controller';
+import { SubcategoryService } from './subcategories.service';
 
 describe('CategoriesController', () => {
-  let controller: CategoriesController;
-  let service: CategoriesService;
+  let controller: SubcategoryController;
+  let service: SubcategoryService;
 
   const categoryMock = {
     id: 1,
@@ -24,17 +24,17 @@ describe('CategoriesController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [CategoriesController],
+      controllers: [SubcategoryController],
       providers: [
         {
-          provide: CategoriesService,
+          provide: SubcategoryService,
           useValue: mockCatergoriesService,
         },
       ],
     }).compile();
 
-    controller = module.get<CategoriesController>(CategoriesController);
-    service = module.get<CategoriesService>(CategoriesService);
+    controller = module.get<SubcategoryController>(SubcategoryController);
+    service = module.get<SubcategoryService>(SubcategoryService);
   });
 
   it('should controller to be defined', () => {
