@@ -38,7 +38,7 @@ export class CategoryRelationalRepository implements CategoryRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<Category[]> {
     const entities = await this.categoryRepository
-      .createQueryBuilder('languages')
+      .createQueryBuilder('categories')
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .take(paginationOptions.limit)
       .where(filterOptions ?? {})
@@ -70,11 +70,11 @@ export class CategoryRelationalRepository implements CategoryRepository {
   }
 
   async update(
-    name: Category['name'],
+    id: Category['id'],
     payload: Partial<Category>,
   ): Promise<Category> {
     const entity = await this.categoryRepository.findOne({
-      where: { name: name },
+      where: { id },
     });
 
     if (!entity) {
@@ -93,7 +93,7 @@ export class CategoryRelationalRepository implements CategoryRepository {
     return CategoryMapper.toDomain(updatedEntity);
   }
 
-  async softDelete(name: Category['name']): Promise<void> {
-    await this.categoryRepository.softDelete(name);
+  async softDelete(id: Category['id']): Promise<void> {
+    await this.categoryRepository.softDelete(id);
   }
 }
