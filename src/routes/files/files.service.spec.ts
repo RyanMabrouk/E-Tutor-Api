@@ -40,4 +40,13 @@ describe('FilesService', () => {
     expect(result).toEqual(mockFile);
     expect(fileRepository.findOne).toHaveBeenCalledWith(fields);
   });
+
+  it("should return a file's path", async () => {
+    const fields: EntityCondition<FileType> = {
+      id: 'souhail-aoaze-azraz-azra-azra-azazr',
+    };
+    const result = await service.findOne(fields);
+    expect(result).toEqual(mockFile);
+    expect(fileRepository.findOne).toHaveBeenCalledWith(fields);
+  });
 });
