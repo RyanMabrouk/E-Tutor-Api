@@ -6,7 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('LanguageService', () => {
   let service: LanguageService;
-  let repositoryMock: jest.Mock<Repository<LanguageEntity>>;
+  let langRepository: Repository<LanguageEntity>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -14,11 +14,14 @@ describe('LanguageService', () => {
         LanguageService,
         {
           provide: getRepositoryToken(LanguageEntity),
-          useValue: repositoryMock,
+          useValue: langRepository,
         },
       ],
     }).compile();
 
+    langRepository = module.get<Repository<LanguageEntity>>(
+      getRepositoryToken(LanguageEntity),
+    );
     service = module.get<LanguageService>(LanguageService);
   });
 
