@@ -12,6 +12,7 @@ import { Subcategory } from 'src/routes/subcategories/domain/subcategory';
 import { SubcategoryMapper } from '../mappers/subcategory.mapper';
 import { SubcategoryEntity } from '../entities/subcategory.entity';
 import { SubcategoryRepository } from '../../subcategories.repository';
+import { Category } from 'src/routes/categories/domain/category';
 
 @Injectable()
 export class SubcategoryRelationalRepository implements SubcategoryRepository {
@@ -32,13 +33,21 @@ export class SubcategoryRelationalRepository implements SubcategoryRepository {
     filterOptions,
     sortOptions,
     paginationOptions,
+    categoryId,
   }: {
     filterOptions?: FilterSubcategoryDto | null;
     sortOptions?: SortSubcategoryDto[] | null;
     paginationOptions: IPaginationOptions;
+    categoryId?: Category['id'];
   }): Promise<Subcategory[]> {
     const entities = await this.categoryRepository
       .createQueryBuilder('subcategories')
+      .innerJoinAndSelect(
+        'subcategories.category',
+        'category',
+        'category.id = :categoryId',
+        { categoryId },
+      )
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .take(paginationOptions.limit)
       .where(filterOptions ?? {})
@@ -52,7 +61,12 @@ export class SubcategoryRelationalRepository implements SubcategoryRepository {
         ) ?? {},
       )
       .getMany();
-    return entities.map((category) => SubcategoryMapper.toDomain(category));
+    return entities.map((subcategory) => {
+      if (subcategory.hasOwnProperty('category')) {
+        delete (subcategory as { category?: unknown }).category;
+      }
+      return SubcategoryMapper.toDomain(subcategory);
+    });
   }
 
   async findOne(

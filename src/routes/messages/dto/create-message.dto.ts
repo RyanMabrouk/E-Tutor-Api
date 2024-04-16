@@ -26,7 +26,7 @@ export class IsChatConstraint implements ValidatorConstraintInterface {
     return chat && typeof chat.id === 'number'; // chat if user is an instance of Chat
   }
   defaultMessage() {
-    return 'Each chat must be a user object with a numeric id';
+    return 'Each chat must be an object with a numeric id';
   }
 }
 
