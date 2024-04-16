@@ -19,6 +19,7 @@ import { QueryCategoryDto } from './dto/query-category.dto';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
 import { infinityPagination } from 'src/utils/infinity-pagination';
 import { Category } from './domain/category';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'categories', version: '1' })
@@ -63,8 +64,10 @@ export class CategoriesController {
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateCategoryDto: CreateCategoryDto,
+    @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
+    console.log(id);
+    console.log(updateCategoryDto);
     return this.categoryService.update({ id }, updateCategoryDto);
   }
 
