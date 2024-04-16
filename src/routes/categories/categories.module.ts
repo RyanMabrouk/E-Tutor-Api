@@ -9,4 +9,4 @@ const infrastructurePersistenceModule = RelationalMessagePersistenceModule;
   providers: [CategoriesService],
   exports: [CategoriesService, infrastructurePersistenceModule],
 })
-export class LanguageModule {}
+export class CategoryModule {}
