@@ -16,8 +16,8 @@ import { RolesGuard } from '../roles/roles.guard';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { QueryCategoryDto } from './dto/query-category.dto';
-import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
-import { infinityPagination } from 'src/utils/infinity-pagination';
+import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
+import { infinityPagination } from '../../utils/infinity-pagination';
 import { Category } from './domain/category';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
