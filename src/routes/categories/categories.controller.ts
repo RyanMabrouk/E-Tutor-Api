@@ -11,6 +11,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { IPaginationOptions } from 'src/utils/types/pagination-options';
+import { FilterCategoryDto, SortCategoryDto } from './dto/query-category.dto';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'languages', version: '1' })
@@ -20,9 +22,19 @@ export class CategoriesController {
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get()
-  findAll() {
+  findAll({
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+  }: {
+    filterOptions?: FilterCategoryDto | null;
+    sortOptions?: SortCategoryDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }) {
     return this.categoryService.findAll({
-      paginationOptions: { page: 1, limit: 10 },
+      filterOptions,
+      sortOptions,
+      paginationOptions,
     });
   }
 
@@ -37,5 +49,20 @@ export class CategoriesController {
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
+  }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Post(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCategoryDto: CreateCategoryDto,
+  ) {
+    return this.categoryService.update({ id }, updateCategoryDto);
+  }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Post(':id')
+  delete(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.delete({ id });
   }
 }

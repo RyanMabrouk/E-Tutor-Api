@@ -64,4 +64,9 @@ describe('CategoriesController', () => {
     const result = await controller.update(1, categoryMock);
     expect(result).toEqual(categoryMock);
   });
+
+  it('should delete a category', async () => {
+    const result = await controller.delete(1);
+    expect(result).toEqual(categoryMock);
+  });
 });
