@@ -1,13 +1,16 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
   ParseIntPipe,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { CategoriesService } from './categories.service';
+import { CreateCategoryDto } from './dto/create-category.dto';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'languages', version: '1' })
@@ -27,5 +30,12 @@ export class CategoriesController {
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.findOne({ id });
+  }
+
+  //create
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Post()
+  create(@Body() createCategoryDto: CreateCategoryDto) {
+    return this.categoryService.create(createCategoryDto);
   }
 }

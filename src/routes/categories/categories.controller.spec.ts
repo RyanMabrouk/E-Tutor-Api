@@ -56,7 +56,7 @@ describe('CategoriesController', () => {
   });
 
   it('should create a category', async () => {
-    const result = await controller.create({ name: 'category' });
+    const result = await controller.create(categoryMock);
     expect(result).toEqual(categoryMock);
   });
 });
