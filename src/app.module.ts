@@ -27,6 +27,7 @@ import { NotificationsSocketModule } from './routes/notifications/socket/notific
 import { LanguageModule } from './routes/languages/language.module';
 import { SubcategoryModule } from './routes/subcategories/subcategories.module';
 import { CategoryModule } from './routes/categories/categories.module';
+import { CourseModule } from './routes/courses/course.module';
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
@@ -86,6 +87,7 @@ import { CategoryModule } from './routes/categories/categories.module';
     LanguageModule,
     SubcategoryModule,
     CategoryModule,
+    CourseModule,
   ],
   /* providers: [
     {

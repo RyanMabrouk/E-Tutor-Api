@@ -44,13 +44,12 @@ export class AuthService {
     const user = await this.usersService.findOne({
       email: loginDto.email,
     });
-
     if (!user) {
       throw new HttpException(
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            email: 'notFound',
+            email: 'Not found',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -62,7 +61,7 @@ export class AuthService {
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            email: `needLoginViaProvider:${user.provider}`,
+            email: `You need to login via provider:${user.provider}`,
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -74,7 +73,7 @@ export class AuthService {
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            password: 'incorrectPassword',
+            password: 'Incorrect password',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -91,7 +90,7 @@ export class AuthService {
         {
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
-            password: 'incorrectPassword',
+            password: 'Incorrect password',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,

@@ -47,16 +47,16 @@ export class UserEntity extends GeneralEntity implements User {
   provider: string;
 
   @Index()
-  @Column({ type: String, nullable: true })
+  @Column({ type: 'text', nullable: true })
   @Expose({ groups: ['me', 'admin'] })
   socialId?: string | null;
 
   @Index()
-  @Column({ type: String, nullable: true })
+  @Column({ type: 'text', nullable: true })
   firstName: string | null;
 
   @Index()
-  @Column({ type: String, nullable: true })
+  @Column({ type: 'text', nullable: true })
   lastName: string | null;
 
   @ManyToOne(() => FileEntity, {
@@ -74,33 +74,33 @@ export class UserEntity extends GeneralEntity implements User {
   })
   status?: StatusEntity;
 
-  @Column({ type: String })
-  username?: string;
+  @Column({ type: 'text', nullable: true })
+  username?: string | null;
 
-  @Column({ type: String })
-  title?: string;
+  @Column({ type: 'text', nullable: true })
+  title?: string | null;
 
-  @Column({ type: String })
-  bigoraphie?: string;
+  @Column({ type: 'text', nullable: true })
+  bigoraphie?: string | null;
 
-  @Column({ type: String })
-  persenalWebsite?: string;
+  @Column({ type: 'text', nullable: true })
+  persenalWebsite?: string | null;
 
-  @Column({ type: String })
-  linkedin?: string;
+  @Column({ type: 'text', nullable: true })
+  linkedin?: string | null;
 
-  @Column({ type: String })
-  twitter?: string;
+  @Column({ type: 'text', nullable: true })
+  twitter?: string | null;
 
-  @Column({ type: String })
-  facebook?: string;
+  @Column({ type: 'text', nullable: true })
+  facebook?: string | null;
 
-  @Column({ type: String })
-  instagram?: string;
+  @Column({ type: 'text', nullable: true })
+  instagram?: string | null;
 
-  @Column({ type: String })
-  whatsapp?: string;
+  @Column({ type: 'text', nullable: true })
+  whatsapp?: string | null;
 
-  @Column({ type: String })
-  youtube?: string;
+  @Column({ type: 'text', nullable: true })
+  youtube?: string | null;
 }
