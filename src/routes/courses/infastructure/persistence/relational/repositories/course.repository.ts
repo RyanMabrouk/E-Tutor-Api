@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { NullableType } from 'src/utils/types/nullable.type';
 import { CourseEntity } from '../entities/course.entity';
 import { CourseMapper } from '../mappers/course.mapper';
 import { Course } from 'src/routes/courses/domain/course';
@@ -56,12 +55,10 @@ export class CourseRelationalRepository implements CourseRepository {
         ) ?? {},
       )
       .getMany();
-    return entities;
+    return entities.map(CourseMapper.toDomain);
   }
 
-  async findOne(
-    fields: EntityCondition<Course>,
-  ): Promise<NullableType<Course>> {
+  async findOne(fields: EntityCondition<Course>): Promise<Course> {
     const entity = await this.courseRepository.findOne({
       where: fields as FindOptionsWhere<CourseEntity>,
       relations: [
@@ -77,23 +74,15 @@ export class CourseRelationalRepository implements CourseRepository {
     if (!entity) {
       throw new BadRequestException('Course not found');
     }
-
-    return entity ? CourseMapper.toDomain(entity) : null;
+    return CourseMapper.toDomain(entity);
   }
 
   async update(id: Course['id'], payload: Partial<Course>): Promise<Course> {
-    const entity = await this.courseRepository.findOne({
-      where: { id: id },
-    });
-
-    if (!entity) {
-      throw new BadRequestException('Course not found');
-    }
-
+    const domain = await this.findOne({ id: id });
     const updatedEntity = await this.courseRepository.save(
       this.courseRepository.create(
         CourseMapper.toPersistence({
-          ...CourseMapper.toDomain(entity),
+          ...domain,
           ...payload,
         }),
       ),
