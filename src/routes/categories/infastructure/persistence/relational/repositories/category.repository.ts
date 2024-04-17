@@ -6,7 +6,6 @@ import { FindOptionsWhere, Repository } from 'typeorm';
 import { CategoryRepository } from '../../category.repository';
 import { CategoryEntity } from '../entities/category.entity';
 import { CategoryMapper } from '../mappers/category.mapper';
-import { NullableType } from 'src/utils/types/nullable.type';
 import { Category } from 'src/routes/categories/domain/category';
 import {
   FilterCategoryDto,
@@ -59,36 +58,25 @@ export class CategoryRelationalRepository implements CategoryRepository {
     return entities.map((category) => CategoryMapper.toDomain(category));
   }
 
-  async findOne(
-    fields: EntityCondition<Category>,
-  ): Promise<NullableType<Category>> {
+  async findOne(fields: EntityCondition<Category>): Promise<Category> {
     const entity = await this.categoryRepository.findOne({
       where: fields as FindOptionsWhere<CategoryEntity>,
     });
-
     if (!entity) {
       throw new BadRequestException('Category not found');
     }
-
-    return entity ? CategoryMapper.toDomain(entity) : null;
+    return CategoryMapper.toDomain(entity);
   }
 
   async update(
     id: Category['id'],
     payload: Partial<Category>,
   ): Promise<Category> {
-    const entity = await this.categoryRepository.findOne({
-      where: { id },
-    });
-
-    if (!entity) {
-      throw new BadRequestException('Category not found');
-    }
-
+    const domain = await this.findOne({ id });
     const updatedEntity = await this.categoryRepository.save(
       this.categoryRepository.create(
         CategoryMapper.toPersistence({
-          ...CategoryMapper.toDomain(entity),
+          ...domain,
           ...payload,
         }),
       ),
