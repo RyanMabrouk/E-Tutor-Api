@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { NullableType } from 'src/utils/types/nullable.type';
 import {
   FilterSubcategoryDto,
   SortSubcategoryDto,
@@ -78,41 +77,29 @@ export class SubcategoryRelationalRepository implements SubcategoryRepository {
     });
   }
 
-  async findOne(
-    fields: EntityCondition<Subcategory>,
-  ): Promise<NullableType<Subcategory>> {
+  async findOne(fields: EntityCondition<Subcategory>): Promise<Subcategory> {
     const entity = await this.categoryRepository.findOne({
       where: fields as FindOptionsWhere<SubcategoryEntity>,
     });
-
     if (!entity) {
       throw new BadRequestException('Subcategory not found');
     }
-
-    return entity ? SubcategoryMapper.toDomain(entity) : null;
+    return SubcategoryMapper.toDomain(entity);
   }
 
   async update(
     id: Subcategory['id'],
     payload: Partial<Subcategory>,
   ): Promise<Subcategory> {
-    const entity = await this.categoryRepository.findOne({
-      where: { id: id },
-    });
-
-    if (!entity) {
-      throw new BadRequestException('Subcategory not found');
-    }
-
+    const domain = await this.findOne({ id: id });
     const updatedEntity = await this.categoryRepository.save(
       this.categoryRepository.create(
         SubcategoryMapper.toPersistence({
-          ...SubcategoryMapper.toDomain(entity),
+          ...domain,
           ...payload,
         }),
       ),
     );
-
     return SubcategoryMapper.toDomain(updatedEntity);
   }
 
