@@ -37,9 +37,13 @@ export class MessageRelationalRepository implements MessageRepository {
     sortOptions?: SortMessageDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Message[]> {
+    const tableName =
+      this.msgRepository.manager.connection.getMetadata(
+        MessageEntity,
+      ).tableName;
     const entities = await this.msgRepository
-      .createQueryBuilder('message')
-      .leftJoinAndSelect('message.sender', 'user')
+      .createQueryBuilder(tableName)
+      .leftJoinAndSelect(`${tableName}.sender`, 'user')
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .take(paginationOptions.limit)
       .where(filterOptions ?? {})
@@ -47,7 +51,7 @@ export class MessageRelationalRepository implements MessageRepository {
         sortOptions?.reduce(
           (accumulator, sort) => ({
             ...accumulator,
-            [`message.${sort.orderBy}`]: sort.order,
+            [`${tableName}.${sort.orderBy}`]: sort.order,
           }),
           {},
         ) ?? {},

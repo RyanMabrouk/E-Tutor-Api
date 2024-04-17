@@ -37,8 +37,12 @@ export class LanguageRelationalRepository implements LanguageRepository {
     sortOptions?: SortLanguageDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<Language[]> {
+    const tableName =
+      this.languageRepository.manager.connection.getMetadata(
+        LanguageEntity,
+      ).tableName;
     const entities = await this.languageRepository
-      .createQueryBuilder('languages')
+      .createQueryBuilder(tableName)
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .take(paginationOptions.limit)
       .where(filterOptions ?? {})
@@ -46,7 +50,7 @@ export class LanguageRelationalRepository implements LanguageRepository {
         sortOptions?.reduce(
           (accumulator, sort) => ({
             ...accumulator,
-            [`languages.${sort.orderBy}`]: sort.order,
+            [`${tableName}.${sort.orderBy}`]: sort.order,
           }),
           {},
         ) ?? {},

@@ -13,6 +13,7 @@ import { SubcategoryMapper } from '../mappers/subcategory.mapper';
 import { SubcategoryEntity } from '../entities/subcategory.entity';
 import { SubcategoryRepository } from '../../subcategories.repository';
 import { Category } from 'src/routes/categories/domain/category';
+import { CategoryEntity } from 'src/routes/categories/infastructure/persistence/relational/entities/category.entity';
 
 @Injectable()
 export class SubcategoryRelationalRepository implements SubcategoryRepository {
@@ -40,12 +41,20 @@ export class SubcategoryRelationalRepository implements SubcategoryRepository {
     paginationOptions: IPaginationOptions;
     categoryId?: Category['id'];
   }): Promise<Subcategory[]> {
+    const tableName =
+      this.categoryRepository.manager.connection.getMetadata(
+        SubcategoryEntity,
+      ).tableName;
+    const CategoryTableName =
+      this.categoryRepository.manager.connection.getMetadata(
+        CategoryEntity,
+      ).tableName;
     const entities = await this.categoryRepository
-      .createQueryBuilder('subcategories')
+      .createQueryBuilder(tableName)
       .innerJoinAndSelect(
-        'subcategories.category',
-        'category',
-        'category.id = :categoryId',
+        `${tableName}.category`,
+        CategoryTableName,
+        `${CategoryTableName}.id = :categoryId`,
         { categoryId },
       )
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
@@ -55,7 +64,7 @@ export class SubcategoryRelationalRepository implements SubcategoryRepository {
         sortOptions?.reduce(
           (accumulator, sort) => ({
             ...accumulator,
-            [`subcategories.${sort.orderBy}`]: sort.order,
+            [`${tableName}.${sort.orderBy}`]: sort.order,
           }),
           {},
         ) ?? {},

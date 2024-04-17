@@ -42,15 +42,19 @@ export class NotificationsRelationalRepository
     paginationOptions: IPaginationOptions;
     userId: User['id'];
   }): Promise<Notification[]> {
+    const tableName =
+      this.notificationsRepo.manager.connection.getMetadata(
+        NotificationEntity,
+      ).tableName;
     const entities = await this.notificationsRepo
-      .createQueryBuilder('notification')
+      .createQueryBuilder(tableName)
       .innerJoinAndSelect(
-        'notification.receivers',
+        `${tableName}.receivers`,
         'receiver',
         'receiver.id = :userId',
         { userId },
       )
-      .leftJoinAndSelect('notification.sender', 'user')
+      .leftJoinAndSelect(`${tableName}.sender`, 'user')
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .take(paginationOptions.limit)
       .where(filterOptions ?? {})
@@ -58,7 +62,7 @@ export class NotificationsRelationalRepository
         sortOptions?.reduce(
           (accumulator, sort) => ({
             ...accumulator,
-            [`notification.${sort.orderBy}`]: sort.order,
+            [`${tableName}.${sort.orderBy}`]: sort.order,
           }),
           {},
         ) ?? {},
