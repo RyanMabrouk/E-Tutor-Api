@@ -74,33 +74,33 @@ export class UserEntity extends GeneralEntity implements User {
   })
   status?: StatusEntity;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   username?: string;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   title?: string;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   bigoraphie?: string;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   persenalWebsite?: string;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   linkedin?: string;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   twitter?: string;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   facebook?: string;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   instagram?: string;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   whatsapp?: string;
 
-  @Column({ type: String })
+  @Column({ type: String, nullable: true })
   youtube?: string;
 }

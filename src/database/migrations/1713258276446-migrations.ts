@@ -11,12 +11,6 @@ export class Migrations1713258276446 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "user" ALTER COLUMN "username" SET NOT NULL;`,
     );
-    await queryRunner.query(
-      `CREATE TABLE "subcategories" ("createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "id" character varying NOT NULL, "name" character varying NOT NULL, CONSTRAINT "PK_793ef34ad0a3f86f09d4837007c" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "categories" ("createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "id" SERIAL NOT NULL, "name" character varying NOT NULL, "color" character varying NOT NULL, CONSTRAINT "UQ_8b0be371d28245da6e4f4b61878" UNIQUE ("name"), CONSTRAINT "PK_24dbc6126a28ff948da33e97d3b" PRIMARY KEY ("id"))`,
-    );
     await queryRunner.query(`ALTER TABLE "user" ADD COLUMN "title" character varying;
     `);
     await queryRunner.query(`UPDATE "user" SET "title" = 'default';
