@@ -226,7 +226,6 @@ export class AuthService {
         id: StatusEnum.inactive,
       },
     });
-
     const hash = await this.jwtService.signAsync(
       {
         confirmEmailUserId: user.id,

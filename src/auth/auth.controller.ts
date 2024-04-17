@@ -74,7 +74,6 @@ export class AuthController {
   async register(
     @Body() createUserDto: AuthRegisterLoginDto,
   ): Promise<SuccessResponseType> {
-    console.log('createUserDto', createUserDto);
     await this.service.register(createUserDto);
     return {
       ...successResponse,
@@ -85,7 +84,9 @@ export class AuthController {
   async confirmEmail(
     @Body() confirmEmailDto: AuthConfirmEmailDto,
   ): Promise<SuccessResponseType> {
+    console.log(confirmEmailDto);
     await this.service.confirmEmail(confirmEmailDto.hash);
+    console.log(successResponse);
     return {
       ...successResponse,
     };

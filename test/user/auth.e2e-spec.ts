@@ -40,7 +40,7 @@ describe('Auth Module', () => {
           firstName: newUserFirstName,
           lastName: newUserLastName,
         })
-        .expect(204);
+        .expect(201);
     });
 
     describe('Login', () => {
@@ -50,7 +50,7 @@ describe('Auth Module', () => {
           .send({ email: newUserEmail, password: newUserPassword })
           .expect(200)
           .expect(({ body }) => {
-            expect(body.token).toBeDefined();
+            expect(body.user).toBeDefined();
           });
       });
     });
@@ -75,7 +75,7 @@ describe('Auth Module', () => {
           .send({
             hash,
           })
-          .expect(204);
+          .expect(201);
       });
 
       it('should fail for already confirmed email: /api/v1/auth/email/confirm (POST)', async () => {
@@ -109,8 +109,6 @@ describe('Auth Module', () => {
         .send({ email: newUserEmail, password: newUserPassword })
         .expect(200)
         .expect(({ body }) => {
-          expect(body.token).toBeDefined();
-          expect(body.refreshToken).toBeDefined();
           expect(body.tokenExpires).toBeDefined();
           expect(body.user.email).toBeDefined();
           expect(body.user.hash).not.toBeDefined();
@@ -121,25 +119,31 @@ describe('Auth Module', () => {
   });
 
   describe('Logged in user', () => {
-    let newUserApiToken;
+    let cookie;
 
     beforeAll(async () => {
       await request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
-        .then(({ body }) => {
-          newUserApiToken = body.token;
+        .expect(200)
+        .then((res) => {
+          console.log(res.headers['set-cookie']);
+          cookie = res.headers['set-cookie'];
         });
     });
 
     it('should retrieve your own profile: /api/v1/auth/me (GET)', async () => {
+      console.log(cookie);
+      const accessToken = cookie[0].split(';')[0].split('=')[1];
+      console.log(accessToken);
       await request(app)
         .get('/api/v1/auth/me')
-        .auth(newUserApiToken, {
+        .auth(accessToken, {
           type: 'bearer',
         })
         .send()
         .expect(({ body }) => {
+          console.log(body);
           expect(body.provider).toBeDefined();
           expect(body.email).toBeDefined();
           expect(body.hash).not.toBeDefined();

@@ -1,11 +1,11 @@
-import { User } from 'src/routes/users/domain/user';
+import { User } from '../../../../routes/users/domain/user';
 import { Notification } from '../../domain/notifications';
 import {
   FilterNotificationsDto,
   SortNotificationsDto,
 } from '../../dto/query-notifications.dto';
-import { GeneralRepositoryType } from 'src/shared/repositories/general.repository.type';
-import { IPaginationOptions } from 'src/utils/types/pagination-options';
+import { GeneralRepositoryType } from '../../../../shared/repositories/general.repository.type';
+import { IPaginationOptions } from '../../../../utils/types/pagination-options';
 
 export abstract class NotificationsRepository extends GeneralRepositoryType<
   Notification,
