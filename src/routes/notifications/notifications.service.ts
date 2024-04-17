@@ -64,7 +64,9 @@ export class NotificationService {
   async update(
     id: number,
     updatePayload: UpdateNotificationsDto,
+    userId: User['id'],
   ): Promise<Notification | null> {
+    await this.validateIfUserIsReceiver(id, userId);
     try {
       const updated = await this.notificationRepo.update(id, updatePayload);
       return updated;
@@ -81,7 +83,25 @@ export class NotificationService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number, userId: User['id']) {
+    await this.validateIfUserIsReceiver(id, userId);
     await this.notificationRepo.softDelete(id);
+  }
+  async validateIfUserIsReceiver(
+    notifId: Notification['id'],
+    userId: User['id'],
+  ) {
+    const notif = await this.notificationRepo.findOne({ id: notifId });
+    if (!notif.receivers.some((e) => e.id === userId)) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          errors: {
+            id: 'You are not a receiver of this notification',
+          },
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 }

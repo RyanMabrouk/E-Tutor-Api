@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { NullableType } from '../../../../../../utils/types/nullable.type';
 import { LanguageRepository } from '../../language.repository';
 import { LanguageEntity } from '../entities/language.entity';
 import { LanguageMapper } from '../mappers/language.mapper';
@@ -59,32 +58,25 @@ export class LanguageRelationalRepository implements LanguageRepository {
     return entities.map((user) => LanguageMapper.toDomain(user));
   }
 
-  async findOne(
-    fields: EntityCondition<Language>,
-  ): Promise<NullableType<Language>> {
+  async findOne(fields: EntityCondition<Language>): Promise<Language> {
     const entity = await this.languageRepository.findOne({
       where: fields as FindOptionsWhere<LanguageEntity>,
     });
-
-    return entity ? LanguageMapper.toDomain(entity) : null;
+    if (!entity) {
+      throw new BadRequestException('Language not found');
+    }
+    return LanguageMapper.toDomain(entity);
   }
 
   async update(
     id: Language['id'],
     payload: Partial<Language>,
   ): Promise<Language> {
-    const entity = await this.languageRepository.findOne({
-      where: { id: Number(id) },
-    });
-
-    if (!entity) {
-      throw new BadRequestException('Language not found');
-    }
-
+    const domain = await this.findOne({ id: Number(id) });
     const updatedEntity = await this.languageRepository.save(
       this.languageRepository.create(
         LanguageMapper.toPersistence({
-          ...LanguageMapper.toDomain(entity),
+          ...domain,
           ...payload,
         }),
       ),

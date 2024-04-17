@@ -23,8 +23,8 @@ import { Message } from './domain/message';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { ChatService } from '../chat/chat.service';
 import { User as UserFromReq } from 'src/shared/decorators/user.decorator';
-import { User } from '../users/domain/user';
 import { MessagesSocketGateway } from './socket/messages-socket.gateway';
+import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'messages', version: '1' })
@@ -38,7 +38,7 @@ export class MessageController {
   @Post()
   async create(
     @Body() createDto: CreateMessageDto,
-    @UserFromReq() user: User,
+    @UserFromReq() user: JwtPayloadType,
   ): Promise<Message> {
     const msg = await this.msgService.create(createDto, user.id);
     this.msgSocket.emitCreate(msg);
@@ -49,7 +49,7 @@ export class MessageController {
   async findAll(
     @Param('chatId', ParseIntPipe) chatId: number,
     @Query() query: QueryMessageDto,
-    @UserFromReq() user: User,
+    @UserFromReq() user: JwtPayloadType,
   ): Promise<InfinityPaginationResultType<Message>> {
     const page = query?.page ?? 1;
     const limit = query?.limit ? (query?.limit > 50 ? 50 : query?.limit) : 10;
@@ -80,8 +80,9 @@ export class MessageController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMsgDto: UpdateMessageDto,
+    @UserFromReq() user: JwtPayloadType,
   ) {
-    const msg = await this.msgService.update(id, updateMsgDto);
+    const msg = await this.msgService.update(id, updateMsgDto, user.id);
     if (msg) {
       this.msgSocket.emitUpdate(msg);
     }
@@ -89,8 +90,11 @@ export class MessageController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    await this.msgService.remove(id);
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @UserFromReq() user: JwtPayloadType,
+  ) {
+    await this.msgService.remove(id, user.id);
     return {
       ...successResponse,
     };
