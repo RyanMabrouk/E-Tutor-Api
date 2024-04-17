@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { NullableType } from '../../../../../../utils/types/nullable.type';
 import { ChatRepository } from '../../chat.repository';
 import { ChatEntity } from '../entities/chat.entity';
 import { Chat } from 'src/routes/chat/domain/chat';
@@ -50,27 +49,24 @@ export class ChatRelationalRepository implements ChatRepository {
     return entities.map((user) => ChatMapper.toDomain(user));
   }
 
-  async findOne(fields: EntityCondition<Chat>): Promise<NullableType<Chat>> {
+  async findOne(fields: EntityCondition<Chat>): Promise<Chat> {
     const entity = await this.chatRepository.findOne({
       where: fields as FindOptionsWhere<ChatEntity>,
     });
-
-    return entity ? ChatMapper.toDomain(entity) : null;
+    if (!entity) {
+      throw new BadRequestException('Chat not found');
+    }
+    return ChatMapper.toDomain(entity);
   }
 
   async update(id: Chat['id'], payload: Partial<Chat>): Promise<Chat> {
-    const entity = await this.chatRepository.findOne({
-      where: { id: Number(id) },
+    const domain = await this.findOne({
+      id: Number(id),
     });
-
-    if (!entity) {
-      throw new Error('Chat not found');
-    }
-
     const updatedEntity = await this.chatRepository.save(
       this.chatRepository.create(
         ChatMapper.toPersistence({
-          ...ChatMapper.toDomain(entity),
+          ...domain,
           ...payload,
         }),
       ),

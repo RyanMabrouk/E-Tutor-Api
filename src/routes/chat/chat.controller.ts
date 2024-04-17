@@ -21,8 +21,8 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { QueryChatDto } from './dto/query-chat.dto';
 import { Chat } from './domain/chat';
 import { UpdateChatDto } from './dto/update-chat.dto';
-import { User as UserFromReq } from 'src/shared/decorators/user.decorator';
-import { User } from '../users/domain/user';
+import { User } from 'src/shared/decorators/user.decorator';
+import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'chat', version: '1' })
@@ -30,14 +30,14 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Post()
-  create(@Body() createDto: CreateChatDto, @UserFromReq() user: User) {
+  create(@Body() createDto: CreateChatDto, @User() user: JwtPayloadType) {
     return this.chatService.create(createDto, user.id);
   }
 
   @Get()
   async findAll(
     @Query() query: QueryChatDto,
-    @UserFromReq() user: User,
+    @User() user: JwtPayloadType,
   ): Promise<InfinityPaginationResultType<Chat>> {
     const page = query?.page ?? 1;
     const limit = query?.limit ? (query?.limit > 50 ? 50 : query?.limit) : 10;
@@ -61,7 +61,7 @@ export class ChatController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number, @UserFromReq() user: User) {
+  findOne(@Param('id', ParseIntPipe) id: number, @User() user: JwtPayloadType) {
     return this.chatService.findOne(id, user.id);
   }
 
@@ -69,13 +69,17 @@ export class ChatController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateChattDto: UpdateChatDto,
+    @User() user: JwtPayloadType,
   ) {
-    return this.chatService.update(id, updateChattDto);
+    return this.chatService.update(id, updateChattDto, user.id);
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    await this.chatService.remove(id);
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @User() user: JwtPayloadType,
+  ) {
+    await this.chatService.remove(id, user.id);
     return {
       ...successResponse,
     };
