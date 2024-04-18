@@ -135,7 +135,7 @@ export class CourseService {
       );
     }
     if (data.subtitleLanguage) {
-      data.subtitleLanguage.forEach((language) => {
+      data.subtitleLanguage.map((language) => {
         promises.push(this.languageService.findOne({ id: language.id }));
       });
     }
@@ -154,12 +154,13 @@ export class CourseService {
       );
     }
     if (data.instructors) {
-      data.instructors.forEach((instructor) => {
+      data.instructors.map((instructor) => {
         promises.push(this.usersService.findOne({ id: instructor.id }));
       });
     }
 
     const result = await Promise.all(promises);
+    // this is a just in case check all the above promises are supposed to throw err if not found
     if (result.includes(null)) {
       throw new BadRequestException('Invalid data');
     }
