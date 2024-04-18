@@ -1,5 +1,9 @@
 import { CourseService } from './../courses/course.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { SectionRepository } from './infastructure/persistence/section.repository';
 import { FilterSectionDto, SortSectionDto } from './dto/query-section.dto';
@@ -87,8 +91,6 @@ export class SectionService {
     ) {
       return;
     }
-    throw new UnauthorizedException(
-      'User does not have access to this section',
-    );
+    throw new ForbiddenException('User does not have access to this section');
   }
 }
