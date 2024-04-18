@@ -15,7 +15,7 @@ import { ResolvePromisesInterceptor } from './utils/serializer.interceptor';
 import {
   restResponseTimeHistogram,
   startMetricsServer,
-} from './utils/metrics/metrics.service';
+} from './shared/metrics/metrics.service';
 import {
   FastifyAdapter,
   NestFastifyApplication,
