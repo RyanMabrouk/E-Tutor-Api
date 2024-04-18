@@ -80,8 +80,11 @@ export class CourseService {
     data: UpdateCourseDto;
     userId: User['id'];
   }): Promise<Course | null> {
+    await this.validateUserHasAccess({ courseId: id, userId });
+    // validate new data exists
     const result = await this.validateData(data);
     if (
+      // check if not all users have valid role
       !result?.some((item) =>
         item?.hasOwnProperty('role') ? (item as User)?.id === userId : false,
       )
@@ -101,13 +104,7 @@ export class CourseService {
     id: number;
     userId: User['id'];
   }): Promise<any> {
-    const course = await this.findOne({ id });
-    if (!course.instructors.some((instructor) => instructor.id === userId)) {
-      throw new HttpException(
-        'You are not an instructor of this course',
-        HttpStatus.FORBIDDEN,
-      );
-    }
+    await this.validateUserHasAccess({ courseId: id, userId });
     return this.courseRepository.softDelete(id);
   }
 
@@ -165,5 +162,21 @@ export class CourseService {
       throw new BadRequestException('Invalid data');
     }
     return result;
+  }
+
+  async validateUserHasAccess({
+    courseId,
+    userId,
+  }: {
+    courseId: Course['id'];
+    userId: User['id'];
+  }): Promise<void> {
+    const course = await this.findOne({ id: courseId });
+    if (!course.instructors.some((instructor) => instructor.id === userId)) {
+      throw new HttpException(
+        'You are not an instructor of this course',
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 }
