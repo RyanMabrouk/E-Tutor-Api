@@ -21,6 +21,8 @@ import { infinityPagination } from 'src/utils/infinity-pagination';
 import { Subcategory } from './domain/subcategory';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
 import { UpdateSubcategoryDto } from './dto/update-subcategory.dto';
+import { RoleEnum } from '../roles/roles.enum';
+import { Roles } from '../roles/roles.decorator';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'subcategories', version: '1' })
@@ -28,7 +30,6 @@ import { UpdateSubcategoryDto } from './dto/update-subcategory.dto';
 export class SubcategoryController {
   constructor(private readonly subcategoryService: SubcategoryService) {}
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get()
   async findAll(
     @Query() query: QuerySubcategoryDto,
@@ -54,20 +55,19 @@ export class SubcategoryController {
     }
   }
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.subcategoryService.findOne({ id });
   }
 
   //create
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.admin)
   @Post()
   create(@Body() createSubcategoryDto: CreateSubcategoryDto) {
     return this.subcategoryService.create(createSubcategoryDto);
   }
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.admin)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -76,7 +76,7 @@ export class SubcategoryController {
     return this.subcategoryService.update({ id }, updateCategoryDto);
   }
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.admin)
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     await this.subcategoryService.delete({ id });

@@ -1,6 +1,5 @@
-import { EntityCondition } from '../../utils/types/entity-condition.type';
-import { NullableType } from '../../utils/types/nullable.type';
-import { IPaginationOptions } from '../../utils/types/pagination-options';
+import { EntityCondition } from 'src/utils/types/entity-condition.type';
+import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { DeepPartial } from 'typeorm';
 
 export abstract class GeneralRepositoryType<Domain, Filter, Sort, DomainId> {
@@ -18,9 +17,7 @@ export abstract class GeneralRepositoryType<Domain, Filter, Sort, DomainId> {
     paginationOptions: IPaginationOptions;
   }): Promise<Domain[]>;
 
-  abstract findOne(
-    fields: EntityCondition<Domain>,
-  ): Promise<NullableType<Domain>>;
+  abstract findOne(fields: EntityCondition<Domain>): Promise<Domain>;
 
   abstract update(
     id: DomainId,

@@ -21,13 +21,16 @@ import { Course } from './domain/course';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { Roles } from '../roles/roles.decorator';
+import { RoleEnum } from '../roles/roles.enum';
+import { User } from 'src/shared/decorators/user.decorator';
+import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'courses', version: '1' })
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get()
   async findAll(
     @Query() query: QueryCourseDto,
@@ -52,32 +55,45 @@ export class CourseController {
     }
   }
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.courseService.findOne({ id });
   }
 
   //create
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.instructor, RoleEnum.admin)
   @Post()
-  create(@Body() createCourseDto: CreateCourseDto) {
-    return this.courseService.create(createCourseDto);
+  create(
+    @Body() createCourseDto: CreateCourseDto,
+    @User() user: JwtPayloadType,
+  ) {
+    return this.courseService.create({
+      data: createCourseDto,
+      userId: user.id,
+    });
   }
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.instructor, RoleEnum.admin)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateCategoryDto: UpdateCourseDto,
+    @Body() updateCourseDto: UpdateCourseDto,
+    @User() user: JwtPayloadType,
   ) {
-    return this.courseService.update({ id }, updateCategoryDto);
+    return this.courseService.update({
+      id,
+      data: updateCourseDto,
+      userId: user.id,
+    });
   }
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.instructor, RoleEnum.admin)
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    await this.courseService.delete({ id });
+  async delete(
+    @Param('id', ParseIntPipe) id: number,
+    @User() user: JwtPayloadType,
+  ) {
+    await this.courseService.delete({ id, userId: user.id });
     return {
       ...successResponse,
     };

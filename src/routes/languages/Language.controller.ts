@@ -22,12 +22,15 @@ import { CreateLanguageDto } from './dto/create-language.dto';
 import { QueryLanguageDto } from './dto/query-language.dto';
 import { Language } from './domain/language';
 import { UpdateLanguageDto } from './dto/update-language.dto';
+import { RoleEnum } from '../roles/roles.enum';
+import { Roles } from '../roles/roles.decorator';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'languages', version: '1' })
 export class LanguageController {
   constructor(private readonly langService: LanguageService) {}
 
+  @Roles(RoleEnum.admin)
   @SerializeOptions({
     groups: ['admin'],
   })
@@ -76,6 +79,7 @@ export class LanguageController {
     }
   }
 
+  @Roles(RoleEnum.admin)
   @SerializeOptions({
     groups: ['admin'],
   })
@@ -88,6 +92,7 @@ export class LanguageController {
     return lang;
   }
 
+  @Roles(RoleEnum.admin)
   @SerializeOptions({
     groups: ['admin'],
   })

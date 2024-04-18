@@ -5,7 +5,7 @@ import { Subcategory } from '../domain/subcategory';
 import { SubcategoryEntity } from '../infastructure/persistence/relational/entities/subcategory.entity';
 import { Category } from 'src/routes/categories/domain/category';
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsPositive } from 'class-validator';
 
 export type FilterSubcategoryDto = FindOptionsWhere<SubcategoryEntity>;
 
@@ -17,6 +17,6 @@ export class QuerySubcategoryDto extends QueryDto<
 > {
   @Transform(({ value }) => (value ? Number(value) : 10))
   @IsNumber()
-  @IsOptional()
-  categoryId?: Category['id'];
+  @IsPositive()
+  categoryId: Category['id'];
 }

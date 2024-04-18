@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { IPaginationOptions } from '../../utils/types/pagination-options';
-import { NullableType } from '../../utils/types/nullable.type';
 import { ValidateMembers } from '../../utils/validation/vlalidate-members';
 import { Chat } from './domain/chat';
 import { ChatRepository } from './infastructure/persistence/chat.repository';
@@ -56,13 +55,21 @@ export class ChatService {
     });
   }
 
-  async findOne(id: number, userId: User['id']): Promise<NullableType<Chat>> {
+  async findOne(id: number, userId: User['id']): Promise<Chat> {
     const item = await this.chatRepository.findOne({ id: id });
-    if (item) this.validateUserInCaht({ members: item.members, userId });
+    if (item) await this.validateUserInChat({ chatId: id, userId });
     return item;
   }
 
-  async update(id: number, updatePayload: UpdateChatDto): Promise<Chat | null> {
+  async update(
+    id: number,
+    updatePayload: UpdateChatDto,
+    userId: User['id'],
+  ): Promise<Chat | null> {
+    await this.validateUserInChat({
+      chatId: id,
+      userId,
+    });
     const validationPromises: Promise<void>[] = [];
     if (updatePayload.members) {
       validationPromises.push(
@@ -86,17 +93,22 @@ export class ChatService {
     }
   }
 
-  async remove(id: number) {
-    await this.chatRepository.softDelete(id);
+  async remove(id: number, userId: User['id']) {
+    await this.validateUserInChat({
+      chatId: id,
+      userId,
+    });
+    return this.chatRepository.softDelete(id);
   }
-  validateUserInCaht({
-    members,
+  async validateUserInChat({
+    chatId,
     userId,
   }: {
-    members: User[];
+    chatId: Chat['id'];
     userId: User['id'];
   }) {
-    if (members?.some((member) => member.id == userId)) {
+    const chat = await this.chatRepository.findOne({ id: chatId });
+    if (chat.members?.some((member) => member.id == userId)) {
       return true;
     } else {
       throw new UnauthorizedException("You don't have access to this chat");

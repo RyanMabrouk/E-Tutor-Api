@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { NullableType } from '../../../../../../utils/types/nullable.type';
 import { NotificationEntity } from '../entities/notifications.entity';
 import { NotificationsRepository } from '../../notifications.repository';
 import { Notification } from 'src/routes/notifications/domain/notifications';
@@ -76,32 +75,25 @@ export class NotificationsRelationalRepository
     });
   }
 
-  async findOne(
-    fields: EntityCondition<Notification>,
-  ): Promise<NullableType<Notification>> {
+  async findOne(fields: EntityCondition<Notification>): Promise<Notification> {
     const entity = await this.notificationsRepo.findOne({
       where: fields as FindOptionsWhere<NotificationEntity>,
     });
-
-    return entity ? NotificationsMapper.toDomain(entity) : null;
+    if (!entity) {
+      throw new BadRequestException('Notification not found');
+    }
+    return NotificationsMapper.toDomain(entity);
   }
 
   async update(
     id: Notification['id'],
     payload: Partial<Notification>,
   ): Promise<Notification> {
-    const entity = await this.notificationsRepo.findOne({
-      where: { id: Number(id) },
-    });
-
-    if (!entity) {
-      throw new BadRequestException('Notification not found');
-    }
-
+    const domain = await this.findOne({ id: Number(id) });
     const updatedEntity = await this.notificationsRepo.save(
       this.notificationsRepo.create(
         NotificationsMapper.toPersistence({
-          ...NotificationsMapper.toDomain(entity),
+          ...domain,
           ...payload,
         }),
       ),

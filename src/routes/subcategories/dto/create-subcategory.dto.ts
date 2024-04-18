@@ -1,22 +1,9 @@
-import {
-  IsString,
-  IsNotEmpty,
-  Validate,
-  ValidatorConstraintInterface,
-  ValidatorConstraint,
-} from 'class-validator';
+import { IsString, IsNotEmpty, Validate } from 'class-validator';
 import { GeneralDomainKeysWithId } from 'src/shared/domain/general.domain';
 import { Subcategory } from '../domain/subcategory';
 import { Category } from 'src/routes/categories/domain/category';
-@ValidatorConstraint({ name: 'IsCategoryConstraint', async: false })
-export class IsCategoryConstraint implements ValidatorConstraintInterface {
-  validate(category: any) {
-    return category && typeof category.id === 'number';
-  }
-  defaultMessage() {
-    return 'Each category must be an object with a numeric id';
-  }
-}
+import { IsObjectWithNumericIdConstraint } from 'src/utils/class-validators/IsObjectWithNumericIdConstraint';
+
 export class CreateSubcategoryDto
   implements Omit<Subcategory, GeneralDomainKeysWithId>
 {
@@ -24,6 +11,6 @@ export class CreateSubcategoryDto
   @IsNotEmpty()
   name: string;
 
-  @Validate(IsCategoryConstraint)
+  @Validate(IsObjectWithNumericIdConstraint)
   category: Category;
 }

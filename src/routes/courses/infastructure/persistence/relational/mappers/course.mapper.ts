@@ -31,20 +31,27 @@ export class CourseMapper {
     return domain;
   }
 
-  static toPersistence(domain: Course): CourseEntity {
+  static toPersistence(domain: Partial<Course>): CourseEntity {
     const entity = new CourseEntity();
     Object.assign(entity, domain);
-    entity.category = CategoryMapper.toPersistence(domain.category);
-    entity.subcategory = SubcategoryMapper.toPersistence(domain.subcategory);
-    entity.language = LanguageMapper.toPersistence(domain.language);
-    entity.subtitleLanguage = domain.subtitleLanguage.map((language) =>
-      LanguageMapper.toPersistence(language),
-    );
-    entity.thumbnail = FileMapper.toPersistence(domain.thumbnail);
-    entity.trailer = FileMapper.toPersistence(domain.trailer);
-    entity.instructors = domain.instructors.map((instructor) =>
-      UserMapper.toPersistence(instructor),
-    );
+    if (domain.category)
+      entity.category = CategoryMapper.toPersistence(domain.category);
+    if (domain.subcategory)
+      entity.subcategory = SubcategoryMapper.toPersistence(domain.subcategory);
+    if (domain.language)
+      entity.language = LanguageMapper.toPersistence(domain.language);
+    if (domain.subtitleLanguage)
+      entity.subtitleLanguage = domain.subtitleLanguage.map((language) =>
+        LanguageMapper.toPersistence(language),
+      );
+    if (domain.thumbnail)
+      entity.thumbnail = FileMapper.toPersistence(domain.thumbnail);
+    if (domain.trailer)
+      entity.trailer = FileMapper.toPersistence(domain.trailer);
+    if (domain.instructors)
+      entity.instructors = domain.instructors.map((instructor) =>
+        UserMapper.toPersistence(instructor),
+      );
     return entity;
   }
 }

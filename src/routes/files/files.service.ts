@@ -14,7 +14,11 @@ export class FilesService {
       const result = await this.fileRepository.findOne(fields);
       return result;
     } catch (err) {
-      throw new BadRequestException('file error :' + err.message);
+      if (err.message.includes('invalid input syntax for type uuid')) {
+        throw new BadRequestException(`Invalid file UUID: ${fields.id}`);
+      } else {
+        throw new BadRequestException('File error :' + err.message);
+      }
     }
   }
 }

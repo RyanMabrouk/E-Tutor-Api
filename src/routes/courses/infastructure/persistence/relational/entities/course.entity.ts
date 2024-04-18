@@ -87,7 +87,9 @@ export class CourseEntity extends GeneralEntity implements Course {
   @Column({ type: 'int', default: 0 })
   discount: number;
 
-  @ManyToMany(() => UserEntity)
+  @ManyToMany(() => UserEntity, {
+    eager: true,
+  })
   @JoinTable()
   instructors: UserEntity[];
 }

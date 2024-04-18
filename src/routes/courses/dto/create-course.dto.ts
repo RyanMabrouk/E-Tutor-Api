@@ -20,41 +20,10 @@ import { GeneralDomainKeysWithId } from 'src/shared/domain/general.domain';
 import { Course, CourseLevelEnum, CourseLevelType } from '../domain/course';
 import { User } from 'src/routes/users/domain/user';
 import { IsLessThan } from 'src/utils/class-validators/IsLessThen';
-@ValidatorConstraint({ name: 'IsObjectWithNumericIdConstraint', async: false })
-export class IsObjectWithNumericIdConstraint
-  implements ValidatorConstraintInterface
-{
-  validate(object: any) {
-    return object && typeof object.id === 'number';
-  }
-  defaultMessage() {
-    return 'Property must be an object with a numeric id';
-  }
-}
-@ValidatorConstraint({ name: 'IsFileTypeConstraint', async: false })
-export class IsFileTypeConstraint implements ValidatorConstraintInterface {
-  validate(object: any) {
-    console.log(
-      '🚀 ~ IsFileTypeConstraint ~ validate ~ object:',
-      typeof object.id,
-    );
-    return object && typeof object.id === 'string';
-  }
-  defaultMessage() {
-    return `Property must be an object with a string id type`;
-  }
-}
-@ValidatorConstraint({ name: 'IsUserConstraint', async: false })
-export class IsUserConstraint implements ValidatorConstraintInterface {
-  validate(object: any) {
-    return (
-      object && (typeof object.id === 'number' || typeof object.id === 'string')
-    );
-  }
-  defaultMessage() {
-    return `Property must be an object with a correct id type`;
-  }
-}
+import { IsObjectWithNumericIdConstraint } from 'src/utils/class-validators/IsObjectWithNumericIdConstraint';
+import { IsUserConstraint } from 'src/utils/class-validators/IsUserConstraint';
+import { IsObjectWithStringIdConstraint } from 'src/utils/class-validators/IsObjectWithStringIdConstraint';
+
 @ValidatorConstraint({ name: 'ValidateDuration', async: false })
 export class ValidateDurationConstraint
   implements ValidatorConstraintInterface
@@ -112,10 +81,10 @@ export class CreateCourseDto implements Omit<Course, GeneralDomainKeysWithId> {
   @Validate(ValidateDurationConstraint)
   duration: number;
 
-  @Validate(IsFileTypeConstraint)
+  @Validate(IsObjectWithStringIdConstraint)
   thumbnail: FileType;
 
-  @Validate(IsFileTypeConstraint)
+  @Validate(IsObjectWithStringIdConstraint)
   trailer: FileType;
 
   @IsJSON()

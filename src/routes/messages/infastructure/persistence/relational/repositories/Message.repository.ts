@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { NullableType } from '../../../../../../utils/types/nullable.type';
 import { MessageRepository } from '../../Message.repository';
 import { MessageEntity } from '../entities/message.entity';
 import {
@@ -60,34 +59,26 @@ export class MessageRelationalRepository implements MessageRepository {
     return entities.map((user) => MessageMapper.toDomain(user));
   }
 
-  async findOne(
-    fields: EntityCondition<Message>,
-  ): Promise<NullableType<Message>> {
+  async findOne(fields: EntityCondition<Message>): Promise<Message> {
     const entity = await this.msgRepository.findOne({
       where: fields as FindOptionsWhere<MessageEntity>,
     });
-
-    return entity ? MessageMapper.toDomain(entity) : null;
-  }
-
-  async update(id: Message['id'], payload: Partial<Message>): Promise<Message> {
-    const entity = await this.msgRepository.findOne({
-      where: { id: Number(id) },
-    });
-
     if (!entity) {
       throw new BadRequestException('Message not found');
     }
+    return MessageMapper.toDomain(entity);
+  }
 
+  async update(id: Message['id'], payload: Partial<Message>): Promise<Message> {
+    const domain = await this.findOne({ id: Number(id) });
     const updatedEntity = await this.msgRepository.save(
       this.msgRepository.create(
         MessageMapper.toPersistence({
-          ...MessageMapper.toDomain(entity),
+          ...domain,
           ...payload,
         }),
       ),
     );
-
     return MessageMapper.toDomain(updatedEntity);
   }
 

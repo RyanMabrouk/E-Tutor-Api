@@ -16,14 +16,14 @@ import { InfinityPaginationResultType } from 'src/utils/types/infinity-paginatio
 import { successResponse } from 'src/auth/constants/response';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/routes/roles/roles.guard';
-import { User as UserFromReq } from 'src/shared/decorators/user.decorator';
-import { User } from '../users/domain/user';
+import { User } from 'src/shared/decorators/user.decorator';
 import { NotificationService } from './notifications.service';
 import { CreateNotificationsDto } from './dto/create-notifications.dto';
 import { QueryNotificationsDto } from './dto/query-notifications.dto';
 import { UpdateNotificationsDto } from './dto/update-notifications.dto';
 import { Notification } from './domain/notifications';
 import { NotificationsSocketGateway } from './socket/notifications-socket.gateway';
+import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'notifications', version: '1' })
@@ -36,7 +36,7 @@ export class NotificationController {
   @Post()
   async create(
     @Body() createDto: CreateNotificationsDto,
-    @UserFromReq() user: User,
+    @User() user: JwtPayloadType,
   ): Promise<Notification> {
     const notif = await this.notificationService.create(createDto, user.id);
     this.notifSocket.emitCreate(notif);
@@ -46,7 +46,7 @@ export class NotificationController {
   @Get()
   async findAll(
     @Query() query: QueryNotificationsDto,
-    @UserFromReq() user: User,
+    @User() user: JwtPayloadType,
   ): Promise<InfinityPaginationResultType<Notification>> {
     const page = query?.page ?? 1;
     const limit = query?.limit ? (query?.limit > 50 ? 50 : query?.limit) : 10;
@@ -73,8 +73,13 @@ export class NotificationController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateNotiftDto: UpdateNotificationsDto,
+    @User() user: JwtPayloadType,
   ) {
-    const notif = await this.notificationService.update(id, updateNotiftDto);
+    const notif = await this.notificationService.update(
+      id,
+      updateNotiftDto,
+      user.id,
+    );
     if (notif) {
       this.notifSocket.emitUpdate(notif);
     }
@@ -82,8 +87,11 @@ export class NotificationController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    await this.notificationService.remove(id);
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @User() user: JwtPayloadType,
+  ) {
+    await this.notificationService.remove(id, user.id);
     return {
       ...successResponse,
     };

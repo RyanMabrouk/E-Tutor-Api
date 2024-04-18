@@ -9,6 +9,7 @@ import {
 import { Message, MessageTypes } from '../domain/message';
 import { Chat } from 'src/routes/chat/domain/chat';
 import { GeneralDomainKeysWithId } from 'src/shared/domain/general.domain';
+import { IsObjectWithNumericIdConstraint } from 'src/utils/class-validators/IsObjectWithNumericIdConstraint';
 
 @ValidatorConstraint({ name: 'isMessageType', async: false })
 export class IsMessageType implements ValidatorConstraintInterface {
@@ -17,16 +18,6 @@ export class IsMessageType implements ValidatorConstraintInterface {
   }
   defaultMessage() {
     return `Type must be a valid MessageType value (${Object.values(MessageTypes)})`;
-  }
-}
-
-@ValidatorConstraint({ name: 'IsChatConstraint', async: false })
-export class IsChatConstraint implements ValidatorConstraintInterface {
-  validate(chat: any) {
-    return chat && typeof chat.id === 'number'; // chat if user is an instance of Chat
-  }
-  defaultMessage() {
-    return 'Each chat must be an object with a numeric id';
   }
 }
 
@@ -42,7 +33,7 @@ export class CreateMessageDto
   @Validate(IsMessageType)
   type: MessageTypes;
 
-  @Validate(IsChatConstraint)
+  @Validate(IsObjectWithNumericIdConstraint)
   chat: Chat;
 
   @IsBoolean()

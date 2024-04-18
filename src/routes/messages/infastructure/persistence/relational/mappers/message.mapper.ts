@@ -4,7 +4,7 @@ import { Message } from 'src/routes/messages/domain/message';
 import { ChatMapper } from 'src/routes/chat/infastructure/persistence/relational/mappers/chat.mapper';
 
 export class MessageMapper {
-  static toDomain(raw: MessageEntity): Message {
+  static toDomain(raw: Partial<MessageEntity>): Message {
     const msg = new Message();
     delete raw.__entity;
     Object.assign(msg, raw);
@@ -17,7 +17,7 @@ export class MessageMapper {
     return msg;
   }
 
-  static toPersistence(entity: Message): MessageEntity {
+  static toPersistence(entity: Partial<Message>): MessageEntity {
     const msgEntity = new MessageEntity();
     Object.assign(msgEntity, entity);
     if (entity.sender) {

@@ -20,6 +20,8 @@ import { InfinityPaginationResultType } from '../../utils/types/infinity-paginat
 import { infinityPagination } from '../../utils/infinity-pagination';
 import { Category } from './domain/category';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { RoleEnum } from '../roles/roles.enum';
+import { Roles } from '../roles/roles.decorator';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'categories', version: '1' })
@@ -55,12 +57,14 @@ export class CategoriesController {
     return this.categoryService.findOne({ id });
   }
 
+  @Roles(RoleEnum.admin)
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     console.log(createCategoryDto);
     return this.categoryService.create(createCategoryDto);
   }
 
+  @Roles(RoleEnum.admin)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -71,6 +75,7 @@ export class CategoriesController {
     return this.categoryService.update({ id }, updateCategoryDto);
   }
 
+  @Roles(RoleEnum.admin)
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.delete({ id });

@@ -23,17 +23,16 @@ export class MessageService {
 
   async create(
     createPayload: CreateMessageDto,
-    user_id: User['id'],
+    userId: User['id'],
   ): Promise<Message> {
-    await this.validateChat(createPayload.chat.id, user_id);
+    await this.chatService.findOne(createPayload.chat.id, userId);
     try {
       const created = await this.msgRepository.create({
         ...createPayload,
-        sender: { id: user_id } as User,
+        sender: { id: userId } as User,
       });
       return created;
     } catch (err) {
-      console.log('🚀 ~ MessageService ~ err:', err);
       throw new BadRequestException(err.message);
     }
   }
@@ -59,7 +58,9 @@ export class MessageService {
   async update(
     id: number,
     updatePayload: UpdateMessageDto,
+    userId: User['id'],
   ): Promise<Message | null> {
+    await this.validateIsSender(id, userId);
     try {
       const updated = await this.msgRepository.update(id, updatePayload);
       return updated;
@@ -76,13 +77,22 @@ export class MessageService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number, userId: User['id']) {
+    await this.validateIsSender(id, userId);
     await this.msgRepository.softDelete(id);
   }
-  async validateChat(chatId: number, userId: User['id']) {
-    const chat = await this.chatService.findOne(chatId, userId);
-    if (!chat) {
-      throw new BadRequestException(`Chat with id ${chatId} not found`);
+  async validateIsSender(messageId: number, userId: User['id']) {
+    const message = await this.msgRepository.findOne({ id: messageId });
+    if (message.sender.id !== userId) {
+      throw new HttpException(
+        {
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          errors: {
+            id: 'You are not the sender of this message',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
   }
 }
