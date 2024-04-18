@@ -15,7 +15,7 @@ export class SubcategoryMapper {
     return omit(domain, GeneralDomainKeysArray) as Subcategory;
   }
 
-  static toPersistence(domain: Subcategory): SubcategoryEntity {
+  static toPersistence(domain: Partial<Subcategory>): SubcategoryEntity {
     const entity = new SubcategoryEntity();
     Object.assign(entity, domain);
     if (domain.category) {

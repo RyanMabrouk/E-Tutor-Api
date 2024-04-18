@@ -3,7 +3,7 @@ import { NotificationEntity } from '../entities/notifications.entity';
 import { Notification } from 'src/routes/notifications/domain/notifications';
 
 export class NotificationsMapper {
-  static toDomain(raw: NotificationEntity): Notification {
+  static toDomain(raw: Partial<NotificationEntity>): Notification {
     const notification = new Notification();
     delete raw.__entity;
     Object.assign(notification, raw);
@@ -16,7 +16,7 @@ export class NotificationsMapper {
     return notification;
   }
 
-  static toPersistence(entity: Notification): NotificationEntity {
+  static toPersistence(entity: Partial<Notification>): NotificationEntity {
     const Entity = new NotificationEntity();
     Object.assign(Entity, entity);
     if (entity.receivers) {
