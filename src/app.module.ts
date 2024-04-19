@@ -30,6 +30,9 @@ import { CategoryModule } from './routes/categories/categories.module';
 import { CourseModule } from './routes/courses/course.module';
 import { SectionModule } from './routes/sections/section.module';
 import { LectureModule } from './routes/lectures/lecture.module';
+import { CommentModule } from './routes/comments/comments.module';
+import { ReviewModule } from './routes/reviews/review.module';
+import { CommentsSocketModule } from './routes/comments/socket/comments-socket.module';
 
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -93,6 +96,9 @@ import { LectureModule } from './routes/lectures/lecture.module';
     CourseModule,
     SectionModule,
     LectureModule,
+    CommentsSocketModule,
+    CommentModule,
+    ReviewModule,
   ],
   /* providers: [
     {
