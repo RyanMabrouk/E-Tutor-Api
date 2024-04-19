@@ -4,9 +4,15 @@ import { LectureController } from './lecture.controller';
 import { LectureService } from './lecture.service';
 import { SectionModule } from '../sections/section.module';
 import { FilesModule } from '../files/files.module';
+import { CourseModule } from '../courses/course.module';
 const infrastructurePersistenceModule = RelationalLecturePersistenceModule;
 @Module({
-  imports: [infrastructurePersistenceModule, SectionModule, FilesModule],
+  imports: [
+    infrastructurePersistenceModule,
+    SectionModule,
+    FilesModule,
+    CourseModule,
+  ],
   controllers: [LectureController],
   providers: [LectureService],
   exports: [LectureService, infrastructurePersistenceModule],
