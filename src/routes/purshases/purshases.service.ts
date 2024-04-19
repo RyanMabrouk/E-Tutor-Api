@@ -12,28 +12,39 @@ export class PurshasesService {
 
   constructor(private readonly purshaseRepository: PurshaseRepository) {
     const stripeSecret = process.env.STRIPE_SECRET_KEY as string;
+    console.log(stripeSecret);
     this.stripe = new Stripe(stripeSecret, {
       apiVersion: '2024-04-10',
     });
   }
-  checkout(cart: CreatePurshaseDto[]) {
+  checkout(cart) {
     console.log(cart);
-    return this.stripe.checkout.sessions.create({
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'T-Shirt',
-            },
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: 'http://localhost:3000/success',
-      cancel_url: 'http://localhost:3000/cancel',
+    return this.stripe.paymentIntents.create({
+      amount: 100 * 100,
+      currency: 'usd',
+      payment_method_types: ['card'],
     });
+  }
+  create(createPurshaseDto: CreatePurshaseDto) {
+    console.log(createPurshaseDto);
+    return this.checkout({ souahi: 'azra' });
+
+    // return this.stripe.checkout.sessions.create({
+    //   line_items: [
+    //     {
+    //       price_data: {
+    //         currency: 'usd',
+    //         product_data: {
+    //           name: 'T-Shirt',
+    //         },
+    //       },
+    //       quantity: 1,
+    //     },
+    //   ],
+    //   mode: 'payment',
+    //   success_url: 'http://localhost:3000/success',
+    //   cancel_url: 'http://localhost:3000/cancel',
+    // });
   }
 
   async findAll({

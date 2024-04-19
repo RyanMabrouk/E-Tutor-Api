@@ -21,8 +21,16 @@ export class CourseRelationalRepository implements CourseRepository {
 
   async create(data: Course): Promise<Course> {
     const persistenceModel = CourseMapper.toPersistence(data);
+    console.log(
+      '🚀 ~ CourseRelationalRepository ~ create ~ persistenceModel:',
+      persistenceModel,
+    );
     const newEntity = await this.courseRepository.save(
       this.courseRepository.create(persistenceModel),
+    );
+    console.log(
+      '🚀 ~ CourseRelationalRepository ~ create ~ newEntity:',
+      newEntity,
     );
     return CourseMapper.toDomain(newEntity);
   }

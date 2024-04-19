@@ -16,13 +16,13 @@ import {
 export class PurshaseRelationalRepository implements PurshaseRepository {
   constructor(
     @InjectRepository(PurshaseEntity)
-    private readonly categoryRepository: Repository<PurshaseEntity>,
+    private readonly purshaseRepository: Repository<PurshaseEntity>,
   ) {}
 
   async create(data: Purshase): Promise<Purshase> {
     const persistenceModel = PurshaseMapper.toPersistence(data);
-    const newEntity = await this.categoryRepository.save(
-      this.categoryRepository.create(persistenceModel),
+    const newEntity = await this.purshaseRepository.save(
+      this.purshaseRepository.create(persistenceModel),
     );
     return PurshaseMapper.toDomain(newEntity);
   }
@@ -37,10 +37,10 @@ export class PurshaseRelationalRepository implements PurshaseRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<Purshase[]> {
     const tableName =
-      this.categoryRepository.manager.connection.getMetadata(
+      this.purshaseRepository.manager.connection.getMetadata(
         PurshaseEntity,
       ).tableName;
-    const entities = await this.categoryRepository
+    const entities = await this.purshaseRepository
       .createQueryBuilder(tableName)
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .take(paginationOptions.limit)
@@ -55,18 +55,16 @@ export class PurshaseRelationalRepository implements PurshaseRepository {
         ) ?? {},
       )
       .getMany();
-    return entities.map((category) => PurshaseMapper.toDomain(category));
+    return entities.map((purshase) => PurshaseMapper.toDomain(purshase));
   }
 
   async findOne(fields: EntityCondition<Purshase>): Promise<Purshase> {
-    const entity = await this.categoryRepository.findOne({
+    const entity = await this.purshaseRepository.findOne({
       where: fields as FindOptionsWhere<PurshaseEntity>,
     });
-
     if (!entity) {
-      throw new BadRequestException('Category not found');
+      throw new BadRequestException('Purshase not found');
     }
-
     return PurshaseMapper.toDomain(entity);
   }
 
@@ -74,16 +72,16 @@ export class PurshaseRelationalRepository implements PurshaseRepository {
     id: Purshase['id'],
     payload: Partial<Purshase>,
   ): Promise<Purshase> {
-    const entity = await this.categoryRepository.findOne({
+    const entity = await this.purshaseRepository.findOne({
       where: { id },
     });
 
     if (!entity) {
-      throw new BadRequestException('Category not found');
+      throw new BadRequestException('Purshase not found');
     }
 
-    const updatedEntity = await this.categoryRepository.save(
-      this.categoryRepository.create(
+    const updatedEntity = await this.purshaseRepository.save(
+      this.purshaseRepository.create(
         PurshaseMapper.toPersistence({
           ...PurshaseMapper.toDomain(entity),
           ...payload,
@@ -95,6 +93,6 @@ export class PurshaseRelationalRepository implements PurshaseRepository {
   }
 
   async softDelete(id: Purshase['id']): Promise<void> {
-    await this.categoryRepository.softDelete(id);
+    await this.purshaseRepository.softDelete(id);
   }
 }

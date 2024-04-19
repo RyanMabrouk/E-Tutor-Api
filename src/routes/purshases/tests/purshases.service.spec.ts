@@ -7,7 +7,27 @@ describe('PurshasesService', () => {
   let purshaseRepository: PurshaseRepository;
   const mockPurshase = {
     discount: 0,
-    courses: [],
+    courses: [
+      {
+        createdAt: '2024-04-19T08:33:59.453Z',
+        updatedAt: '2024-04-19T08:33:59.453Z',
+        deletedAt: null,
+        id: 28,
+        title: 'Gorgeous Cotton Car',
+        subtitle: 'Tasty Concrete Computer',
+        topic: 'Licensed Concrete Cheese',
+        level: 'Expert',
+        duration: 10,
+        description: '{"text": "hi"}',
+        subjects: ['Ai', 'Machine learninig'],
+        audience: ['strudnets'],
+        requirements: ['Human (Optional)'],
+        welcomeMessage: 'fuga ea id',
+        congratsMessage: 'velit qui veniam',
+        price: 0,
+        discount: 0,
+      },
+    ],
     id: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -51,7 +71,10 @@ describe('PurshasesService', () => {
   });
 
   it('should create a purshase', async () => {
-    expect(await service.checkout({})).toEqual({});
-    expect(purshaseRepository.create).toHaveBeenCalled();
+    const purshase = {
+      discount: 0,
+      coursesIds: [1, 2, 3],
+    };
+    expect(await service.create(purshase)).toEqual({ id: 1 });
   });
 });
