@@ -131,6 +131,7 @@ export class CourseService {
       );
     }
     if (data.language) {
+      console.log(data.language);
       promises.push(
         this.languageService.findOne({
           id: data.language.id,
