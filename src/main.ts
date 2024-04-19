@@ -23,7 +23,6 @@ import {
 import { fastifyCookie } from '@fastify/cookie';
 import helmet from '@fastify/helmet';
 import fastifyMultipart from '@fastify/multipart';
-export const appRoot = __dirname.substring(0, __dirname.lastIndexOf('/'));
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,

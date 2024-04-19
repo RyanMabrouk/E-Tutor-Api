@@ -26,7 +26,7 @@ export function startMetricsServer() {
     return res.send(await client.register.metrics());
   });
 
-  app.listen(9100, '0.0.0.0', () => {
+  app.listen(9100, () => {
     console.info('Metrics server started at http://localhost:9100');
   });
 }

@@ -1,8 +1,17 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from 'src/config/config.type';
 import { FileRepository } from '../../persistence/file.repository';
 import { FileType } from 'src/routes/files/domain/file';
+import { MultipartFile } from '@fastify/multipart';
+import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 
 @Injectable()
 export class FilesLocalService {
@@ -10,6 +19,29 @@ export class FilesLocalService {
     private readonly configService: ConfigService<AllConfigType>,
     private readonly fileRepository: FileRepository,
   ) {}
+
+  async uploadFile(fileData: MultipartFile): Promise<{ file: FileType }> {
+    const filename = `${randomStringGenerator()}.${fileData.filename.split('.').pop()?.toLowerCase()}`;
+    fileData.filename = filename;
+    await this.saveFileToStorage(fileData.file, filename);
+    return this.create(filename);
+  }
+
+  async saveFileToStorage(
+    file: MultipartFile['file'],
+    filename: string,
+  ): Promise<void> {
+    const filepath = path.join('./files', filename);
+    await new Promise<void>((resolve, reject) => {
+      const writeStream = fs.createWriteStream(filepath);
+      file.pipe(writeStream);
+      file.on('end', () => resolve());
+      file.on('error', (error) => {
+        reject(error);
+        throw new InternalServerErrorException('Could not save the file');
+      });
+    });
+  }
 
   async create(filename: string | undefined): Promise<{ file: FileType }> {
     if (!filename) {
