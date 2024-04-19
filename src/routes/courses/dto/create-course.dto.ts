@@ -120,7 +120,7 @@ export class CreateCourseDto implements Omit<Course, GeneralDomainKeysWithId> {
   @IsOptional()
   @IsNumber()
   @IsPositive()
-  @IsLessThan(100)
+  @IsLessThan(101)
   discount: number;
 
   @IsArray()

@@ -28,18 +28,21 @@ export class CourseEntity extends GeneralEntity implements Course {
   title: string;
 
   @ManyToOne(() => CategoryEntity)
+  @JoinTable()
   category: CategoryEntity;
 
   @Column({ type: 'text' })
   subtitle: string;
 
   @ManyToOne(() => SubcategoryEntity)
+  @JoinTable()
   subcategory: SubcategoryEntity;
 
   @Column({ type: 'text' })
   topic: string;
 
   @ManyToOne(() => SubcategoryEntity)
+  @JoinTable()
   language: LanguageEntity;
 
   @ManyToMany(() => LanguageEntity)
@@ -53,9 +56,11 @@ export class CourseEntity extends GeneralEntity implements Course {
   duration: number;
 
   @ManyToOne(() => FileEntity)
+  @JoinTable()
   thumbnail: FileEntity;
 
   @ManyToOne(() => FileEntity)
+  @JoinTable()
   trailer: FileEntity;
 
   @Column({ type: 'json' })
