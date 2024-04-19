@@ -2,17 +2,25 @@ import { FileType } from '../../../../domain/file';
 import { FileEntity } from '../entities/file.entity';
 
 export class FileMapper {
-  static toDomain(raw: FileEntity): FileType {
+  static toDomain(raw: Partial<FileEntity>): FileType {
     const file = new FileType();
-    file.id = raw.id;
-    file.path = raw.path;
+    if (raw.id) {
+      file.id = raw.id;
+    }
+    if (raw.path) {
+      file.path = raw.path;
+    }
     return file;
   }
 
-  static toPersistence(file: FileType): FileEntity {
+  static toPersistence(file: Partial<FileType>): FileEntity {
     const fileEntity = new FileEntity();
-    fileEntity.id = file.id;
-    fileEntity.path = file.path;
+    if (file.id) {
+      fileEntity.id = file.id;
+    }
+    if (file.path) {
+      fileEntity.path = file.path;
+    }
     return fileEntity;
   }
 }
