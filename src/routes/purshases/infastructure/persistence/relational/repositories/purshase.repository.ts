@@ -6,7 +6,6 @@ import { FindOptionsWhere, Repository } from 'typeorm';
 import { PurshaseRepository } from '../../purshase.repository';
 import { PurshaseEntity } from '../entities/purshase';
 import { PurshaseMapper } from '../mappers/purshase.mapper';
-import { NullableType } from 'src/utils/types/nullable.type';
 import { Purshase } from 'src/routes/purshases/domain/purshase';
 import {
   FilterPurshaseDto,
@@ -59,9 +58,7 @@ export class PurshaseRelationalRepository implements PurshaseRepository {
     return entities.map((category) => PurshaseMapper.toDomain(category));
   }
 
-  async findOne(
-    fields: EntityCondition<Purshase>,
-  ): Promise<NullableType<Purshase>> {
+  async findOne(fields: EntityCondition<Purshase>): Promise<Purshase> {
     const entity = await this.categoryRepository.findOne({
       where: fields as FindOptionsWhere<PurshaseEntity>,
     });
@@ -70,7 +67,7 @@ export class PurshaseRelationalRepository implements PurshaseRepository {
       throw new BadRequestException('Category not found');
     }
 
-    return entity ? PurshaseMapper.toDomain(entity) : null;
+    return PurshaseMapper.toDomain(entity);
   }
 
   async update(

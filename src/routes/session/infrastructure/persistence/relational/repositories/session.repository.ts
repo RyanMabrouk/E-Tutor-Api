@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadGatewayException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Not, Repository } from 'typeorm';
 import { SessionEntity } from '../entities/session.entity';
@@ -23,8 +23,11 @@ export class SessionRelationalRepository implements SessionRepository {
     const entity = await this.sessionRepository.findOne({
       where: options as FindOptionsWhere<SessionEntity>,
     });
+    if (!entity) {
+      throw new BadGatewayException('Session not found');
+    }
 
-    return entity ? SessionMapper.toDomain(entity) : null;
+    return SessionMapper.toDomain(entity);
   }
 
   async create(data: Session): Promise<Session> {
