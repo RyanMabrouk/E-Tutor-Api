@@ -23,11 +23,6 @@ export class ValidateMembers {
         id: e.id,
       }),
     );
-    const users = await Promise.all(usersPromises);
-    if (users.includes(null)) {
-      throw new BadRequestException(
-        `User with id ${members[users.indexOf(null)].id} not found`,
-      );
-    }
+    await Promise.all(usersPromises);
   }
 }
