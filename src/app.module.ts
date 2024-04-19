@@ -31,6 +31,7 @@ import { CourseModule } from './routes/courses/course.module';
 import { SectionModule } from './routes/sections/section.module';
 import { LectureModule } from './routes/lectures/lecture.module';
 
+import { PurshaseModule } from './routes/purshases/categories.module';
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
@@ -93,6 +94,7 @@ import { LectureModule } from './routes/lectures/lecture.module';
     CourseModule,
     SectionModule,
     LectureModule,
+    PurshaseModule,
   ],
   /* providers: [
     {
