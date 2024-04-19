@@ -17,12 +17,14 @@ import { FileType } from 'src/routes/files/domain/file';
 import { Language } from 'src/routes/languages/domain/language';
 import { Subcategory } from 'src/routes/subcategories/domain/subcategory';
 import { GeneralDomainKeysWithId } from 'src/shared/domain/general.domain';
-import { Course, CourseLevelEnum, CourseLevelType } from '../domain/course';
+import { Course } from '../domain/course';
+import { CourseLevelEnum, CourseLevelType } from '../types/CourseLevelType';
 import { User } from 'src/routes/users/domain/user';
 import { IsLessThan } from 'src/utils/class-validators/IsLessThen';
 import { IsObjectWithNumericIdConstraint } from 'src/utils/class-validators/IsObjectWithNumericIdConstraint';
 import { IsUserConstraint } from 'src/utils/class-validators/IsUserConstraint';
 import { IsObjectWithStringIdConstraint } from 'src/utils/class-validators/IsObjectWithStringIdConstraint';
+import { CourseStatusEnum, CourseStatusType } from '../types/CourseStatusType';
 
 @ValidatorConstraint({ name: 'ValidateDuration', async: false })
 export class ValidateDurationConstraint
@@ -44,7 +46,9 @@ export class ValidatePriceConstraint implements ValidatorConstraintInterface {
     return 'Duration must be between 0 and 999';
   }
 }
-export class CreateCourseDto implements Omit<Course, GeneralDomainKeysWithId> {
+export class CreateCourseDto
+  implements Partial<Omit<Course, GeneralDomainKeysWithId>>
+{
   @IsString()
   @IsNotEmpty()
   title: string;
@@ -81,50 +85,64 @@ export class CreateCourseDto implements Omit<Course, GeneralDomainKeysWithId> {
   @Validate(ValidateDurationConstraint)
   duration: number;
 
+  @IsOptional()
   @Validate(IsObjectWithStringIdConstraint)
-  thumbnail: FileType;
+  thumbnail?: FileType | null = null;
 
+  @IsOptional()
   @Validate(IsObjectWithStringIdConstraint)
-  trailer: FileType;
+  trailer?: FileType | null = null;
 
+  @IsOptional()
   @IsJSON()
-  description: JSON;
+  description?: JSON;
 
+  @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  subjects: string[];
+  subjects?: string[];
 
+  @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  audience: string[];
+  audience?: string[];
 
+  @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  requirements: string[];
+  requirements?: string[];
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  welcomeMessage: string;
+  welcomeMessage?: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  congratsMessage: string;
+  congratsMessage?: string;
 
+  @IsOptional()
   @IsNumber()
   @Validate(ValidatePriceConstraint)
-  price: number;
+  price?: number;
 
   @IsOptional()
   @IsNumber()
   @IsPositive()
   @IsLessThan(100)
-  discount: number;
+  discount?: number;
 
+  @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @Validate(IsUserConstraint, { each: true })
-  instructors: User[];
+  instructors?: User[];
+
+  @IsOptional()
+  @IsEnum(CourseStatusEnum)
+  status?: CourseStatusType;
 }

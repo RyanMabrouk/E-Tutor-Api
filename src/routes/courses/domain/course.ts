@@ -4,9 +4,12 @@ import { GeneralDomain } from '../../../shared/domain/general.domain';
 import { Subcategory } from 'src/routes/subcategories/domain/subcategory';
 import { FileType } from 'src/routes/files/domain/file';
 import { User } from 'src/routes/users/domain/user';
+import { CourseLevelType } from '../types/CourseLevelType';
+import { CourseStatusType } from '../types/CourseStatusType';
 
 export class Course extends GeneralDomain {
   id: number;
+  // Step1
   title: string;
   subtitle: string;
   category: Category;
@@ -16,27 +19,19 @@ export class Course extends GeneralDomain {
   subtitleLanguage: Language[];
   level: CourseLevelType;
   duration: number;
-  thumbnail: FileType;
-  trailer: FileType;
-  description: JSON;
-  subjects: string[];
-  audience: string[];
-  requirements: string[];
-  welcomeMessage: string;
-  congratsMessage: string;
+  // Step2
+  thumbnail: FileType | null;
+  trailer: FileType | null;
+  description: JSON | null;
+  subjects: string[] | null;
+  audience: string[] | null;
+  requirements: string[] | null;
+  // Step3
+  welcomeMessage: string | null;
+  congratsMessage: string | null;
   price: number;
   discount: number;
+  // Must exist
   instructors: User[];
+  status: CourseStatusType;
 }
-export enum CourseLevelEnum {
-  All = 'All',
-  Beginner = 'Beginner',
-  Intermediate = 'Intermediate',
-  Expert = 'Expert',
-}
-
-export type CourseLevelType =
-  | CourseLevelEnum.All
-  | CourseLevelEnum.Beginner
-  | CourseLevelEnum.Intermediate
-  | CourseLevelEnum.Expert;

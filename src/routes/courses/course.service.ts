@@ -56,7 +56,11 @@ export class CourseService {
     data: CreateCourseDto;
     userId: User['id'];
   }): Promise<Course> {
-    data.instructors.push({ id: userId } as User);
+    if (data.instructors) {
+      data.instructors.push({ id: userId } as User);
+    } else {
+      data.instructors = [{ id: userId } as User];
+    }
     const result = await this.validateData(data);
     if (
       result?.some((item) =>
@@ -68,7 +72,7 @@ export class CourseService {
     ) {
       throw new BadRequestException('All users must be instructors or admins');
     }
-    return this.courseRepository.create(data);
+    return this.courseRepository.create(data as Course);
   }
 
   async update({

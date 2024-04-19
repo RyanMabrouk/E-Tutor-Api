@@ -1,12 +1,13 @@
+import { Course } from '../../../../domain/course';
 import {
-  Course,
   CourseLevelEnum,
   CourseLevelType,
-} from '../../../../domain/course';
+} from 'src/routes/courses/types/CourseLevelType';
 import { GeneralEntity } from '../../../../../../shared/entities/general.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -17,6 +18,10 @@ import { SubcategoryEntity } from 'src/routes/subcategories/infastructure/persis
 import { LanguageEntity } from 'src/routes/languages/infastructure/persistence/relational/entities/language.entity';
 import { FileEntity } from 'src/routes/files/infrastructure/persistence/relational/entities/file.entity';
 import { UserEntity } from 'src/routes/users/infrastructure/persistence/relational/entities/user.entity';
+import {
+  CourseStatusEnum,
+  CourseStatusType,
+} from 'src/routes/courses/types/CourseStatusType';
 @Entity({
   name: 'courses',
 })
@@ -28,18 +33,21 @@ export class CourseEntity extends GeneralEntity implements Course {
   title: string;
 
   @ManyToOne(() => CategoryEntity)
+  @JoinColumn()
   category: CategoryEntity;
 
   @Column({ type: 'text' })
   subtitle: string;
 
   @ManyToOne(() => SubcategoryEntity)
+  @JoinColumn()
   subcategory: SubcategoryEntity;
 
   @Column({ type: 'text' })
   topic: string;
 
   @ManyToOne(() => SubcategoryEntity)
+  @JoinColumn()
   language: LanguageEntity;
 
   @ManyToMany(() => LanguageEntity)
@@ -52,29 +60,31 @@ export class CourseEntity extends GeneralEntity implements Course {
   @Column({ type: 'int' })
   duration: number;
 
-  @ManyToOne(() => FileEntity)
+  @ManyToOne(() => FileEntity, { nullable: true })
+  @JoinColumn()
   thumbnail: FileEntity;
 
-  @ManyToOne(() => FileEntity)
+  @ManyToOne(() => FileEntity, { nullable: true })
+  @JoinColumn()
   trailer: FileEntity;
 
-  @Column({ type: 'json' })
-  description: JSON;
+  @Column({ type: 'json', nullable: true })
+  description: JSON | null;
 
-  @Column({ type: 'text', array: true })
-  subjects: string[];
+  @Column({ type: 'text', array: true, nullable: true })
+  subjects: string[] | null;
 
-  @Column({ type: 'text', array: true })
-  audience: string[];
+  @Column({ type: 'text', array: true, nullable: true })
+  audience: string[] | null;
 
-  @Column({ type: 'text', array: true })
-  requirements: string[];
+  @Column({ type: 'text', array: true, nullable: true })
+  requirements: string[] | null;
 
-  @Column({ type: 'text' })
-  welcomeMessage: string;
+  @Column({ type: 'text', nullable: true })
+  welcomeMessage: string | null;
 
-  @Column({ type: 'text' })
-  congratsMessage: string;
+  @Column({ type: 'text', nullable: true })
+  congratsMessage: string | null;
 
   @Column({ type: 'int', default: 0 })
   price: number;
@@ -87,4 +97,11 @@ export class CourseEntity extends GeneralEntity implements Course {
   })
   @JoinTable()
   instructors: UserEntity[];
+
+  @Column({
+    type: 'enum',
+    enum: CourseStatusEnum,
+    default: 'draft',
+  })
+  status: CourseStatusType;
 }
