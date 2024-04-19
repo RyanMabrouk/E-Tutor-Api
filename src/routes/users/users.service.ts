@@ -7,7 +7,6 @@ import {
 import { EntityCondition } from '../../utils/types/entity-condition.type';
 import { IPaginationOptions } from '../../utils/types/pagination-options';
 import { CreateUserDto } from './dto/create-user.dto';
-import { NullableType } from '../../utils/types/nullable.type';
 import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
 import { UserRepository } from './infrastructure/persistence/user.repository';
 import { DeepPartial } from '../../utils/types/deep-partial.type';
@@ -83,7 +82,7 @@ export class UsersService {
     });
   }
 
-  findOne(fields: EntityCondition<User>): Promise<NullableType<User>> {
+  findOne(fields: EntityCondition<User>): Promise<User> {
     return this.usersRepository.findOne(fields);
   }
 

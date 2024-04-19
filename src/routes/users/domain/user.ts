@@ -19,6 +19,7 @@ export class User extends GeneralDomain {
   whatsapp?: string | null;
   youtube?: string | null;
   photo?: FileType | null;
+  role?: Role | null;
 
   @Expose({ groups: ['me', 'admin'] })
   email: string | null;
@@ -33,7 +34,6 @@ export class User extends GeneralDomain {
   provider: string;
 
   @Expose({ groups: ['me', 'admin'] })
-  role?: Role | null;
   status?: Status;
   socialId?: string | null;
 }
