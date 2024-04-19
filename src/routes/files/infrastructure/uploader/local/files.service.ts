@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -19,7 +20,17 @@ export class FilesLocalService {
     private readonly configService: ConfigService<AllConfigType>,
     private readonly fileRepository: FileRepository,
   ) {}
-
+  downloadFile(filePathName: string): fs.ReadStream {
+    const filePath = path.join(process.cwd(), 'files', filePathName);
+    if (!fs.existsSync(filePath)) {
+      throw new BadRequestException("File doesn't exist");
+    }
+    try {
+      return fs.createReadStream(filePath);
+    } catch (err) {
+      throw new InternalServerErrorException('Could not read the file');
+    }
+  }
   async uploadFile(fileData: MultipartFile): Promise<{ file: FileType }> {
     const filename = `${randomStringGenerator()}.${fileData.filename.split('.').pop()?.toLowerCase()}`;
     fileData.filename = filename;
