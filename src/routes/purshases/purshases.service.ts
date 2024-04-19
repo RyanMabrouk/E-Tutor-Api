@@ -8,7 +8,7 @@ import Stripe from 'stripe';
 
 @Injectable()
 export class PurshasesService {
-  private stripe;
+  private stripe: Stripe;
 
   constructor(private readonly purshaseRepository: PurshaseRepository) {
     const stripeSecret = process.env.STRIPE_SECRET_KEY as string;
