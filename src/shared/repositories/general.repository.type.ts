@@ -19,10 +19,7 @@ export abstract class GeneralRepositoryType<Domain, Filter, Sort, DomainId> {
 
   abstract findOne(fields: EntityCondition<Domain>): Promise<Domain>;
 
-  abstract update(
-    id: DomainId,
-    payload: DeepPartial<Domain>,
-  ): Promise<Domain | null>;
+  abstract update(id: DomainId, payload: DeepPartial<Domain>): Promise<Domain>;
 
   abstract softDelete(id: DomainId): Promise<void>;
 }

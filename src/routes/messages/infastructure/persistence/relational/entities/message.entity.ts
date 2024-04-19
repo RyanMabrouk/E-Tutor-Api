@@ -1,12 +1,6 @@
 import { GeneralEntity } from 'src/shared/entities/general.entity';
 import { UserEntity } from 'src/routes/users/infrastructure/persistence/relational/entities/user.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Message, MessageTypes } from 'src/routes/messages/domain/message';
 import { ChatEntity } from 'src/routes/chat/infastructure/persistence/relational/entities/chat.entity';
 @Entity({
@@ -22,7 +16,6 @@ export class MessageEntity extends GeneralEntity implements Message {
   @ManyToOne(() => UserEntity, {
     eager: true,
   })
-  @JoinTable()
   sender: UserEntity;
 
   @Column({ type: 'enum', enum: MessageTypes })
@@ -34,6 +27,5 @@ export class MessageEntity extends GeneralEntity implements Message {
   @ManyToOne(() => ChatEntity, {
     eager: true,
   })
-  @JoinTable()
   chat: ChatEntity;
 }

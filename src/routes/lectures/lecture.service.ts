@@ -1,3 +1,4 @@
+import { CourseService } from './../courses/course.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { CreateLectureDto } from './dto/create-lecture.dto';
@@ -16,6 +17,7 @@ export class LectureService {
     private readonly lectureRepository: LectureRepository,
     private readonly sectionService: SectionService,
     private readonly filesService: FilesService,
+    private readonly courseService: CourseService,
   ) {}
 
   findAll({
@@ -110,9 +112,13 @@ export class LectureService {
     userId: User['id'];
     lectureId: Lecture['id'];
   }): Promise<void> {
-    await console.log('🚀 ~ LectureService ~ lectureId:', lectureId);
-    await console.log('🚀 ~ LectureService ~ userId:', userId);
-    // TODO: implement this method
-    // only get the lecture if the user baught it or is an instructor
+    const lecture = await this.lectureRepository.findOne({ id: lectureId });
+    const section = await this.sectionService.findOne({
+      id: lecture.section.id,
+    });
+    await this.courseService.validateUserBaughtCourse({
+      userId,
+      courseId: section.course.id,
+    });
   }
 }

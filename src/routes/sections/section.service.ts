@@ -87,10 +87,9 @@ export class SectionService {
       ['course'],
     );
     if (
-      section.course.instructors.some((instructor) => instructor.id === userId)
+      !section.course.instructors.some((instructor) => instructor.id === userId)
     ) {
-      return;
+      throw new ForbiddenException('User does not have access to this section');
     }
-    throw new ForbiddenException('User does not have access to this section');
   }
 }

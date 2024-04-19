@@ -17,7 +17,7 @@ export function IsLessThan(
       validator: {
         validate(value: any, args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
-          return typeof value === 'number' && value < relatedPropertyName;
+          return typeof value === 'number' && value <= relatedPropertyName;
         },
         defaultMessage() {
           return `Property must be less than ${property}`;

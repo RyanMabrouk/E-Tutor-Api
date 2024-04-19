@@ -28,7 +28,6 @@ export class NotificationEntity extends GeneralEntity implements Notification {
   @ManyToOne(() => UserEntity, {
     eager: true,
   })
-  @JoinTable()
   sender: UserEntity;
 
   @Column({ type: 'boolean', default: false })

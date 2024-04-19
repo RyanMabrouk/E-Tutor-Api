@@ -56,9 +56,8 @@ export class ChatService {
   }
 
   async findOne(id: number, userId: User['id']): Promise<Chat> {
-    const item = await this.chatRepository.findOne({ id: id });
-    if (item) await this.validateUserInChat({ chatId: id, userId });
-    return item;
+    await this.validateUserInChat({ chatId: id, userId });
+    return this.chatRepository.findOne({ id: id });
   }
 
   async update(
