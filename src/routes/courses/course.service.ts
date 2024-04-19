@@ -179,4 +179,18 @@ export class CourseService {
       );
     }
   }
+
+  async validateUserCompletedCourse({
+    userId,
+    courseId,
+  }: {
+    userId: User['id'];
+    courseId: Course['id'];
+  }) {
+    console.log('🚀 ~ CourseService ~ userId:', userId);
+    await this.courseRepository.findOne({
+      id: courseId,
+    });
+    // TODO: logic here
+  }
 }
