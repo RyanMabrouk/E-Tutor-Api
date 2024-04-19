@@ -42,12 +42,16 @@ export class MessageService {
     sortOptions,
     paginationOptions,
     chatId,
+    userId,
   }: {
     filterOptions?: FilterMessageDto | null;
     sortOptions?: SortMessageDto[] | null;
     paginationOptions: IPaginationOptions;
     chatId: Chat['id'];
+    userId: User['id'];
   }): Promise<Message[]> {
+    // Check if user is part of the chat
+    await this.chatService.findOne(chatId, userId);
     return this.msgRepository.findManyWithPagination({
       filterOptions: { ...filterOptions, chat: { id: chatId as number } },
       sortOptions,
