@@ -39,9 +39,24 @@ export class UsersService {
     }
 
     if (clonedPayload.email) {
-      const userObject = await this.usersRepository.findOne({
-        email: clonedPayload.email,
-      });
+      let userObject: User | null = null;
+      try {
+        userObject = await this.usersRepository.findOne({
+          email: clonedPayload.email,
+        });
+      } catch (err) {
+        // Ignore User not found error
+        if (err.message !== 'User not found')
+          throw new HttpException(
+            {
+              status: HttpStatus.INTERNAL_SERVER_ERROR,
+              errors: {
+                email: 'Internal server error',
+              },
+            },
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+      }
       if (userObject) {
         throw new HttpException(
           {
