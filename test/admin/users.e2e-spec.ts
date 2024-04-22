@@ -2,22 +2,26 @@ import { APP_URL, ADMIN_EMAIL, ADMIN_PASSWORD } from '../utils/constants';
 import request from 'supertest';
 import { RoleEnum } from '../../src/routes/roles/roles.enum';
 import { StatusEnum } from '../../src/routes/statuses/statuses.enum';
+import { User } from 'src/routes/users/domain/user';
+import { formatCookiesFromRes } from '../utils/formatCookiesFromRes';
 
 describe('Users Module', () => {
   const app = APP_URL;
-  let apiToken;
+  let cookies: string;
 
   beforeAll(async () => {
     await request(app)
       .post('/api/v1/auth/email/login')
       .send({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD })
-      .then(({ body }) => {
-        apiToken = body.token;
+      .then(({ headers }) => {
+        cookies = formatCookiesFromRes(
+          headers['set-cookie'] as unknown as string[],
+        );
       });
   });
 
   describe('Update', () => {
-    let newUser;
+    let newUser: User;
     const newUserEmail = `user-first.${Date.now()}@example.com`;
     const newUserPassword = `secret`;
     const newUserChangedPassword = `new-secret`;
@@ -44,9 +48,7 @@ describe('Users Module', () => {
       it('should change password for existing user: /api/v1/users/:id (PATCH)', () => {
         return request(app)
           .patch(`/api/v1/users/${newUser.id}`)
-          .auth(apiToken, {
-            type: 'bearer',
-          })
+          .set('Cookie', cookies)
           .send({ password: newUserChangedPassword })
           .expect(200);
       });
@@ -61,7 +63,8 @@ describe('Users Module', () => {
             })
             .expect(200)
             .expect(({ body }) => {
-              expect(body.token).toBeDefined();
+              expect(body.tokenExpires).toBeDefined();
+              expect(body.user).toBeDefined();
             });
         });
       });
@@ -76,9 +79,7 @@ describe('Users Module', () => {
       it('should fail to create new user with invalid email: /api/v1/users (POST)', () => {
         return request(app)
           .post(`/api/v1/users`)
-          .auth(apiToken, {
-            type: 'bearer',
-          })
+          .set('Cookie', cookies)
           .send({ email: 'fail-data' })
           .expect(422);
       });
@@ -86,9 +87,7 @@ describe('Users Module', () => {
       it('should successfully create new user: /api/v1/users (POST)', () => {
         return request(app)
           .post(`/api/v1/users`)
-          .auth(apiToken, {
-            type: 'bearer',
-          })
+          .set('Cookie', cookies)
           .send({
             email: newUserByAdminEmail,
             password: newUserByAdminPassword,
@@ -100,6 +99,7 @@ describe('Users Module', () => {
             status: {
               id: StatusEnum.active,
             },
+            provider: 'email',
           })
           .expect(201);
       });
@@ -114,7 +114,8 @@ describe('Users Module', () => {
             })
             .expect(200)
             .expect(({ body }) => {
-              expect(body.token).toBeDefined();
+              expect(body.tokenExpires).toBeDefined();
+              expect(body.user).toBeDefined();
             });
         });
       });
@@ -126,9 +127,7 @@ describe('Users Module', () => {
       it('should get list of users: /api/v1/users (GET)', () => {
         return request(app)
           .get(`/api/v1/users`)
-          .auth(apiToken, {
-            type: 'bearer',
-          })
+          .set('Cookie', cookies)
           .expect(200)
           .send()
           .expect(({ body }) => {

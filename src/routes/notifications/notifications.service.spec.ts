@@ -8,8 +8,6 @@ import { UpdateNotificationsDto } from './dto/update-notifications.dto';
 describe('NotificationService', () => {
   let notificationService: NotificationService;
   let notificationRepo: NotificationsRepository;
-  //   let usersService: UsersService;
-
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
@@ -42,12 +40,12 @@ describe('NotificationService', () => {
 
   describe('create', () => {
     it('should create notification successfully', async () => {
+      const userId = 123;
       const createPayload: CreateNotificationsDto = {
         content: 'test',
         seen: false,
         receivers: [],
       };
-      const userId = 123;
       await expect(
         notificationService.create(createPayload, userId),
       ).resolves.toBeDefined();
@@ -83,6 +81,7 @@ describe('NotificationService', () => {
   describe('update', () => {
     it('should update notification successfully', async () => {
       const id = 1;
+      const userId = 123;
       const updatePayload: UpdateNotificationsDto = {
         seen: true,
         content: 'test',
@@ -90,7 +89,7 @@ describe('NotificationService', () => {
       };
 
       await expect(
-        notificationService.update(id, updatePayload),
+        notificationService.update(id, updatePayload, userId),
       ).resolves.toBeDefined();
       expect(notificationRepo.update).toHaveBeenCalledWith(
         id,
@@ -102,8 +101,8 @@ describe('NotificationService', () => {
   describe('remove', () => {
     it('should soft delete notification', async () => {
       const id = 1;
-
-      await notificationService.remove(id);
+      const userId = 123;
+      await notificationService.remove(id, userId);
 
       expect(notificationRepo.softDelete).toHaveBeenCalledWith(id);
     });

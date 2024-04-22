@@ -6,6 +6,7 @@ import {
   MAIL_HOST,
   MAIL_PORT,
 } from '../utils/constants';
+import { formatCookiesFromRes } from '../utils/formatCookiesFromRes';
 
 describe('Auth Module', () => {
   const app = APP_URL;
@@ -119,31 +120,25 @@ describe('Auth Module', () => {
   });
 
   describe('Logged in user', () => {
-    let cookie;
-
+    let cookies: string;
     beforeAll(async () => {
       await request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
         .expect(200)
         .then((res) => {
-          console.log(res.headers['set-cookie']);
-          cookie = res.headers['set-cookie'];
+          cookies = formatCookiesFromRes(
+            res.headers['set-cookie'] as unknown as string[],
+          );
         });
     });
 
     it('should retrieve your own profile: /api/v1/auth/me (GET)', async () => {
-      console.log(cookie);
-      const accessToken = cookie[0].split(';')[0].split('=')[1];
-      console.log(accessToken);
       await request(app)
         .get('/api/v1/auth/me')
-        .auth(accessToken, {
-          type: 'bearer',
-        })
+        .set('Cookie', cookies)
         .send()
         .expect(({ body }) => {
-          console.log(body);
           expect(body.provider).toBeDefined();
           expect(body.email).toBeDefined();
           expect(body.hash).not.toBeDefined();
@@ -156,39 +151,37 @@ describe('Auth Module', () => {
       const newUserRefreshToken = await request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
-        .then(({ body }) => body.refreshToken);
+        .then((res) =>
+          formatCookiesFromRes(
+            res.headers['set-cookie'] as unknown as string[],
+          ),
+        );
 
       await request(app)
         .post('/api/v1/auth/refresh')
-        .auth(newUserRefreshToken, {
-          type: 'bearer',
-        })
+        .set('Cookie', newUserRefreshToken)
         .send()
-        .expect(({ body }) => {
-          expect(body.token).toBeDefined();
-          expect(body.refreshToken).toBeDefined();
-          expect(body.tokenExpires).toBeDefined();
-        });
+        .expect(200);
     });
 
     it('should fail on the second attempt to refresh token with the same token: /api/v1/auth/refresh (POST)', async () => {
       const newUserRefreshToken = await request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
-        .then(({ body }) => body.refreshToken);
+        .then((res) =>
+          formatCookiesFromRes(
+            res.headers['set-cookie'] as unknown as string[],
+          ),
+        );
 
       await request(app)
         .post('/api/v1/auth/refresh')
-        .auth(newUserRefreshToken, {
-          type: 'bearer',
-        })
+        .set('Cookie', newUserRefreshToken)
         .send();
 
       await request(app)
         .post('/api/v1/auth/refresh')
-        .auth(newUserRefreshToken, {
-          type: 'bearer',
-        })
+        .set('Cookie', newUserRefreshToken)
         .send()
         .expect(401);
     });
@@ -196,16 +189,18 @@ describe('Auth Module', () => {
     it('should update profile successfully: /api/v1/auth/me (PATCH)', async () => {
       const newUserNewName = Date.now();
       const newUserNewPassword = 'new-secret';
-      const newUserApiToken = await request(app)
+      const cookies = await request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
-        .then(({ body }) => body.token);
+        .then((res) =>
+          formatCookiesFromRes(
+            res.headers['set-cookie'] as unknown as string[],
+          ),
+        );
 
       await request(app)
         .patch('/api/v1/auth/me')
-        .auth(newUserApiToken, {
-          type: 'bearer',
-        })
+        .set('Cookie', cookies)
         .send({
           firstName: newUserNewName,
           password: newUserNewPassword,
@@ -214,9 +209,7 @@ describe('Auth Module', () => {
 
       await request(app)
         .patch('/api/v1/auth/me')
-        .auth(newUserApiToken, {
-          type: 'bearer',
-        })
+        .set('Cookie', cookies)
         .send({
           firstName: newUserNewName,
           password: newUserNewPassword,
@@ -229,32 +222,36 @@ describe('Auth Module', () => {
         .send({ email: newUserEmail, password: newUserNewPassword })
         .expect(200)
         .expect(({ body }) => {
-          expect(body.token).toBeDefined();
+          expect(body.tokenExpires).toBeDefined();
+          expect(body.user).toBeDefined();
         });
 
       await request(app)
         .patch('/api/v1/auth/me')
-        .auth(newUserApiToken, {
-          type: 'bearer',
-        })
+        .set('Cookie', cookies)
         .send({ password: newUserPassword, oldPassword: newUserNewPassword })
         .expect(200);
     });
 
     it('should delete profile successfully: /api/v1/auth/me (DELETE)', async () => {
-      const newUserApiToken = await request(app)
+      const cookies = await request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
-        .then(({ body }) => body.token);
+        .then((res) =>
+          formatCookiesFromRes(
+            res.headers['set-cookie'] as unknown as string[],
+          ),
+        );
 
-      await request(app).delete('/api/v1/auth/me').auth(newUserApiToken, {
-        type: 'bearer',
-      });
+      await request(app)
+        .delete('/api/v1/auth/me')
+        .set('Cookie', cookies)
+        .expect(200);
 
       return request(app)
         .post('/api/v1/auth/email/login')
         .send({ email: newUserEmail, password: newUserPassword })
-        .expect(200);
+        .expect(400);
     });
   });
 });
