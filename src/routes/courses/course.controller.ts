@@ -35,6 +35,7 @@ export class CourseController {
   async findAll(
     @Query() query: QueryCourseDto,
   ): Promise<InfinityPaginationResultType<Course>> {
+    console.log('monta');
     const page = query?.page ?? 1;
     const limit = query?.limit ? (query?.limit > 50 ? 50 : query?.limit) : 10;
     try {
