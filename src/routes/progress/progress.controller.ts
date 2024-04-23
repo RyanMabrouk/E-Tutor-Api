@@ -21,6 +21,8 @@ import { QueryProgressDto } from './dto/query-progress.dto';
 import { Progress } from './domain/progress';
 import { CreateProgressDto } from './dto/create-progress.dto';
 import { UpdateProgressDto } from './dto/update-progress.dto';
+import { LectureGuard } from '../lectures/guards/lecture.guard';
+import { PathToLectureId } from 'src/shared/decorators/PathToLectureId.decorator';
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'progress', version: '1' })
 export class ProgressController {
@@ -52,18 +54,24 @@ export class ProgressController {
   }
 
   @Get(':id')
+  @PathToLectureId(['params', 'id'])
+  @UseGuards(LectureGuard)
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.progressService.findOne({ id });
   }
 
   //create
   @Post()
+  @PathToLectureId(['body', 'lecture', 'id'])
+  @UseGuards(LectureGuard)
   create(@Body() createProgressDto: CreateProgressDto) {
     console.log(createProgressDto);
     return this.progressService.create(createProgressDto);
   }
 
   @Patch(':id')
+  @PathToLectureId(['params', 'id'])
+  @UseGuards(LectureGuard)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProgressDto: UpdateProgressDto,
@@ -72,6 +80,8 @@ export class ProgressController {
   }
 
   @Delete(':id')
+  @PathToLectureId(['params', 'id'])
+  @UseGuards(LectureGuard)
   async delete(@Param('id', ParseIntPipe) id: number) {
     await this.progressService.delete({ id });
     return {

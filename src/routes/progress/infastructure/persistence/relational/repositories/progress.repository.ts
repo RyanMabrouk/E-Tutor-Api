@@ -69,7 +69,7 @@ export class ProgressRelationalRepository implements ProgressRepository {
       relations,
     });
     if (!entity) {
-      throw new BadRequestException('Section not found');
+      throw new BadRequestException('Lecture incomplete or not found');
     }
     return ProgressMapper.toDomain(entity);
   }
