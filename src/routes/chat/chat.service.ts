@@ -13,6 +13,7 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { FilterChatDto, SortChatDto } from './dto/query-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { User } from '../users/domain/user';
+import { filterColumnsHelper } from 'src/shared/helpers/filterColumnsHelper';
 
 @Injectable()
 export class ChatService {
@@ -112,5 +113,17 @@ export class ChatService {
     } else {
       throw new UnauthorizedException("You don't have access to this chat");
     }
+  }
+
+  formatResponse(chat: Chat) {
+    return {
+      ...chat,
+      members: chat.members.map((e) =>
+        filterColumnsHelper({
+          data: e,
+          columnsToPick: ['id', 'firstName', 'lastName', 'photo', 'username'],
+        }),
+      ),
+    };
   }
 }

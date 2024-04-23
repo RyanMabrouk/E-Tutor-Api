@@ -1,7 +1,8 @@
 import { GeneralEntity } from 'src/shared/entities/general.entity';
 import { UserEntity } from 'src/routes/users/infrastructure/persistence/relational/entities/user.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Message, MessageTypes } from 'src/routes/messages/domain/message';
+import { Message } from 'src/routes/messages/domain/message';
+import { MessageTypes } from 'src/routes/messages/types/MessageTypes';
 import { ChatEntity } from 'src/routes/chat/infastructure/persistence/relational/entities/chat.entity';
 @Entity({
   name: 'message',

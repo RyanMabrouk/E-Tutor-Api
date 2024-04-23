@@ -32,7 +32,6 @@ export class CategoriesService {
 
   async create(data: CreateCategoryDto): Promise<Category> {
     const category = await this.categoryRepository.create(data);
-    console.log(category);
     return category;
   }
 

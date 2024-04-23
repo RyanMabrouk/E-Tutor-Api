@@ -6,7 +6,7 @@ import {
   MAIL_HOST,
   MAIL_PORT,
 } from '../utils/constants';
-import { formatCookiesFromRes } from '../utils/formatCookiesFromRes';
+import { formatCookiesFromRes } from '../utils/helpers/formatCookiesFromRes';
 
 describe('Auth Module', () => {
   const app = APP_URL;

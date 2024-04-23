@@ -46,7 +46,7 @@ export class CourseEntity extends GeneralEntity implements Course {
   @Column({ type: 'text' })
   topic: string;
 
-  @ManyToOne(() => SubcategoryEntity)
+  @ManyToOne(() => LanguageEntity)
   @JoinColumn()
   language: LanguageEntity;
 

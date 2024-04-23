@@ -17,5 +17,5 @@ export class FileDto implements FileType {
   updatedAt: Date;
 
   @Exclude()
-  deletedAt: Date;
+  deletedAt: Date | null;
 }

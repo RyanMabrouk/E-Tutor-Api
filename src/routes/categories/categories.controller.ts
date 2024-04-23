@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -60,7 +62,6 @@ export class CategoriesController {
   @Roles(RoleEnum.admin)
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
-    console.log(createCategoryDto);
     return this.categoryService.create(createCategoryDto);
   }
 
@@ -70,13 +71,12 @@ export class CategoriesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    console.log(id);
-    console.log(updateCategoryDto);
     return this.categoryService.update({ id }, updateCategoryDto);
   }
 
   @Roles(RoleEnum.admin)
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.delete({ id });
   }

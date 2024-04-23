@@ -7,13 +7,13 @@ import {
   Param,
   Delete,
   Query,
-  BadRequestException,
   ParseIntPipe,
   UseGuards,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { infinityPagination } from 'src/utils/infinity-pagination';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
-import { successResponse } from 'src/auth/constants/response';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/routes/roles/roles.guard';
 import { MessageService } from './Message.service';
@@ -38,37 +38,37 @@ export class MessageController {
     @Body() createDto: CreateMessageDto,
     @User() user: JwtPayloadType,
   ): Promise<Message> {
-    const msg = await this.msgService.create(createDto, user.id);
+    const msg = this.msgService.formatResponse(
+      await this.msgService.create(createDto, user.id),
+    );
     this.msgSocket.emitCreate(msg);
     return msg;
   }
 
-  @Get(':chatId')
+  @Get()
   async findAll(
-    @Param('chatId', ParseIntPipe) chatId: number,
     @Query() query: QueryMessageDto,
     @User() user: JwtPayloadType,
   ): Promise<InfinityPaginationResultType<Message>> {
     const page = query?.page ?? 1;
     const limit = query?.limit ? (query?.limit > 50 ? 50 : query?.limit) : 10;
-    try {
-      const data = infinityPagination(
-        await this.msgService.findAll({
-          filterOptions: query?.filters ?? null,
-          sortOptions: query?.sort ?? null,
-          paginationOptions: {
-            page,
-            limit,
-          },
-          chatId: chatId,
-          userId: user.id,
-        }),
-        { page, limit },
-      );
-      return data;
-    } catch (err) {
-      throw new BadRequestException(err.message);
-    }
+    const data = infinityPagination(
+      await this.msgService.findAll({
+        filterOptions: query?.filters ?? null,
+        sortOptions: query?.sort ?? null,
+        paginationOptions: {
+          page,
+          limit,
+        },
+        chatId: query.chatId,
+        userId: user.id,
+      }),
+      { page, limit },
+    );
+    return {
+      ...data,
+      data: data.data.map((msg) => this.msgService.formatResponse(msg)),
+    };
   }
 
   @Patch(':id')
@@ -85,13 +85,8 @@ export class MessageController {
   }
 
   @Delete(':id')
-  async remove(
-    @Param('id', ParseIntPipe) id: number,
-    @User() user: JwtPayloadType,
-  ) {
-    await this.msgService.remove(id, user.id);
-    return {
-      ...successResponse,
-    };
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id', ParseIntPipe) id: number, @User() user: JwtPayloadType) {
+    return this.msgService.remove(id, user.id);
   }
 }

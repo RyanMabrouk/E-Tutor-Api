@@ -8,9 +8,9 @@ export class CategoryEntity extends GeneralEntity implements Category {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true, type: 'varchar' })
+  @Column({ unique: true, type: 'text' })
   name: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'text' })
   color: string;
 }

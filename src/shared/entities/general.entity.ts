@@ -1,7 +1,11 @@
 import { EntityRelationalHelper } from '../../utils/relational-entity-helper';
 import { CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
+import { GeneralDomain } from '../domain/general.domain';
 
-export class GeneralEntity extends EntityRelationalHelper {
+export class GeneralEntity
+  extends EntityRelationalHelper
+  implements GeneralDomain
+{
   @CreateDateColumn()
   createdAt: Date;
 
@@ -9,5 +13,5 @@ export class GeneralEntity extends EntityRelationalHelper {
   updatedAt: Date;
 
   @DeleteDateColumn()
-  deletedAt: Date;
+  deletedAt: Date | null;
 }

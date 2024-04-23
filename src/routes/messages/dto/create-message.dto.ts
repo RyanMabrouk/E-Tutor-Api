@@ -6,7 +6,8 @@ import {
   ValidatorConstraintInterface,
   IsBoolean,
 } from 'class-validator';
-import { Message, MessageTypes } from '../domain/message';
+import { Message } from '../domain/message';
+import { MessageTypes, MessageTypesType } from '../types/MessageTypes';
 import { Chat } from 'src/routes/chat/domain/chat';
 import { GeneralDomainKeysWithId } from 'src/shared/domain/general.domain';
 import { IsObjectWithNumericIdConstraint } from 'src/utils/class-validators/IsObjectWithNumericIdConstraint';
@@ -31,7 +32,7 @@ export class CreateMessageDto
   @IsString()
   @IsNotEmpty()
   @Validate(IsMessageType)
-  type: MessageTypes;
+  type: MessageTypesType;
 
   @Validate(IsObjectWithNumericIdConstraint)
   chat: Chat;

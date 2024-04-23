@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -16,7 +18,6 @@ import { RolesGuard } from '../roles/roles.guard';
 import { QuerySubcategoryDto } from './dto/query-subcategory.dto';
 import { CreateSubcategoryDto } from './dto/create-subcategory.dto';
 import { SubcategoryService } from './subcategories.service';
-import { successResponse } from 'src/auth/constants/response';
 import { infinityPagination } from 'src/utils/infinity-pagination';
 import { Subcategory } from './domain/subcategory';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
@@ -26,7 +27,6 @@ import { Roles } from '../roles/roles.decorator';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'subcategories', version: '1' })
-@Controller('subcategories')
 export class SubcategoryController {
   constructor(private readonly subcategoryService: SubcategoryService) {}
 
@@ -78,10 +78,8 @@ export class SubcategoryController {
 
   @Roles(RoleEnum.admin)
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id', ParseIntPipe) id: number) {
     await this.subcategoryService.delete({ id });
-    return {
-      ...successResponse,
-    };
   }
 }

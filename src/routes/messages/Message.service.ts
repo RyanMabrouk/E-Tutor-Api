@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { User } from '../users/domain/user';
@@ -13,6 +14,7 @@ import { FilterMessageDto, SortMessageDto } from './dto/query-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Chat } from '../chat/domain/chat';
 import { ChatService } from '../chat/chat.service';
+import { filterColumnsHelper } from 'src/shared/helpers/filterColumnsHelper';
 
 @Injectable()
 export class MessageService {
@@ -88,15 +90,17 @@ export class MessageService {
   async validateIsSender(messageId: number, userId: User['id']) {
     const message = await this.msgRepository.findOne({ id: messageId });
     if (message.sender.id !== userId) {
-      throw new HttpException(
-        {
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            id: 'You are not the sender of this message',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new UnauthorizedException('User is not the sender of this message');
     }
+  }
+
+  formatResponse(chat: Message) {
+    return {
+      ...chat,
+      sender: filterColumnsHelper({
+        data: chat.sender,
+        columnsToPick: ['id', 'firstName', 'lastName', 'photo', 'username'],
+      }) as User,
+    };
   }
 }

@@ -3,7 +3,7 @@ import request from 'supertest';
 import { RoleEnum } from '../../src/routes/roles/roles.enum';
 import { StatusEnum } from '../../src/routes/statuses/statuses.enum';
 import { User } from 'src/routes/users/domain/user';
-import { formatCookiesFromRes } from '../utils/formatCookiesFromRes';
+import { formatCookiesFromRes } from '../utils/helpers/formatCookiesFromRes';
 
 describe('Users Module', () => {
   const app = APP_URL;

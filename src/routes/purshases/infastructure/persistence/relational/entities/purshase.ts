@@ -3,7 +3,7 @@ import { GeneralEntity } from '../../../../../../shared/entities/general.entity'
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { CourseEntity } from 'src/routes/courses/infastructure/persistence/relational/entities/course.entity';
 @Entity({
-  name: 'categories',
+  name: 'purshases',
 })
 export class PurshaseEntity extends GeneralEntity implements Purshase {
   @PrimaryGeneratedColumn()

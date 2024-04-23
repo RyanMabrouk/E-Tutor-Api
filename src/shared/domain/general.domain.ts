@@ -1,7 +1,7 @@
 export class GeneralDomain {
   createdAt: Date;
   updatedAt: Date;
-  deletedAt: Date;
+  deletedAt: Date | null;
 }
 
 export const GeneralDomainKeysArray = ['createdAt', 'updatedAt', 'deletedAt'];

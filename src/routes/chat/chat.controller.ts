@@ -10,10 +10,11 @@ import {
   BadRequestException,
   ParseIntPipe,
   UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { infinityPagination } from 'src/utils/infinity-pagination';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
-import { successResponse } from 'src/auth/constants/response';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/routes/roles/roles.guard';
 import { ChatService } from './chat.service';
@@ -54,15 +55,22 @@ export class ChatController {
         }),
         { page, limit },
       );
-      return data;
+      return {
+        ...data,
+        data: data.data.map(this.chatService.formatResponse) as Chat[],
+      };
     } catch (err) {
       throw new BadRequestException(err.message);
     }
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number, @User() user: JwtPayloadType) {
-    return this.chatService.findOne(id, user.id);
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @User() user: JwtPayloadType,
+  ) {
+    const chat = await this.chatService.findOne(id, user.id);
+    return this.chatService.formatResponse(chat);
   }
 
   @Patch(':id')
@@ -75,13 +83,11 @@ export class ChatController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(
     @Param('id', ParseIntPipe) id: number,
     @User() user: JwtPayloadType,
   ) {
-    await this.chatService.remove(id, user.id);
-    return {
-      ...successResponse,
-    };
+    return this.chatService.remove(id, user.id);
   }
 }

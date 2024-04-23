@@ -16,7 +16,7 @@
     "seed:create:relational": "hygen seeds create-relational",
     "seed:run:relational": "ts-node -r tsconfig-paths/register ./src/database/seeds/relational/run-seed.ts",
     "seed:run:document": "ts-node -r tsconfig-paths/register ./src/database/seeds/document/run-seed.ts",
-    "prebuild": "rimraf dist && copyfiles -u 3 src/shared/i18n/**/* dist/shared/i18n",
+    "prebuild": "rimraf dist && copyfiles -u 3 src/shared/i18n/**/* dist/src/shared/i18n",
     "build": "npm run prebuild && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
