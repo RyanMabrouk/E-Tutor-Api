@@ -13,9 +13,8 @@
     "migration:revert": "npm run typeorm -- --dataSource=src/database/data-source.ts migration:revert",
     "migrate": "npm run migration:generate && npm run format && npm run migration:run",
     "schema:drop": "npm run typeorm -- --dataSource=src/database/data-source.ts schema:drop",
-    "seed:create:relational": "hygen seeds create-relational",
-    "seed:run:relational": "ts-node -r tsconfig-paths/register ./src/database/seeds/relational/run-seed.ts",
-    "seed:run:document": "ts-node -r tsconfig-paths/register ./src/database/seeds/document/run-seed.ts",
+    "seed:create": "hygen seeds create-relational",
+    "seed": "ts-node -r tsconfig-paths/register ./src/database/seeds/relational/run-seed.ts",
     "prebuild": "rimraf dist && copyfiles -u 3 src/shared/i18n/**/* dist/src/shared/i18n",
     "build": "npm run prebuild && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -29,10 +28,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "env-cmd jest --config ./test/jest-e2e.json",
+    "e2e works ?": "env-cmd jest --config ./test/jest-e2e.json",
     "prepare": "is-ci || husky",
     "release": "release-it",
-    "works": "npm run format && npm run lint"
+    "works ?": "npm run format && npm run lint"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.535.0",

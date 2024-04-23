@@ -3,11 +3,11 @@ import {
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
   APP_URL,
-  GeneralDomainMock,
   TESTER_EMAIL,
   TESTER_PASSWORD,
   testUserIds,
 } from '../utils/constants';
+import { GeneralDomainMock } from '../utils/GeneralDomainMock';
 import { faker } from '@faker-js/faker';
 import { testBuilder } from '../utils/test.builder';
 import { CreateChatDto } from 'src/routes/chat/dto/create-chat.dto';
@@ -15,7 +15,7 @@ import { UpdateChatDto } from 'src/routes/chat/dto/update-chat.dto';
 import { User } from 'src/routes/users/domain/user';
 import { Chat } from 'src/routes/chat/domain/chat';
 import request from 'supertest';
-import { getAdminCookies } from '../utils/loginForCookies';
+import { getAdminCookies } from '../utils/helpers/loginForCookies';
 
 // Constants for this test
 const route = '/api/v1/chat';

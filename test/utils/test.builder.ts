@@ -3,7 +3,7 @@ import request from 'supertest';
 import { APP_URL } from './constants';
 import { replacePaylaodPlaceholders } from './helpers/replacePaylaodPlaceholders';
 import { convertAsyncObjectToSync } from './helpers/convertAsyncObjectToSync';
-import { loginForCookies } from './loginForCookies';
+import { loginForCookies } from './helpers/loginForCookies';
 type getPayloadPlaceholderIdsType = {
   [key: string]: (cookies: string) => Promise<number | string | null>;
 };
@@ -72,11 +72,6 @@ export function testBuilder({
               payloadPlaceholderIds,
             );
           }
-          console.log('🚀 --------------------------');
-          console.log(test.method.toUpperCase());
-          console.log('🚀 ~ returndescribe ~ test.send:', test.send);
-          console.log('🚀 ~ returndescribe ~ test.path:', test.path);
-          console.log('🚀 --------------------------');
           if (test.path.includes(':id')) {
             throw new Error(
               `Test case "${test.it}" with path "${test.path}" does not have id`,

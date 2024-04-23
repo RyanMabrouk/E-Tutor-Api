@@ -3,13 +3,13 @@ import {
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
   APP_URL,
-  GeneralDomainMock,
   TESTER_EMAIL,
   TESTER_PASSWORD,
 } from '../utils/constants';
+import { GeneralDomainMock } from '../utils/GeneralDomainMock';
 import { faker } from '@faker-js/faker';
 import { testBuilder } from '../utils/test.builder';
-import { getAdminCookies } from '../utils/loginForCookies';
+import { getAdminCookies } from '../utils/helpers/loginForCookies';
 import request from 'supertest';
 import { CreateMessageDto } from 'src/routes/messages/dto/create-message.dto';
 import { UpdateMessageDto } from 'src/routes/messages/dto/update-message.dto';

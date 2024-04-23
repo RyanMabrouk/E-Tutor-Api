@@ -16,7 +16,11 @@ export const replacePaylaodPlaceholders = (
       typeof objectClone[key] === 'string' &&
       objectClone[key].includes(':')
     ) {
-      objectClone[key] = payloadPlaceholderIds[objectClone[key].substring(1)];
+      const placeholder = payloadPlaceholderIds[objectClone[key].substring(1)];
+      if (placeholder === undefined) {
+        throw new Error(`Payload placeholder ${objectClone[key]} not found`);
+      }
+      objectClone[key] = placeholder;
     }
   }
   return objectClone;
