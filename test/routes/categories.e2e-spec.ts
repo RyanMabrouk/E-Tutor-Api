@@ -20,7 +20,7 @@ const postPayload: CreateCategoryDto = {
   color: faker.color.rgb(),
 };
 const patchPayload: UpdateCategoryDto = {
-  name: faker.lorem.word(),
+  name: String(new Date().getTime() - 10),
   color: faker.color.rgb(),
 };
 // Test cases
