@@ -34,6 +34,7 @@ import { CommentModule } from './routes/comments/comments.module';
 import { ReviewModule } from './routes/reviews/review.module';
 import { CommentsSocketModule } from './routes/comments/socket/comments-socket.module';
 import { PurshaseModule } from './routes/purshases/categories.module';
+import { ProgressModule } from './routes/progress/progress.module';
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
@@ -100,6 +101,7 @@ import { PurshaseModule } from './routes/purshases/categories.module';
     CommentsSocketModule,
     CommentModule,
     ReviewModule,
+    ProgressModule,
   ],
   /* providers: [
     {

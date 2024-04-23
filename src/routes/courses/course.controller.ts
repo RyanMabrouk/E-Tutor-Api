@@ -68,6 +68,7 @@ export class CourseController {
     @Body() createCourseDto: CreateCourseDto,
     @User() user: JwtPayloadType,
   ) {
+    console.log(createCourseDto);
     return this.courseService.create({
       data: createCourseDto,
       userId: user.id,

@@ -1,13 +1,13 @@
 import {
   // BadRequestException,
-  // Body,
+  Body,
   Controller,
   // Delete,
   // Get,
   // Param,
   // ParseIntPipe,
   // Patch,
-  // Post,
+  Post,
   // Query,
   UseGuards,
 } from '@nestjs/common';
@@ -19,10 +19,10 @@ import { RolesGuard } from '../roles/roles.guard';
 import { ProgressService } from './progress.service';
 // import { QueryProgressDto } from './dto/query-progress.dto';
 // import { Progress } from './domain/progress';
-// import { CreateProgressDto } from './dto/create-progress.dto';
+import { CreateProgressDto } from './dto/create-progress.dto';
 // import { UpdateProgressDto } from './dto/update-progress.dto';
-// import { RoleEnum } from '../roles/roles.enum';
-// import { Roles } from '../roles/roles.decorator';
+import { RoleEnum } from '../roles/roles.enum';
+import { Roles } from '../roles/roles.decorator';
 // import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 // import { User } from 'src/shared/decorators/user.decorator';
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -60,15 +60,12 @@ export class ProgressController {
   //   return this.sectionService.findOne({ id });
   // }
 
-  // //create
-  // @Roles(RoleEnum.instructor, RoleEnum.admin)
-  // @Post()
-  // create(
-  //   @Body() createSectionDto: CreateSectionDto,
-  //   @User() user: JwtPayloadType,
-  // ) {
-  //   return this.sectionService.create(createSectionDto, user.id);
-  // }
+  //create
+  @Roles(RoleEnum.instructor, RoleEnum.admin)
+  @Post()
+  create(@Body() createProgressDto: CreateProgressDto) {
+    return this.progressService.create(createProgressDto);
+  }
 
   // @Roles(RoleEnum.instructor, RoleEnum.admin)
   // @Patch(':id')

@@ -5,7 +5,7 @@ import {
   FilterProgressDto,
   SortProgressDto,
 } from '../../dto/query-progress.dto';
-import { Course } from 'src/routes/courses/domain/course';
+// import { Course } from 'src/routes/courses/domain/course';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { ProgressEntity } from './relational/entities/progress.entity';
 import { FindOneOptions } from 'typeorm';
@@ -20,12 +20,10 @@ export abstract class ProgressRepository extends GeneralRepositoryType<
     filterOptions,
     sortOptions,
     paginationOptions,
-    courseId,
   }: {
     filterOptions?: FilterProgressDto | null;
     sortOptions?: SortProgressDto[] | null;
     paginationOptions: IPaginationOptions;
-    courseId: Course['id'];
   }): Promise<Progress[]>;
 
   abstract findOne(

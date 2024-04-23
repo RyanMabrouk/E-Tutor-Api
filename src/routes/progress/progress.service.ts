@@ -1,13 +1,18 @@
 // import { CourseService } from '../courses/course.service';
 import {
+  BadRequestException,
   // ForbiddenException,
   Injectable,
   // UnauthorizedException,
 } from '@nestjs/common';
-// import { IPaginationOptions } from 'src/utils/types/pagination-options';
+import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { ProgressRepository } from './infastructure/persistence/section.repository';
-// import { FilterProgressDto, SortProgressDto } from './dto/query-progress.dto';
-// import { Progress } from './domain/progress';
+import { FilterProgressDto, SortProgressDto } from './dto/query-progress.dto';
+import { Progress } from './domain/progress';
+import { CreateProgressDto } from './dto/create-progress.dto';
+// import { User } from '../users/domain/user';
+import { LectureService } from '../lectures/lecture.service';
+import { UsersService } from '../users/users.service';
 // import { UpdateProgressDto } from './dto/update-progress.dto';
 // import { CreateProgressDto } from './dto/create-progress.dto';
 // import { User } from '../users/domain/user';
@@ -16,43 +21,47 @@ import { ProgressRepository } from './infastructure/persistence/section.reposito
 export class ProgressService {
   constructor(
     private readonly progressRepository: ProgressRepository,
-    // private readonly courseService: CourseService,
+    private readonly lectureService: LectureService,
+    private readonly userService: UsersService,
   ) {}
 
-  // findAll({
-  //   filterOptions,
-  //   sortOptions,
-  //   paginationOptions,
-  //   courseId,
-  // }: {
-  //   filterOptions?: FilterSectionDto | null;
-  //   sortOptions?: SortSectionDto[] | null;
-  //   paginationOptions: IPaginationOptions;
-  //   courseId: number;
-  // }): Promise<Section[]> {
-  //   return this.sectionRepository.findManyWithPagination({
-  //     filterOptions: { ...filterOptions },
-  //     sortOptions,
-  //     paginationOptions,
-  //     courseId,
-  //   });
-  // }
+  findAll({
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+  }: {
+    filterOptions?: FilterProgressDto | null;
+    sortOptions?: SortProgressDto[] | null;
+    paginationOptions: IPaginationOptions;
+  }): Promise<Progress[]> {
+    return this.progressRepository.findManyWithPagination({
+      filterOptions: { ...filterOptions },
+      sortOptions,
+      paginationOptions,
+    });
+  }
 
-  // findOne({ id }: { id: number }): Promise<Section> {
-  //   return this.sectionRepository.findOne({ id: id });
-  // }
+  findOne({ id }: { id: number }): Promise<Progress> {
+    return this.progressRepository.findOne({ id: id });
+  }
 
-  // async create(data: CreateSectionDto, userId: User['id']): Promise<Section> {
-  //   const course = await this.courseService.findOne({
-  //     id: data.course.id,
-  //   });
-  //   if (!course.instructors.some((instructor) => instructor.id === userId)) {
-  //     throw new UnauthorizedException(
-  //       'User does not have access to this course',
-  //     );
-  //   }
-  //   return this.sectionRepository.create(data);
-  // }
+  async create(data: CreateProgressDto): Promise<Progress> {
+    const lecture = await this.lectureService.findOne({
+      id: data.lecture.id,
+      userId: data.user.id,
+    });
+    if (!lecture) {
+      throw new BadRequestException('lecture not found');
+    }
+    const user = await this.userService.findOne({
+      id: data.user.id,
+    });
+    if (!user) {
+      throw new BadRequestException('user not found');
+    }
+
+    return this.progressRepository.create({ ...data });
+  }
 
   // async update(
   //   { id, userId }: { id: number; userId: User['id'] },
