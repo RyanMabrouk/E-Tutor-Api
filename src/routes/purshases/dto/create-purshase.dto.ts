@@ -1,15 +1,26 @@
-import { IsString, IsNotEmpty } from 'class-validator';
-import { GeneralDomainKeysWithId } from 'src/shared/domain/general.domain';
-import { Purshase } from '../domain/purshase';
+import {
+  IsNotEmpty,
+  Validate,
+  IsArray,
+  ArrayNotEmpty,
+  IsNumber,
+  IsOptional,
+} from 'class-validator';
 import { Course } from 'src/routes/courses/domain/course';
+import { IsCourseConstraint } from 'src/utils/class-validators/IsUserConstraint copy';
 
-export class CreatePurshaseDto
-  implements Omit<Purshase, GeneralDomainKeysWithId>
-{
+export class CreatePurshaseDto {
   @IsNotEmpty()
+  @IsNumber()
   discount: number;
 
-  @IsString()
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsOptional()
+  @Validate(IsCourseConstraint, { each: true })
+  courses?: Course[];
+
   @IsNotEmpty()
-  courses: Course[];
+  @IsOptional()
+  coursesIds?: number[];
 }

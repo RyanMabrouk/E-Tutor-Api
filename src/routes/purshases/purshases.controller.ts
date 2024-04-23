@@ -10,13 +10,13 @@ import { CreatePurshaseDto } from './dto/create-purshase.dto';
 // import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@Controller({ path: 'stripe', version: '1' })
+@Controller({ path: 'purshase', version: '1' })
 export class PurshasesController {
   constructor(private readonly purshasesService: PurshasesService) {}
 
   @Post()
-  chekout(@Body() cart: CreatePurshaseDto[]) {
-    return this.purshasesService.checkout(cart);
+  create(@Body() cart: CreatePurshaseDto) {
+    return this.purshasesService.create(cart);
   }
 
   // @Get()
