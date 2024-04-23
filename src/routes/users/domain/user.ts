@@ -3,6 +3,7 @@ import { FileType } from 'src/routes/files/domain/file';
 import { Role } from 'src/routes/roles/domain/role';
 import { GeneralDomain } from 'src/shared/domain/general.domain';
 import { Status } from 'src/routes/statuses/domain/status';
+import { Course } from 'src/routes/courses/domain/course';
 
 export class User extends GeneralDomain {
   id: number | string;
@@ -20,6 +21,8 @@ export class User extends GeneralDomain {
   youtube?: string | null;
   photo?: FileType | null;
   role?: Role | null;
+
+  courses: Course[];
 
   @Expose({ groups: ['me', 'admin'] })
   email: string | null;

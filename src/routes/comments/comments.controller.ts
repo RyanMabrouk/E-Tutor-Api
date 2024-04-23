@@ -25,6 +25,8 @@ import { UpdateCommentDto } from './dto/update-comments.dto';
 import { QueryCommentDto } from './dto/query-comments.dto';
 import { Comment } from './domain/comments';
 import { CommentsWithRplies } from './types/types';
+import { LectureGuard } from '../lectures/guards/lecture.guard';
+import { PathToLectureId } from 'src/shared/decorators/PathToLectureId.decorator';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'commentes', version: '1' })
@@ -35,6 +37,8 @@ export class CommentController {
   ) {}
 
   @Post()
+  @PathToLectureId(['body', 'lecture', 'id'])
+  @UseGuards(LectureGuard)
   async create(
     @Body() createDto: CreateCommentDto,
     @User() user: JwtPayloadType,

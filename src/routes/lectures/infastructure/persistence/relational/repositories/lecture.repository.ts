@@ -107,7 +107,24 @@ export class LectureRelationalRepository implements LectureRepository {
   }
 
   async softDelete(id: Lecture['id']): Promise<void> {
-    const data = await this.lectureRepository.softDelete(id);
-    console.log('🚀 ~ LectureRelationalRepository ~ softDelete ~ data:', data);
+    await this.lectureRepository.softDelete(id);
+  }
+
+  async getLectureCourseId(lectureId: Lecture['id']): Promise<number> {
+    const tableName =
+      this.lectureRepository.manager.connection.getMetadata(
+        LectureEntity,
+      ).tableName;
+    const entity = await this.lectureRepository
+      .createQueryBuilder(tableName)
+      .leftJoinAndSelect(`${tableName}.section`, `section`)
+      .leftJoinAndSelect(`section.course`, `course`)
+      .where({ id: lectureId })
+      .getOne();
+    const courseId = entity?.section.course.id;
+    if (!courseId) {
+      throw new Error('Somthing went wrong');
+    }
+    return courseId;
   }
 }

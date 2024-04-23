@@ -12,7 +12,6 @@ import { Comment } from './domain/comments';
 import { FilterCommentDto, SortCommentDto } from './dto/query-comments.dto';
 import { Lecture } from '../lectures/domain/lecture';
 import { UpdateCommentDto } from './dto/update-comments.dto';
-import { LectureService } from '../lectures/lecture.service';
 import { UsersService } from '../users/users.service';
 import { filterColumnsHelper } from 'src/shared/helpers/filterColumnsHelper';
 import { CommentsWithRplies } from './types/types';
@@ -21,7 +20,6 @@ import { CommentsWithRplies } from './types/types';
 export class CommentService {
   constructor(
     private readonly commentsRepository: CommentRepository,
-    private readonly lectureService: LectureService,
     private readonly usersService: UsersService,
   ) {}
 
@@ -30,10 +28,6 @@ export class CommentService {
     userId: User['id'],
   ): Promise<Comment> {
     const validationPromises: Promise<any>[] = [
-      this.lectureService.validateUserHasAccess({
-        userId,
-        lectureId: createPayload.lecture.id,
-      }),
       this.usersService.findOne({ id: userId }),
     ];
     if (createPayload.replyTo) {

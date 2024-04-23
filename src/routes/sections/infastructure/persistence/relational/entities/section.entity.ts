@@ -12,6 +12,8 @@ export class SectionEntity extends GeneralEntity implements Section {
   @Column({ type: 'text' })
   name: string;
 
-  @ManyToOne(() => CourseEntity)
+  @ManyToOne(() => CourseEntity, {
+    eager: true,
+  })
   course: CourseEntity;
 }

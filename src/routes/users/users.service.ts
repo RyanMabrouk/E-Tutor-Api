@@ -20,6 +20,7 @@ import { UUID } from 'crypto';
 import { FileDto } from '../../routes/files/dto/file.dto';
 import { RoleDto } from '../../routes/roles/dto/role.dto';
 import { StatusDto } from '../../routes/statuses/dto/status.dto';
+import { Course } from '../courses/domain/course';
 
 @Injectable()
 export class UsersService {
@@ -141,7 +142,14 @@ export class UsersService {
     if (clonedPayload.status)
       this.validateStatus(clonedPayload.status as StatusDto);
     try {
-      const updated = await this.usersRepository.update(id, clonedPayload);
+      const updated = await this.usersRepository.update(id, {
+        ...clonedPayload,
+        courses: clonedPayload.courses
+          ? (clonedPayload.courses.filter(
+              (course) => course !== undefined,
+            ) as Course[])
+          : [],
+      });
       return updated;
     } catch (err) {
       throw new HttpException(

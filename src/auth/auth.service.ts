@@ -166,6 +166,7 @@ export class AuthService {
         provider: authProvider,
         role,
         status,
+        courses: [],
       });
 
       user = await this.usersService.findOne({
@@ -225,8 +226,8 @@ export class AuthService {
       status: {
         id: StatusEnum.inactive,
       },
+      courses: [],
     });
-    console.log('🚀 ~ AuthService ~ register ~ user:', user);
     const hash = await this.jwtService.signAsync(
       {
         confirmEmailUserId: user.id,

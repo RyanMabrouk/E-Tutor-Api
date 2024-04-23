@@ -1,5 +1,7 @@
 import { Transform, Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -7,6 +9,7 @@ import {
   IsPhoneNumber,
   IsUrl,
   MinLength,
+  Validate,
 } from 'class-validator';
 import { lowerCaseTransformer } from '../../../utils/transformers/lower-case.transformer';
 import { RoleDto } from '../../../routes/roles/dto/role.dto';
@@ -15,6 +18,8 @@ import { FileDto } from '../../../routes/files/dto/file.dto';
 import { User } from '../domain/user';
 import { AuthProvidersEnum } from '../../../auth/auth-providers.enum';
 import { GeneralDomainKeysWithId } from '../../../shared/domain/general.domain';
+import { IsObjectWithNumericIdConstraint } from 'src/utils/class-validators/IsObjectWithNumericIdConstraint';
+import { Course } from 'src/routes/courses/domain/course';
 
 export class CreateUserDto implements Omit<User, GeneralDomainKeysWithId> {
   @Transform(lowerCaseTransformer)
@@ -87,4 +92,10 @@ export class CreateUserDto implements Omit<User, GeneralDomainKeysWithId> {
   @IsOptional()
   @IsNotEmpty()
   youtube?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @Validate(IsObjectWithNumericIdConstraint, { each: true })
+  courses: Course[];
 }

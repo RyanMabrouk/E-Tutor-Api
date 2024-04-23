@@ -29,4 +29,6 @@ export abstract class LectureRepository extends GeneralRepositoryType<
     fields: EntityCondition<Lecture>,
     relations?: FindOneOptions<SectionEntity>['relations'],
   ): Promise<Lecture>;
+
+  abstract getLectureCourseId(lectureId: Lecture['id']): Promise<number>;
 }

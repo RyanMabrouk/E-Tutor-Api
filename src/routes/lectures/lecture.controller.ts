@@ -25,6 +25,8 @@ import { RoleEnum } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
 import { User } from 'src/shared/decorators/user.decorator';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
+import { LectureGuard } from './guards/lecture.guard';
+import { PathToLectureId } from 'src/shared/decorators/PathToLectureId.decorator';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'lectures', version: '1' })
@@ -57,8 +59,10 @@ export class LectureController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number, @User() user: JwtPayloadType) {
-    return this.lectureService.findOne({ id, userId: user.id });
+  @PathToLectureId(['params', 'id'])
+  @UseGuards(LectureGuard)
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.lectureService.findOne({ id });
   }
 
   //create

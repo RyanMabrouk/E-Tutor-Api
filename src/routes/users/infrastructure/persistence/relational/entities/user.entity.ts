@@ -5,6 +5,8 @@ import {
   Index,
   ManyToOne,
   PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
@@ -16,6 +18,7 @@ import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
 import { Exclude, Expose } from 'class-transformer';
 import { User } from '../../../../domain/user';
 import { GeneralEntity } from 'src/shared/entities/general.entity';
+import { CourseEntity } from 'src/routes/courses/infastructure/persistence/relational/entities/course.entity';
 
 @Entity({
   name: 'user',
@@ -103,4 +106,8 @@ export class UserEntity extends GeneralEntity implements User {
 
   @Column({ type: 'text', nullable: true })
   youtube?: string | null;
+
+  @ManyToMany(() => CourseEntity)
+  @JoinTable()
+  courses: CourseEntity[];
 }

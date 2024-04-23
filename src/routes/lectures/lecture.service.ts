@@ -39,14 +39,7 @@ export class LectureService {
     });
   }
 
-  async findOne({
-    id,
-    userId,
-  }: {
-    id: number;
-    userId: User['id'];
-  }): Promise<Lecture> {
-    await this.validateUserHasAccess({ userId, lectureId: id });
+  async findOne({ id }: { id: number }): Promise<Lecture> {
     return this.lectureRepository.findOne({ id: id });
   }
 
@@ -102,23 +95,6 @@ export class LectureService {
     await this.sectionService.validateUserHasAccess({
       userId,
       sectionId: lecture.section.id,
-    });
-  }
-
-  async validateUserHasAccess({
-    userId,
-    lectureId,
-  }: {
-    userId: User['id'];
-    lectureId: Lecture['id'];
-  }): Promise<void> {
-    const lecture = await this.lectureRepository.findOne({ id: lectureId });
-    const section = await this.sectionService.findOne({
-      id: lecture.section.id,
-    });
-    await this.courseService.validateUserBaughtCourse({
-      userId,
-      courseId: section.course.id,
     });
   }
 }

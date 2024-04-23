@@ -5,6 +5,7 @@ import { LectureService } from './lecture.service';
 import { SectionModule } from '../sections/section.module';
 import { FilesModule } from '../files/files.module';
 import { CourseModule } from '../courses/course.module';
+import { UsersModule } from '../users/users.module';
 const infrastructurePersistenceModule = RelationalLecturePersistenceModule;
 @Module({
   imports: [
@@ -12,6 +13,7 @@ const infrastructurePersistenceModule = RelationalLecturePersistenceModule;
     SectionModule,
     FilesModule,
     CourseModule,
+    UsersModule,
   ],
   controllers: [LectureController],
   providers: [LectureService],

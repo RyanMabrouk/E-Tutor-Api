@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { FilterUserDto, SortUserDto } from '../../../../dto/query-user.dto';
 import { User } from '../../../../domain/user';
@@ -49,9 +49,13 @@ export class UsersRelationalRepository implements UserRepository {
     return entities.map((user) => UserMapper.toDomain(user));
   }
 
-  async findOne(fields: EntityCondition<User>): Promise<User> {
+  async findOne(
+    fields: EntityCondition<User>,
+    relations?: FindOneOptions<UserEntity>['relations'],
+  ): Promise<User> {
     const entity = await this.usersRepository.findOne({
       where: fields as FindOptionsWhere<UserEntity>,
+      relations,
     });
     if (!entity) {
       throw new BadRequestException('User not found');

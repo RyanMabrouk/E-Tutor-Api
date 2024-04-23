@@ -184,20 +184,6 @@ export class CourseService {
     }
   }
 
-  async validateUserBaughtCourse({
-    userId,
-    courseId,
-  }: {
-    userId: User['id'];
-    courseId: Course['id'];
-  }) {
-    console.log('🚀 ~ CourseService ~ userId:', userId);
-    await this.courseRepository.findOne({
-      id: courseId,
-    });
-    //TODO: logic here
-  }
-
   async validateUserCompletedCourse({
     userId,
     courseId,
