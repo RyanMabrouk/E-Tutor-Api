@@ -85,16 +85,15 @@ describe('ProgressService', () => {
     expect(progressRepository.create).toHaveBeenCalledWith(expect.any(Object));
   });
 
-  //   it('should update a category', async () => {
-  //     const updateCategoryDto = {
-  //       name: 'test',
-  //       color: 'blue',
-  //     };
-  //     await service.update({ id: 1 }, updateCategoryDto);
-  //     expect(progressRepository.update).toHaveBeenCalled();
-  //   });
-  //   it('should delete a category', async () => {
-  //     await service.delete({ id: 1 });
-  //     expect(progressRepository.softDelete).toHaveBeenCalled();
-  //   });
+  it('should update a progress', async () => {
+    const updateProgressDto = {
+      completed: true,
+    };
+    await service.update({ id: 1 }, updateProgressDto);
+    expect(progressRepository.update).toHaveBeenCalled();
+  });
+  it('should delete a progress', async () => {
+    await service.delete({ id: 1 });
+    expect(progressRepository.softDelete).toHaveBeenCalled();
+  });
 });

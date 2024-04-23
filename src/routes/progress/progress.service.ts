@@ -13,6 +13,7 @@ import { CreateProgressDto } from './dto/create-progress.dto';
 // import { User } from '../users/domain/user';
 import { LectureService } from '../lectures/lecture.service';
 import { UsersService } from '../users/users.service';
+import { UpdateProgressDto } from './dto/update-progress.dto';
 // import { UpdateProgressDto } from './dto/update-progress.dto';
 // import { CreateProgressDto } from './dto/create-progress.dto';
 // import { User } from '../users/domain/user';
@@ -63,24 +64,17 @@ export class ProgressService {
     return this.progressRepository.create({ ...data });
   }
 
-  // async update(
-  //   { id, userId }: { id: number; userId: User['id'] },
-  //   data: UpdateSectionDto,
-  // ): Promise<Section | null> {
-  //   await this.validateUserHasAccess({ userId, sectionId: id });
-  //   return this.sectionRepository.update(id, data);
-  // }
+  async update(
+    { id }: { id: number },
+    data: UpdateProgressDto,
+  ): Promise<Progress | null> {
+    // await this.validateUserHasAccess({ userId, sectionId: id });
+    return this.progressRepository.update(id, data);
+  }
 
-  // async delete({
-  //   id,
-  //   userId,
-  // }: {
-  //   id: Section['id'];
-  //   userId: User['id'];
-  // }): Promise<void> {
-  //   await this.validateUserHasAccess({ userId, sectionId: id });
-  //   return this.sectionRepository.softDelete(id);
-  // }
+  async delete({ id }: { id: Progress['id'] }): Promise<void> {
+    return this.progressRepository.softDelete(id);
+  }
 
   // async validateUserHasAccess({
   //   userId,
