@@ -64,6 +64,7 @@ export class ProgressController {
   @Roles(RoleEnum.instructor, RoleEnum.admin)
   @Post()
   create(@Body() createProgressDto: CreateProgressDto) {
+    console.log(createProgressDto);
     return this.progressService.create(createProgressDto);
   }
 

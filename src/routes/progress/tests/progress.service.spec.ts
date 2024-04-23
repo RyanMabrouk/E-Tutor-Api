@@ -1,10 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProgressService } from '../progress.service';
 import { ProgressRepository } from '../infastructure/persistence/section.repository';
+import { User } from 'src/routes/users/domain/user';
+import { Lecture } from 'src/routes/lectures/domain/lecture';
+import { LectureService } from 'src/routes/lectures/lecture.service';
+import { UsersService } from 'src/routes/users/users.service';
 
 describe('ProgressService', () => {
   let service: ProgressService;
   let progressRepository: ProgressRepository;
+  let lectureService: LectureService;
+  let usersService: UsersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,8 +26,21 @@ describe('ProgressService', () => {
             softDelete: jest.fn().mockResolvedValue(undefined),
           },
         },
+        {
+          provide: LectureService,
+          useValue: {
+            findOne: jest.fn().mockResolvedValue({ id: 1 }),
+          },
+        },
+        {
+          provide: UsersService,
+          useValue: {
+            findOne: jest.fn().mockResolvedValue({ id: 1 }),
+          },
+        },
       ],
     }).compile();
+    console.log(lectureService, usersService);
 
     service = module.get<ProgressService>(ProgressService);
     progressRepository = module.get<ProgressRepository>(ProgressRepository);
@@ -58,9 +77,9 @@ describe('ProgressService', () => {
 
   it('should create a user progress', async () => {
     const createProgressDto = {
+      lecture: { id: 1 } as Lecture,
+      user: { id: 49 } as User,
       completed: true,
-      user: { id: 1 },
-      lecture: { id: 1 },
     };
     await service.create(createProgressDto);
     expect(progressRepository.create).toHaveBeenCalledWith(expect.any(Object));

@@ -48,7 +48,7 @@ export class ProgressService {
   async create(data: CreateProgressDto): Promise<Progress> {
     const lecture = await this.lectureService.findOne({
       id: data.lecture.id,
-      userId: data.user.id,
+      // userId: data.user.id,
     });
     if (!lecture) {
       throw new BadRequestException('lecture not found');
