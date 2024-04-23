@@ -198,4 +198,14 @@ export class CourseService {
     });
     // TODO: logic here
   }
+
+  // async userHasAccess(userId: string, courseId: string): Promise<boolean> {
+  //   // const user = await this.usersService.findOne({ id: userId });
+  //   // Example logic: Check if the user is enrolled in the course
+  //   if (false) {
+  //     return true;
+  //   } else {
+  //     throw new ForbiddenException('You do not have access to this course.');
+  //   }
+  // }
 }
