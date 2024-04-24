@@ -1,5 +1,14 @@
-import { IsNotEmpty, IsOptional, MinLength } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  MinLength,
+  Validate,
+} from 'class-validator';
+import { Course } from 'src/routes/courses/domain/course';
 import { FileDto } from 'src/routes/files/dto/file.dto';
+import { IsObjectWithNumericIdConstraint } from 'src/utils/class-validators/IsObjectWithNumericIdConstraint';
 
 export class AuthUpdateDto {
   @IsOptional()
@@ -21,4 +30,10 @@ export class AuthUpdateDto {
   @IsOptional()
   @IsNotEmpty({ message: 'mustBeNotEmpty' })
   oldPassword?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @Validate(IsObjectWithNumericIdConstraint, { each: true })
+  courses?: Course[];
 }
