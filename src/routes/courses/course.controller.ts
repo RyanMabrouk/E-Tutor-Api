@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -13,7 +15,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
-import { successResponse } from 'src/auth/constants/response';
 import { infinityPagination } from 'src/utils/infinity-pagination';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
 import { QueryCourseDto } from './dto/query-course.dto';
@@ -68,7 +69,6 @@ export class CourseController {
     @Body() createCourseDto: CreateCourseDto,
     @User() user: JwtPayloadType,
   ) {
-    console.log(createCourseDto);
     return this.courseService.create({
       data: createCourseDto,
       userId: user.id,
@@ -91,13 +91,8 @@ export class CourseController {
 
   @Roles(RoleEnum.instructor, RoleEnum.admin)
   @Delete(':id')
-  async delete(
-    @Param('id', ParseIntPipe) id: number,
-    @User() user: JwtPayloadType,
-  ) {
-    await this.courseService.delete({ id, userId: user.id });
-    return {
-      ...successResponse,
-    };
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(@Param('id', ParseIntPipe) id: number, @User() user: JwtPayloadType) {
+    return this.courseService.delete({ id, userId: user.id });
   }
 }

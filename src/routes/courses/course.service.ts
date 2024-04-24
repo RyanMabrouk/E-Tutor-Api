@@ -89,12 +89,14 @@ export class CourseService {
     const result = await this.validateData(data);
     if (
       // check if not all users have valid role
-      !result?.some((item) =>
-        item?.hasOwnProperty('role') ? (item as User)?.id === userId : false,
+      !result?.every((item) =>
+        item?.hasOwnProperty('role')
+          ? (item as User)?.role?.id == RoleEnum.instructor
+          : true,
       )
     ) {
       throw new HttpException(
-        'You are not an instructor of this course',
+        'You are not an instructor',
         HttpStatus.FORBIDDEN,
       );
     }
@@ -177,7 +179,7 @@ export class CourseService {
     userId: User['id'];
   }): Promise<void> {
     const course = await this.findOne({ id: courseId });
-    if (!course.instructors.some((instructor) => instructor.id === userId)) {
+    if (!course.instructors.some((instructor) => instructor.id == userId)) {
       throw new HttpException(
         'You are not an instructor of this course',
         HttpStatus.FORBIDDEN,

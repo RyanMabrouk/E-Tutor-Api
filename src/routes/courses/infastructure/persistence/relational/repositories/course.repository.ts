@@ -21,16 +21,8 @@ export class CourseRelationalRepository implements CourseRepository {
 
   async create(data: Course): Promise<Course> {
     const persistenceModel = CourseMapper.toPersistence(data);
-    console.log(
-      '🚀 ~ CourseRelationalRepository ~ create ~ persistenceModel:',
-      persistenceModel,
-    );
     const newEntity = await this.courseRepository.save(
       this.courseRepository.create(persistenceModel),
-    );
-    console.log(
-      '🚀 ~ CourseRelationalRepository ~ create ~ newEntity:',
-      newEntity,
     );
     return CourseMapper.toDomain(newEntity);
   }
@@ -50,6 +42,13 @@ export class CourseRelationalRepository implements CourseRepository {
       ).tableName;
     const entities = await this.courseRepository
       .createQueryBuilder(tableName)
+      .leftJoinAndSelect(`${tableName}.category`, 'category')
+      .leftJoinAndSelect(`${tableName}.subcategory`, 'subcategory')
+      .leftJoinAndSelect(`${tableName}.language`, 'language')
+      .leftJoinAndSelect(`${tableName}.subtitleLanguage`, 'subtitleLanguage')
+      .leftJoinAndSelect(`${tableName}.thumbnail`, 'thumbnail')
+      .leftJoinAndSelect(`${tableName}.trailer`, 'trailer')
+      .leftJoinAndSelect(`${tableName}.instructors`, 'instructors')
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .take(paginationOptions.limit)
       .where(filterOptions ?? {})

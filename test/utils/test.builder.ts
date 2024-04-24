@@ -47,76 +47,75 @@ export function testBuilder({
           `Test case description "${test.it}" does not start with "should"`,
         );
       }
-      // eslint-disable-next-line no-restricted-syntax --- it starts with "should"
-      it(
+      const testName =
         test.it +
-          ' ' +
-          route +
-          (test.path ?? '') +
-          ' ' +
-          test.method.toUpperCase(),
-        () => {
-          // add route to path
-          test.path = route + (test.path ?? '');
-          // replace placeholders in path
-          test.path = test.path.replace(
-            /:([a-zA-Z0-9_]+)/g,
-            (_, placeholder): string => {
-              return String(payloadPlaceholderIds[placeholder]) ?? '';
-            },
+        ' ' +
+        route +
+        (test.path ?? '') +
+        ' ' +
+        test.method.toUpperCase();
+      // eslint-disable-next-line no-restricted-syntax --- it starts with "should"
+      it(testName, () => {
+        // add route to path
+        test.path = route + (test.path ?? '');
+        // replace placeholders in path
+        test.path = test.path.replace(
+          /:([a-zA-Z0-9_]+)/g,
+          (_, placeholder): string => {
+            return String(payloadPlaceholderIds[placeholder]) ?? '';
+          },
+        );
+        // replace payload placeholders
+        if (test.send) {
+          test.send = replacePaylaodPlaceholders(
+            test.send,
+            payloadPlaceholderIds,
           );
-          // replace payload placeholders
-          if (test.send) {
-            test.send = replacePaylaodPlaceholders(
-              test.send,
-              payloadPlaceholderIds,
-            );
-          }
-          if (test.path.includes(':id')) {
-            throw new Error(
-              `Test case "${test.it}" with path "${test.path}" does not have id`,
-            );
-          }
-          if (test.method === 'post') {
-            req = request(app).post(test.path).send(test.send);
-          }
-          if (test.method === 'get') {
-            req = request(app).get(test.path);
-          }
-          if (test.method === 'patch') {
-            req = request(app).patch(test.path).send(test.send);
-          }
-          if (test.method === 'delete') {
-            req = request(app).delete(test.path);
-          }
-          if (
-            test.path === undefined &&
-            (test.method === 'get' || test.method === 'patch')
-          ) {
-            throw new Error(
-              `Test case "${test.it}" with method "${test.method}" does not have path`,
-            );
-          }
-          if (
-            test.path === undefined &&
-            (test.method === 'get' || test.method === 'patch')
-          ) {
-            throw new Error(
-              `Test case "${test.it}" with method "${test.method}" does not have path`,
-            );
-          }
-          if (req === null) {
-            throw new Error('Request builder failed');
-          }
-          req = req
-            .set('Cookie', test.public ? '' : cookies)
-            .expect(test.expectedStatus);
-          if (test.expectedResponse) {
-            req = req.expect(test.expectedResponse);
-          }
-          return req;
-        },
-      );
+        }
+        if (test.path.includes(':id')) {
+          throw new Error(
+            `Test case "${test.it}" with path "${test.path}" does not have id`,
+          );
+        }
+        if (test.method === 'post') {
+          req = request(app).post(test.path).send(test.send);
+        }
+        if (test.method === 'get') {
+          req = request(app).get(test.path);
+        }
+        if (test.method === 'patch') {
+          req = request(app).patch(test.path).send(test.send);
+        }
+        if (test.method === 'delete') {
+          req = request(app).delete(test.path);
+        }
+        if (
+          test.path === undefined &&
+          (test.method === 'get' || test.method === 'patch')
+        ) {
+          throw new Error(
+            `Test case "${test.it}" with method "${test.method}" does not have path`,
+          );
+        }
+        if (
+          test.path === undefined &&
+          (test.method === 'get' || test.method === 'patch')
+        ) {
+          throw new Error(
+            `Test case "${test.it}" with method "${test.method}" does not have path`,
+          );
+        }
+        if (req === null) {
+          throw new Error('Request builder failed');
+        }
+        req = req
+          .set('Cookie', test.public ? '' : cookies)
+          .expect(test.expectedStatus);
+        if (test.expectedResponse) {
+          req = req.expect(test.expectedResponse);
+        }
+        return req;
+      });
     }
   });
 }

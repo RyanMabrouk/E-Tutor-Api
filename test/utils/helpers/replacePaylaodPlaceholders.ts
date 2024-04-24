@@ -4,13 +4,19 @@ export const replacePaylaodPlaceholders = (
 ) => {
   const objectClone = { ...object };
   for (const key in objectClone) {
-    if (
-      typeof objectClone[key] === 'object' &&
-      !Array.isArray(objectClone[key])
-    ) {
-      objectClone[key] = {
-        ...replacePaylaodPlaceholders(objectClone[key], payloadPlaceholderIds),
-      };
+    if (typeof objectClone[key] === 'object') {
+      if (Array.isArray(objectClone[key])) {
+        objectClone[key] = objectClone[key].map((item) =>
+          replacePaylaodPlaceholders(item, payloadPlaceholderIds),
+        );
+      } else {
+        objectClone[key] = {
+          ...replacePaylaodPlaceholders(
+            objectClone[key],
+            payloadPlaceholderIds,
+          ),
+        };
+      }
     }
     if (
       typeof objectClone[key] === 'string' &&

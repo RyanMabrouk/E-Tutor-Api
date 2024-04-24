@@ -95,35 +95,35 @@ export class CreateCourseDto
 
   @IsOptional()
   @IsJSON()
-  description?: JSON;
+  description?: JSON | null = null;
 
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  subjects?: string[];
+  subjects?: string[] | null = null;
 
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  audience?: string[];
+  audience?: string[] | null = null;
 
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  requirements?: string[];
+  requirements?: string[] | null = null;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  welcomeMessage?: string;
+  welcomeMessage?: string | null = null;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  congratsMessage?: string;
+  congratsMessage?: string | null = null;
 
   @IsOptional()
   @IsNumber()
