@@ -1,5 +1,11 @@
 import { TestCasesArrayType } from '../types/TestCasesArrayType';
-import { ADMIN_EMAIL, ADMIN_PASSWORD, APP_URL } from '../utils/constants';
+import {
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
+  APP_URL,
+  TESTER_EMAIL,
+  TESTER_PASSWORD,
+} from '../utils/constants';
 import { faker } from '@faker-js/faker';
 import { testBuilder } from '../utils/test.builder';
 import { Subcategory } from '../../src/routes/subcategories/domain/subcategory';
@@ -9,6 +15,7 @@ import { Category } from 'src/routes/categories/domain/category';
 import { UpdateSubcategoryDto } from 'src/routes/subcategories/dto/update-subcategory.dto';
 import request from 'supertest';
 import { getCategoryId } from './categories.e2e-spec';
+import { getAdminCookies } from '../utils/helpers/loginForCookies';
 
 // Constants for this test
 const route = '/api/v1/subcategories';
@@ -78,7 +85,29 @@ const testCases: TestCasesArrayType = [
     expectedStatus: 204,
   },
 ];
-const getSubcategoryId = async (cookies: string) => {
+
+const forbiddenTestCases: TestCasesArrayType = [
+  {
+    it: 'should forbid user to post subcategory',
+    method: 'post',
+    send: postPayload,
+    expectedStatus: 403,
+  },
+  {
+    it: 'should forbid user to patch subcategory',
+    method: 'patch',
+    path: `/:id`,
+    send: patchPayload,
+    expectedStatus: 403,
+  },
+  {
+    it: 'should forbid user to delete subcategory',
+    method: 'delete',
+    path: `/:toBeDeletedId`,
+    expectedStatus: 403,
+  },
+];
+export const getSubcategoryId = async (cookies: string) => {
   const categoryId = await getCategoryId(cookies);
   const {
     body: { id },
@@ -94,4 +123,26 @@ testBuilder({
   testCases,
   getPayloadPlaceholderIds: { id: getSubcategoryId, categoryId: getCategoryId },
   user: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
+});
+testBuilder({
+  route,
+  testCases: forbiddenTestCases,
+  getPayloadPlaceholderIds: {
+    id: async () => {
+      const cookies = await getAdminCookies();
+      const id = await getSubcategoryId(cookies);
+      return id;
+    },
+    toBeDeletedId: async () => {
+      const cookies = await getAdminCookies();
+      const id = await getSubcategoryId(cookies);
+      return id;
+    },
+    categoryId: async () => {
+      const cookies = await getAdminCookies();
+      const id = await getCategoryId(cookies);
+      return id;
+    },
+  },
+  user: { email: TESTER_EMAIL, password: TESTER_PASSWORD },
 });
