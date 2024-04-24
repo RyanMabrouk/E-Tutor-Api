@@ -7,7 +7,7 @@ import {
   IsOptional,
 } from 'class-validator';
 import { Course } from 'src/routes/courses/domain/course';
-import { IsCourseConstraint } from 'src/utils/class-validators/IsUserConstraint copy';
+import { IsObjectWithNumericIdConstraint } from 'src/utils/class-validators/IsObjectWithNumericIdConstraint';
 
 export class CreatePurshaseDto {
   @IsNotEmpty()
@@ -17,7 +17,7 @@ export class CreatePurshaseDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsOptional()
-  @Validate(IsCourseConstraint, { each: true })
+  @Validate(IsObjectWithNumericIdConstraint, { each: true })
   courses?: Course[];
 
   @IsNotEmpty()

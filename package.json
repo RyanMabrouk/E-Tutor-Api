@@ -26,7 +26,9 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "test": "jest --maxWorkers=2",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
+    "test:cov": "env-cmd jest --coverage",
+    "test:cov:nyc": "nyc npm start",
+    "test:cov:summary": "env-cmd jest --coverage --coverageReporters=\"text-summary\"",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "e2e": "env-cmd jest --config ./test/jest-e2e.json",
     "prepare": "is-ci || husky",
@@ -122,6 +124,7 @@
     "hygen": "6.2.11",
     "is-ci": "3.0.1",
     "jest": "29.7.0",
+    "nyc": "^15.1.0",
     "prettier": "3.2.5",
     "prompts": "2.4.2",
     "release-it": "17.1.1",
@@ -136,6 +139,37 @@
   "_moduleAliases": {
     "src": "./src"
   },
+  "nyc": {
+    "exclude": [
+      "dest/**",
+      "coverage/**",
+      "**/*.*.d.ts",
+      "**/*.d.ts",
+      "**/.*.js",
+      "**/*.decorator.ts",
+      "**/*.module.ts",
+      "**/*.dto.ts",
+      "**/*.entity.ts",
+      "**/*.interface.ts",
+      "**/*.enum.ts",
+      "**/*.spec.ts",
+      "**/*.type.ts",
+      "**/*.config.ts",
+      "**/*.e2e-spec.ts",
+      "**/*.seeder.ts",
+      "**/*.repository.ts",
+      "**/*.mapper.ts",
+      "**/*-migrations.ts",
+      "src/utils/**",
+      "src/shared/**",
+      "src/database/**",
+      "test/utils/**",
+      "test/coverage/**",
+      "**/types/**",
+      "**/constants/**"
+    ],
+    "all": true
+  },
   "jest": {
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/src/$1"
@@ -146,14 +180,18 @@
       "ts"
     ],
     "rootDir": ".",
-    "testRegex": ".*\\.spec\\.ts$",
+    "testRegex": [
+      ".*\\.spec\\.ts$",
+      ".*\\.e2e-spec\\.ts$"
+    ],
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.ts$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.spec.ts"
+      "**/*.controller.ts",
+      "**/*.service.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "./coverage",
     "testEnvironment": "node"
   },
   "engines": {
