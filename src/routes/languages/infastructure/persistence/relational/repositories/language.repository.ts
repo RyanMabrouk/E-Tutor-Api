@@ -62,7 +62,6 @@ export class LanguageRelationalRepository implements LanguageRepository {
     const entity = await this.languageRepository.findOne({
       where: fields as FindOptionsWhere<LanguageEntity>,
     });
-    console.log(entity);
     if (!entity) {
       throw new BadRequestException('Language not found');
     }

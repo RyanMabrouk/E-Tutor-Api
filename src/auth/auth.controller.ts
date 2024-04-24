@@ -84,9 +84,7 @@ export class AuthController {
   async confirmEmail(
     @Body() confirmEmailDto: AuthConfirmEmailDto,
   ): Promise<SuccessResponseType> {
-    console.log(confirmEmailDto);
     await this.service.confirmEmail(confirmEmailDto.hash);
-    console.log(successResponse);
     return {
       ...successResponse,
     };

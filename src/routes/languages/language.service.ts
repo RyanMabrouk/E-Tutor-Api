@@ -42,7 +42,6 @@ export class LanguageService {
     });
   }
   async findOne({ id: id }: { id: number }): Promise<Language> {
-    console.log(id);
     return this.langRepository.findOne({ id: id });
   }
 
