@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -13,7 +15,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
-import { successResponse } from 'src/auth/constants/response';
 import { infinityPagination } from 'src/utils/infinity-pagination';
 import { InfinityPaginationResultType } from 'src/utils/types/infinity-pagination-result.type';
 import { QueryLectureDto } from './dto/query-lecture.dto';
@@ -90,13 +91,11 @@ export class LectureController {
 
   @Roles(RoleEnum.instructor, RoleEnum.admin)
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async delete(
     @Param('id', ParseIntPipe) id: number,
     @User() user: JwtPayloadType,
   ) {
-    await this.lectureService.delete({ id, userId: user.id });
-    return {
-      ...successResponse,
-    };
+    return this.lectureService.delete({ id, userId: user.id });
   }
 }

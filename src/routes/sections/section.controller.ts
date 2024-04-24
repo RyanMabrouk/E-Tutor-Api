@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -87,6 +89,7 @@ export class SectionController {
 
   @Roles(RoleEnum.instructor, RoleEnum.admin)
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async delete(
     @Param('id', ParseIntPipe) id: number,
     @User() user: JwtPayloadType,

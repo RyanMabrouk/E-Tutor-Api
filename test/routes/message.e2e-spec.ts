@@ -9,7 +9,7 @@ import {
 import { GeneralDomainMock } from '../utils/GeneralDomainMock';
 import { faker } from '@faker-js/faker';
 import { testBuilder } from '../utils/test.builder';
-import { getAdminCookies } from '../utils/helpers/loginForCookies';
+import { getAdminCookies } from '../utils/helpers/getAdminCookies';
 import request from 'supertest';
 import { CreateMessageDto } from 'src/routes/messages/dto/create-message.dto';
 import { UpdateMessageDto } from 'src/routes/messages/dto/update-message.dto';

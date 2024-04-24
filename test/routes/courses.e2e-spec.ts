@@ -27,7 +27,8 @@ import { replacePaylaodPlaceholders } from '../utils/helpers/replacePaylaodPlace
 import { isNullOrType } from '../utils/helpers/isNullOrType';
 import { User } from '../../src/routes/users/domain/user';
 import { CourseStatusType } from '../../src/routes/courses/types/CourseStatusType';
-import { getAdminCookies } from '../utils/helpers/loginForCookies';
+import { getAdminCookies } from '../utils/helpers/getAdminCookies';
+import { AuthUpdateDto } from 'src/auth/dto/auth-update.dto';
 expect.extend({
   toBeNullOrType: isNullOrType,
 });
@@ -222,6 +223,17 @@ export const getCourseId = async (cookies: string) => {
   const id = res.body.id;
   if (!id) throw new Error(`Course POST method failed`);
   return id;
+};
+
+export const AddCourseToUser = async (cookies: string, courseId: number) => {
+  const payload: AuthUpdateDto = { courses: [{ id: courseId } as Course] };
+  const res = await request(APP_URL)
+    .patch('/api/v1/auth/me')
+    .set('Cookie', cookies)
+    .send(payload);
+  if (!res.body.courses.some((course: Course) => course.id === courseId)) {
+    throw new Error(`User PATCH method failed`);
+  }
 };
 
 testBuilder({

@@ -64,19 +64,25 @@ export class UsersRelationalRepository implements UserRepository {
     return UserMapper.toDomain(entity);
   }
 
+  async isValidEmail({
+    email,
+    id,
+  }: {
+    email: string;
+    id: User['id'];
+  }): Promise<boolean> {
+    const user = await this.usersRepository.findOne({ where: { email } });
+    return (user !== null && user?.id === id) || user === null;
+  }
+
   async update(id: User['id'], payload: Partial<User>): Promise<User> {
-    const entity = await this.usersRepository.findOne({
+    const domain = await this.usersRepository.findOne({
       where: { id: Number(id) },
     });
-
-    if (!entity) {
-      throw new Error('User not found');
-    }
-
     const updatedEntity = await this.usersRepository.save(
       this.usersRepository.create(
         UserMapper.toPersistence({
-          ...UserMapper.toDomain(entity),
+          ...domain,
           ...payload,
         }),
       ),

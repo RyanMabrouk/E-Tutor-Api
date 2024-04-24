@@ -15,7 +15,7 @@ import { UpdateChatDto } from 'src/routes/chat/dto/update-chat.dto';
 import { User } from 'src/routes/users/domain/user';
 import { Chat } from 'src/routes/chat/domain/chat';
 import request from 'supertest';
-import { getAdminCookies } from '../utils/helpers/loginForCookies';
+import { getAdminCookies } from '../utils/helpers/getAdminCookies';
 
 // Constants for this test
 const route = '/api/v1/chat';

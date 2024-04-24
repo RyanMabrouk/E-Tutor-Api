@@ -13,6 +13,7 @@ import { Lecture } from 'src/routes/lectures/domain/lecture';
 import { LectureMapper } from '../mappers/lecture.mapper';
 import { SectionEntity } from 'src/routes/sections/infastructure/persistence/relational/entities/section.entity';
 import { Section } from 'src/routes/sections/domain/section';
+import { Course } from 'src/routes/courses/domain/course';
 
 @Injectable()
 export class LectureRelationalRepository implements LectureRepository {
@@ -110,7 +111,7 @@ export class LectureRelationalRepository implements LectureRepository {
     await this.lectureRepository.softDelete(id);
   }
 
-  async getLectureCourseId(lectureId: Lecture['id']): Promise<number> {
+  async getLectureCourse(lectureId: Lecture['id']): Promise<Course> {
     const tableName =
       this.lectureRepository.manager.connection.getMetadata(
         LectureEntity,
@@ -119,12 +120,13 @@ export class LectureRelationalRepository implements LectureRepository {
       .createQueryBuilder(tableName)
       .leftJoinAndSelect(`${tableName}.section`, `section`)
       .leftJoinAndSelect(`section.course`, `course`)
+      .leftJoinAndSelect(`course.instructors`, `instructors`)
       .where({ id: lectureId })
       .getOne();
-    const courseId = entity?.section.course.id;
-    if (!courseId) {
+    const course = entity?.section.course;
+    if (!course) {
       throw new Error('Somthing went wrong');
     }
-    return courseId;
+    return course;
   }
 }

@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { ADMIN_EMAIL, ADMIN_PASSWORD, APP_URL } from '../constants';
+import { APP_URL } from '../constants';
 import { formatCookiesFromRes } from './formatCookiesFromRes';
 
 export async function loginForCookies({
@@ -27,11 +27,3 @@ export async function loginForCookies({
   }
   return cookies;
 }
-
-export const getAdminCookies = async () => {
-  const cookies = loginForCookies({
-    email: ADMIN_EMAIL,
-    password: ADMIN_PASSWORD,
-  });
-  return cookies;
-};

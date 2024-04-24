@@ -1,4 +1,3 @@
-import { CourseService } from './../courses/course.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { CreateLectureDto } from './dto/create-lecture.dto';
@@ -17,7 +16,6 @@ export class LectureService {
     private readonly lectureRepository: LectureRepository,
     private readonly sectionService: SectionService,
     private readonly filesService: FilesService,
-    private readonly courseService: CourseService,
   ) {}
 
   findAll({

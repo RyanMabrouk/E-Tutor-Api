@@ -31,12 +31,13 @@ export class LectureGuard implements CanActivate {
     if (!lectureId) {
       throw new BadRequestException('Lecture not found');
     }
-    const [courseId, user] = await Promise.all([
-      this.lectureRepository.getLectureCourseId(lectureId),
+    const [course, user] = await Promise.all([
+      this.lectureRepository.getLectureCourse(lectureId),
       this.usersRepository.findOne({ id: userFromReq.id }, ['courses']),
     ]);
     if (
-      user.courses.some((e) => e.id === courseId) ||
+      user.courses.some((e) => e.id === course.id) ||
+      course.instructors.some((i) => i.id === user.id) ||
       user.role?.id === RoleEnum.admin
     ) {
       return true;

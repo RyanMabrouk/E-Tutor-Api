@@ -1,9 +1,5 @@
 import { CourseService } from './../courses/course.service';
-import {
-  ForbiddenException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { SectionRepository } from './infastructure/persistence/section.repository';
 import { FilterSectionDto, SortSectionDto } from './dto/query-section.dto';
@@ -47,9 +43,7 @@ export class SectionService {
       id: data.course.id,
     });
     if (!course.instructors.some((instructor) => instructor.id === userId)) {
-      throw new UnauthorizedException(
-        'User does not have access to this course',
-      );
+      throw new ForbiddenException('User does not have access to this course');
     }
     return this.sectionRepository.create(data);
   }

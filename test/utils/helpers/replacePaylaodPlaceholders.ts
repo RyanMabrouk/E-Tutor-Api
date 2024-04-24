@@ -7,7 +7,9 @@ export const replacePaylaodPlaceholders = (
     if (typeof objectClone[key] === 'object') {
       if (Array.isArray(objectClone[key])) {
         objectClone[key] = objectClone[key].map((item) =>
-          replacePaylaodPlaceholders(item, payloadPlaceholderIds),
+          typeof item === 'object'
+            ? replacePaylaodPlaceholders(item, payloadPlaceholderIds)
+            : item,
         );
       } else {
         objectClone[key] = {

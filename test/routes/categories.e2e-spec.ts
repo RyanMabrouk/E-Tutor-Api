@@ -13,7 +13,8 @@ import { GeneralDomainKeys } from 'src/shared/domain/general.domain';
 import { CreateCategoryDto } from 'src/routes/categories/dto/create-category.dto';
 import { UpdateCategoryDto } from 'src/routes/categories/dto/update-category.dto';
 import request from 'supertest';
-import { getAdminCookies } from '../utils/helpers/loginForCookies';
+import { getAdminCookies } from '../utils/helpers/getAdminCookies';
+import { getUniqueName } from '../utils/helpers/getUniqueName';
 
 // Constants for this test
 const route = '/api/v1/categories';
@@ -22,14 +23,14 @@ const mock: Omit<Category, GeneralDomainKeys> = {
   name: expect.any(String) as string,
   color: expect.any(String) as string,
 };
-const postPayload: CreateCategoryDto = {
-  name: new Date().getTime().toString(),
+const postPayload = (): CreateCategoryDto => ({
+  name: getUniqueName(),
   color: faker.color.rgb(),
-};
-const patchPayload: UpdateCategoryDto = {
-  name: String(new Date().getTime() - 10),
+});
+const patchPayload = (): UpdateCategoryDto => ({
+  name: getUniqueName(),
   color: faker.color.rgb(),
-};
+});
 // Test cases
 const testCases: TestCasesArrayType = [
   {
@@ -55,7 +56,7 @@ const testCases: TestCasesArrayType = [
   {
     it: 'should post category',
     method: 'post',
-    send: postPayload,
+    send: postPayload(),
     expectedStatus: 201,
     expectedResponse: ({ body }) => {
       expect(body).toEqual(expect.objectContaining(mock));
@@ -65,7 +66,7 @@ const testCases: TestCasesArrayType = [
     it: 'should patch category',
     method: 'patch',
     path: `/:id`,
-    send: patchPayload,
+    send: patchPayload(),
     expectedStatus: 200,
     expectedResponse: ({ body }) => {
       expect(body).toEqual(expect.objectContaining(mock));
@@ -74,7 +75,7 @@ const testCases: TestCasesArrayType = [
   {
     it: 'should delete category',
     method: 'delete',
-    path: `/1`,
+    path: `/:toBeDeletedId`,
     expectedStatus: 204,
   },
 ];
@@ -83,14 +84,14 @@ const forbiddenTestCases: TestCasesArrayType = [
   {
     it: 'should forbid user to post category',
     method: 'post',
-    send: postPayload,
+    send: postPayload(),
     expectedStatus: 403,
   },
   {
     it: 'should forbid user to patch category',
     method: 'patch',
     path: `/:id`,
-    send: patchPayload,
+    send: patchPayload(),
     expectedStatus: 403,
   },
   {
@@ -107,14 +108,14 @@ export const getCategoryId = async (cookies: string) => {
   } = await request(APP_URL)
     .post(route)
     .set('Cookie', cookies)
-    .send({ ...postPayload, name: new Date().getTime().toString() });
+    .send(postPayload());
   if (!id) throw new Error(`Category POST method failed`);
   return id;
 };
 testBuilder({
   route,
   testCases,
-  getPayloadPlaceholderIds: { id: getCategoryId },
+  getPayloadPlaceholderIds: { id: getCategoryId, toBeDeletedId: getCategoryId },
   user: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
 });
 testBuilder({

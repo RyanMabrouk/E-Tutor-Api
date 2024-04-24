@@ -65,7 +65,6 @@ export class ProgressController {
   @PathToLectureId(['body', 'lecture', 'id'])
   @UseGuards(LectureGuard)
   create(@Body() createProgressDto: CreateProgressDto) {
-    console.log(createProgressDto);
     return this.progressService.create(createProgressDto);
   }
 

@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { EntityCondition } from '../../utils/types/entity-condition.type';
 import { IPaginationOptions } from '../../utils/types/pagination-options';
@@ -117,10 +118,11 @@ export class UsersService {
     }
 
     if (clonedPayload.email) {
-      const userObject = await this.usersRepository.findOne({
+      const isValidEmail = await this.usersRepository.isValidEmail({
+        id,
         email: clonedPayload.email,
       });
-      if (userObject && userObject?.id !== id) {
+      if (!isValidEmail) {
         throw new HttpException(
           {
             status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -142,25 +144,18 @@ export class UsersService {
     if (clonedPayload.status)
       this.validateStatus(clonedPayload.status as StatusDto);
     try {
-      const updated = await this.usersRepository.update(id, {
+      const validPayload = {
         ...clonedPayload,
         courses: clonedPayload.courses
           ? (clonedPayload.courses.filter(
               (course) => course !== undefined,
             ) as Course[])
           : [],
-      });
+      };
+      const updated = await this.usersRepository.update(id, validPayload);
       return updated;
     } catch (err) {
-      throw new HttpException(
-        {
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            email: 'User doesnt exist',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new UnprocessableEntityException(err.message);
     }
   }
 

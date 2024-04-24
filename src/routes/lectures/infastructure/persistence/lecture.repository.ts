@@ -6,6 +6,7 @@ import { Section } from 'src/routes/sections/domain/section';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { FindOneOptions } from 'typeorm';
 import { SectionEntity } from 'src/routes/sections/infastructure/persistence/relational/entities/section.entity';
+import { Course } from 'src/routes/courses/domain/course';
 
 export abstract class LectureRepository extends GeneralRepositoryType<
   Lecture,
@@ -30,5 +31,5 @@ export abstract class LectureRepository extends GeneralRepositoryType<
     relations?: FindOneOptions<SectionEntity>['relations'],
   ): Promise<Lecture>;
 
-  abstract getLectureCourseId(lectureId: Lecture['id']): Promise<number>;
+  abstract getLectureCourse(lectureId: Lecture['id']): Promise<Course>;
 }
