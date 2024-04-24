@@ -7,6 +7,7 @@ import { UserEntity } from 'src/routes/users/infrastructure/persistence/relation
 import { RoleEnum } from 'src/routes/roles/roles.enum';
 import {
   ADMIN_EMAIL,
+  INSTRUCTOR_EMAIL,
   TESTER_EMAIL,
   TESTER_PASSWORD,
 } from 'test/utils/constants';
@@ -66,6 +67,33 @@ export class UserSeedService {
           role: {
             id: RoleEnum.user,
             name: 'Admin',
+          },
+          status: {
+            id: StatusEnum.active,
+            name: 'Active',
+          },
+        }),
+      );
+    }
+
+    const countInstructor = await this.repository.count({
+      where: {
+        email: INSTRUCTOR_EMAIL,
+      },
+    });
+    if (!countInstructor) {
+      const salt = await bcrypt.genSalt();
+      const password = await bcrypt.hash(TESTER_PASSWORD, salt);
+
+      await this.repository.save(
+        this.repository.create({
+          firstName: 'Instructor',
+          lastName: 'Test',
+          email: INSTRUCTOR_EMAIL,
+          password,
+          role: {
+            id: RoleEnum.instructor,
+            name: 'Instructor',
           },
           status: {
             id: StatusEnum.active,
