@@ -28,10 +28,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "e2e works ?": "env-cmd jest --config ./test/jest-e2e.json",
+    "e2e": "env-cmd jest --config ./test/jest-e2e.json",
     "prepare": "is-ci || husky",
     "release": "release-it",
-    "works ?": "npm run format && npm run lint"
+    "works": "npm run format && npm run lint"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.535.0",
