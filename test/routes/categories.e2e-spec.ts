@@ -80,7 +80,27 @@ const testCases: TestCasesArrayType = [
   },
 ];
 
-const forbiddenTestCases: TestCasesArrayType = [
+const userTestCases: TestCasesArrayType = [
+  {
+    it: 'should allow user to get all categories',
+    method: 'get',
+    expectedStatus: 200,
+    expectedResponse: ({ body: { data, hasNextPage } }) => {
+      expect(data).toEqual(
+        expect.arrayContaining([expect.objectContaining(mock)]),
+      );
+      expect(hasNextPage).toEqual(expect.any(Boolean));
+    },
+  },
+  {
+    it: 'should allow user to get category',
+    method: 'get',
+    path: `/:id`,
+    expectedStatus: 200,
+    expectedResponse: ({ body }) => {
+      expect(body).toEqual(expect.objectContaining(mock));
+    },
+  },
   {
     it: 'should forbid user to post category',
     method: 'post',
@@ -120,7 +140,7 @@ testBuilder({
 });
 testBuilder({
   route,
-  testCases: forbiddenTestCases,
+  testCases: userTestCases,
   getPayloadPlaceholderIds: {
     id: async () => {
       const cookies = await getAdminCookies();
