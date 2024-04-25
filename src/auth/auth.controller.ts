@@ -88,7 +88,7 @@ export class AuthController {
   ): Promise<SuccessResponseType> {
     console.log(confirmEmailDto);
     const user = await this.service.confirmEmail(confirmEmailDto.hash);
-    console.log(user)
+    console.log(user);
     console.log(successResponse);
     return {
       ...successResponse,

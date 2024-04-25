@@ -4,10 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 // in your project and return an ORM entity directly in response.
 import { Transform } from 'class-transformer';
 import fileConfig from '../../../../config/file.config';
-import {
-  FileConfig,
-  FileDriver,
-} from '../../../../config/file-config.type';
+import { FileConfig, FileDriver } from '../../../../config/file-config.type';
 import appConfig from '../../../../../../config/app.config';
 import { AppConfig } from '../../../../../../config/app-config.type';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
