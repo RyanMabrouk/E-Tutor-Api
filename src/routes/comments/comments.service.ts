@@ -13,7 +13,7 @@ import { FilterCommentDto, SortCommentDto } from './dto/query-comments.dto';
 import { Lecture } from '../lectures/domain/lecture';
 import { UpdateCommentDto } from './dto/update-comments.dto';
 import { UsersService } from '../users/users.service';
-import { filterColumnsHelper } from 'src/shared/helpers/filterColumnsHelper';
+import { filterObjectHelper } from 'src/shared/helpers/filterObjectHelper';
 import { CommentsWithRplies } from './types/types';
 
 @Injectable()
@@ -109,13 +109,13 @@ export class CommentService {
 
   formatCommentResponse(comment: Comment) {
     return {
-      ...filterColumnsHelper<Comment>({
+      ...filterObjectHelper<Comment>({
         data: comment,
-        columnsToOmit: ['lecture'],
+        Omit: ['lecture'],
       }),
-      user: filterColumnsHelper<User>({
+      user: filterObjectHelper<User>({
         data: comment.user,
-        columnsToPick: ['id', 'firstName', 'lastName', 'username', 'role'],
+        Pick: ['id', 'firstName', 'lastName', 'username', 'role'],
       }),
     };
   }

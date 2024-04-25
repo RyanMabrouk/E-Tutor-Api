@@ -14,7 +14,7 @@ import { FilterMessageDto, SortMessageDto } from './dto/query-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Chat } from '../chat/domain/chat';
 import { ChatService } from '../chat/chat.service';
-import { filterColumnsHelper } from 'src/shared/helpers/filterColumnsHelper';
+import { filterObjectHelper } from 'src/shared/helpers/filterObjectHelper';
 
 @Injectable()
 export class MessageService {
@@ -97,9 +97,9 @@ export class MessageService {
   formatResponse(chat: Message) {
     return {
       ...chat,
-      sender: filterColumnsHelper({
+      sender: filterObjectHelper({
         data: chat.sender,
-        columnsToPick: ['id', 'firstName', 'lastName', 'photo', 'username'],
+        Pick: ['id', 'firstName', 'lastName', 'photo', 'username'],
       }) as User,
     };
   }

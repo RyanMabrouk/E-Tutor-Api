@@ -26,8 +26,8 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "test": "jest --maxWorkers=2",
     "test:watch": "jest --watch",
-    "test:cov": "env-cmd jest --coverage",
-    "test:cov:nyc": "nyc npm start",
+    "test:cov:jest": "env-cmd jest --coverage",
+    "test:cov": "nyc npm start",
     "test:cov:summary": "env-cmd jest --coverage --coverageReporters=\"text-summary\"",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "e2e": "env-cmd jest --config ./test/jest-e2e.json",
@@ -166,7 +166,8 @@
       "test/utils/**",
       "test/coverage/**",
       "**/types/**",
-      "**/constants/**"
+      "**/constants/**",
+      "commitlint.config.js"
     ],
     "all": true
   },
@@ -189,7 +190,7 @@
     },
     "collectCoverageFrom": [
       "**/*.controller.ts",
-      "**/*.service.(t|j)s"
+      "**/*.service.ts"
     ],
     "coverageDirectory": "./coverage",
     "testEnvironment": "node"

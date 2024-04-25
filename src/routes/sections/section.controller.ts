@@ -27,7 +27,7 @@ import { RoleEnum } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 import { User } from 'src/shared/decorators/user.decorator';
-import { filterColumnsHelper } from 'src/shared/helpers/filterColumnsHelper';
+import { filterObjectHelper } from 'src/shared/helpers/filterObjectHelper';
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'sections', version: '1' })
 export class SectionController {
@@ -61,7 +61,7 @@ export class SectionController {
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const data = await this.sectionService.findOne({ id });
-    return filterColumnsHelper({ data, columnsToOmit: ['course'] });
+    return filterObjectHelper({ data, Omit: ['course'] });
   }
 
   //create

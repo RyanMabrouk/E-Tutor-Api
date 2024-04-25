@@ -13,7 +13,7 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { FilterReviewDto, SortReviewDto } from './dto/query-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { Course } from '../courses/domain/course';
-import { filterColumnsHelper } from 'src/shared/helpers/filterColumnsHelper';
+import { filterObjectHelper } from 'src/shared/helpers/filterObjectHelper';
 import { ReviewsWithRatingCount } from './types/types';
 
 @Injectable()
@@ -107,15 +107,15 @@ export class ReviewService {
     }
   }
 
-  filterColumnsHelper(review: Review) {
+  filterObjectHelper(review: Review) {
     return {
-      ...filterColumnsHelper<Review>({
+      ...filterObjectHelper<Review>({
         data: review,
-        columnsToOmit: ['course'],
+        Omit: ['course'],
       }),
-      user: filterColumnsHelper<User>({
+      user: filterObjectHelper<User>({
         data: review.user,
-        columnsToPick: ['id', 'firstName', 'lastName', 'username'],
+        Pick: ['id', 'firstName', 'lastName', 'username'],
       }),
     };
   }

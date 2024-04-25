@@ -13,7 +13,7 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { FilterChatDto, SortChatDto } from './dto/query-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { User } from '../users/domain/user';
-import { filterColumnsHelper } from 'src/shared/helpers/filterColumnsHelper';
+import { filterObjectHelper } from 'src/shared/helpers/filterObjectHelper';
 
 @Injectable()
 export class ChatService {
@@ -119,9 +119,9 @@ export class ChatService {
     return {
       ...chat,
       members: chat.members.map((e) =>
-        filterColumnsHelper({
+        filterObjectHelper({
           data: e,
-          columnsToPick: ['id', 'firstName', 'lastName', 'photo', 'username'],
+          Pick: ['id', 'firstName', 'lastName', 'photo', 'username'],
         }),
       ),
     };

@@ -56,7 +56,7 @@ export class ReviewController {
       return {
         ...data,
         reviews: data.reviews.map(
-          this.reviewService.filterColumnsHelper,
+          this.reviewService.filterObjectHelper,
         ) as Review[],
         hasNextPage: data.reviews.length === limit,
       };
