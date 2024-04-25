@@ -3,17 +3,17 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 // We duplicate these rules because you can choose not to use adapters
 // in your project and return an ORM entity directly in response.
 import { Transform } from 'class-transformer';
-import fileConfig from 'src/routes/files/config/file.config';
+import fileConfig from '../../../../config/file.config';
 import {
   FileConfig,
   FileDriver,
-} from 'src/routes/files/config/file-config.type';
-import appConfig from 'src/config/app.config';
-import { AppConfig } from 'src/config/app-config.type';
+} from '../../../../config/file-config.type';
+import appConfig from '../../../../../../config/app.config';
+import { AppConfig } from '../../../../../../config/app-config.type';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { UUID } from 'crypto';
-import { GeneralEntity } from 'src/shared/entities/general.entity';
+import { GeneralEntity } from '../../../../../../shared/entities/general.entity';
 
 @Entity({ name: 'file' })
 export class FileEntity extends GeneralEntity {

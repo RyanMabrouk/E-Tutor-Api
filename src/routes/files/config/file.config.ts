@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config';
 import {
   FileConfig,
   FileDriver,
-} from 'src/routes/files/config/file-config.type';
+} from '../../../routes/files/config/file-config.type';
 import { IsEnum, IsString, ValidateIf } from 'class-validator';
 import validateConfig from '../../../utils/validate-config';
 

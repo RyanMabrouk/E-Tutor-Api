@@ -26,9 +26,7 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "test": "jest --maxWorkers=2",
     "test:watch": "jest --watch",
-    "test:cov:jest": "env-cmd jest --coverage",
-    "test:cov": "nyc npm start",
-    "test:cov:summary": "env-cmd jest --coverage --coverageReporters=\"text-summary\"",
+    "test:cov": "env-cmd jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "e2e": "env-cmd jest --config ./test/jest-e2e.json",
     "prepare": "is-ci || husky",
@@ -189,8 +187,7 @@
       "^.+\\.ts$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.controller.ts",
-      "**/*.service.ts"
+      "src/**/*.controller.ts"
     ],
     "coverageDirectory": "./coverage",
     "testEnvironment": "node"

@@ -30,6 +30,7 @@ import { AccessTokenName, RefreshTokenName } from './constants/token-names';
 import { JwtPayloadType } from './strategies/types/jwt-payload.type';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
 import { FastifyReply } from 'fastify';
+import { UsersService } from 'src/routes/users/users.service';
 
 @Controller({
   path: 'auth',
@@ -39,6 +40,7 @@ export class AuthController {
   constructor(
     private readonly service: AuthService,
     private configService: ConfigService<AllConfigType>,
+    private readonly usersService: UsersService,
   ) {}
   readonly cookiesOptions = this.configService.getOrThrow('auth.cookies', {
     infer: true,
@@ -84,7 +86,10 @@ export class AuthController {
   async confirmEmail(
     @Body() confirmEmailDto: AuthConfirmEmailDto,
   ): Promise<SuccessResponseType> {
-    await this.service.confirmEmail(confirmEmailDto.hash);
+    console.log(confirmEmailDto);
+    const user = await this.service.confirmEmail(confirmEmailDto.hash);
+    console.log(user)
+    console.log(successResponse);
     return {
       ...successResponse,
     };
