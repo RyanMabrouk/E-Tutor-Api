@@ -64,9 +64,6 @@ export class Migrations1713343534466 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "youtube"`);
     await queryRunner.query(`ALTER TABLE "user" ADD "youtube" text`);
     await queryRunner.query(
-      `ALTER TABLE "language" DROP CONSTRAINT "UQ_7df7d1e250ea2a416f078a631fb"`,
-    );
-    await queryRunner.query(
       `CREATE INDEX "IDX_9bd2fe7a8e694dedc4ec2f666f" ON "user" ("socialId") `,
     );
     await queryRunner.query(
