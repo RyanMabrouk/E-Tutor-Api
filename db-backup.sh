@@ -1,0 +1,1 @@
+docker run --rm --volumes-from e-tutor-backend-postgres-1 -v $(pwd)/src/database/backup:/backup busybox tar cvfz /backup/backup.tar /var/lib/postgresql/data
