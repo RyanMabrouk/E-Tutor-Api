@@ -19,7 +19,10 @@ import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
-import { LoginResponseType, SuccessResponseType } from './types/response.type';
+import {
+  LoginResponseType,
+  SuccessResponseType,
+} from './types/response.type';
 import { NullableType } from '../utils/types/nullable.type';
 import { successResponse } from './constants/response';
 import { User as ReqUser } from '../shared/decorators/user.decorator';
@@ -85,14 +88,29 @@ export class AuthController {
   @Post('email/confirm')
   async confirmEmail(
     @Body() confirmEmailDto: AuthConfirmEmailDto,
-  ): Promise<SuccessResponseType> {
-    console.log(confirmEmailDto);
-    const user = await this.service.confirmEmail(confirmEmailDto.hash);
-    console.log(user);
-    console.log(successResponse);
-    return {
-      ...successResponse,
-    };
+    @Res({ passthrough: true }) res: FastifyReply,
+  ): Promise<LoginResponseType> {
+    const response = await this.service.confirmEmail(confirmEmailDto.hash);
+    console.log(response);
+    const { refreshToken, token, tokenExpires, ...rest } = response;
+    console.log(refreshToken, token);
+    void res.clearCookie(RefreshTokenName);
+    void res.clearCookie(AccessTokenName);
+
+    void res.setCookie(AccessTokenName, token, {
+      ...this.cookiesOptions,
+      expires: new Date(Date.now() + tokenExpires),
+    });
+    void res.setCookie(RefreshTokenName, refreshToken, {
+      ...this.cookiesOptions,
+      expires: new Date(Date.now() + tokenExpires),
+    });
+    // Return response
+    return { tokenExpires, ...rest };
+    // console.log(successResponse);
+    // return {
+    //   ...res,
+    // };
   }
 
   @Post('forgot/password')

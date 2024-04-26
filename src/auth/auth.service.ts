@@ -250,7 +250,7 @@ export class AuthService {
     });
   }
 
-  async confirmEmail(hash: string): Promise<void> {
+  async confirmEmail(hash: string): Promise<LoginServiceResponseType> {
     let userId: User['id'];
 
     try {
@@ -294,6 +294,31 @@ export class AuthService {
     };
 
     await this.usersService.update(user.id, user);
+
+    const SessionHash = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+
+    const session = await this.sessionService.create({
+      user,
+      hash,
+    });
+
+    const { token, refreshToken, tokenExpires } = await this.getTokensData({
+      id: user.id,
+      role: user.role,
+      sessionId: session.id,
+      hash: SessionHash,
+    });
+    console.log(token, refreshToken, tokenExpires, user);
+
+    return {
+      refreshToken,
+      token,
+      tokenExpires,
+      user,
+    };
   }
 
   async forgotPassword(email: string): Promise<void> {
