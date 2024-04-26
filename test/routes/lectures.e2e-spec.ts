@@ -7,6 +7,7 @@ import {
   INSTRUCTOR_PASSWORD,
   TESTER_EMAIL,
   TESTER_PASSWORD,
+  testFileId,
 } from '../utils/constants';
 import { faker } from '@faker-js/faker';
 import { testBuilder } from '../utils/test.builder';
@@ -164,7 +165,7 @@ const instructorTestCases: TestCasesArrayType = [
 
 const placeHolders = {
   sectionId: getSectionId,
-  fileId: async () => await '5b4124d5-9c5e-4209-b240-5b968e0859d3',
+  fileId: async () => await testFileId,
 };
 
 export const getLectureId = async (
@@ -218,7 +219,7 @@ const placeHoldersByAdmin = {
     const id = await getSectionId(cookies);
     return id;
   },
-  fileId: async () => await '5b4124d5-9c5e-4209-b240-5b968e0859d3',
+  fileId: async () => await testFileId,
   id: async () => {
     const cookies = await getAdminCookies();
     const id = await getLectureId(cookies);

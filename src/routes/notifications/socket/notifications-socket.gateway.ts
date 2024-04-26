@@ -1,13 +1,14 @@
 import {
   WebSocketGateway,
   SubscribeMessage,
-  MessageBody,
   WebSocketServer,
-  ConnectedSocket,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import { Notification } from '../domain/notifications';
+import { UseGuards } from '@nestjs/common';
+import { WsJwtGuard } from 'src/shared/guards/socket.guard';
 
+@UseGuards(WsJwtGuard)
 @WebSocketGateway({
   namespace: 'NotificationsSoket',
   cors: {
@@ -33,16 +34,5 @@ export class NotificationsSocketGateway {
     for (const receiver of payload.receivers) {
       this.server.emit(`patch-${receiver.id}`, payload);
     }
-  }
-
-  @SubscribeMessage('join')
-  joinRoom(
-    @MessageBody('name') name: string,
-    @ConnectedSocket() client: Socket,
-  ) {
-    console.log('🚀 ~ MessagesSocketGateway ~ client:', client);
-    console.log('🚀 ~ MessagesSocketGateway ~ name:', name);
-    // join a room
-    // TODO: implement Auth
   }
 }

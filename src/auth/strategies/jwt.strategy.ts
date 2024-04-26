@@ -7,14 +7,26 @@ import { AllConfigType } from 'src/config/config.type';
 import { JwtPayloadType } from './types/jwt-payload.type';
 import { AccessTokenName } from '../constants/token-names';
 import { FastifyRequest } from 'fastify';
+import { CustomSocket } from 'src/utils/types/CustomSocket.type';
+import * as cookie from 'cookie';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(configService: ConfigService<AllConfigType>) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: FastifyRequest) => {
-          return request?.cookies?.[AccessTokenName] ?? null;
+        (request: FastifyRequest | CustomSocket) => {
+          let cookies: Record<string, string>;
+          if (request instanceof CustomSocket) {
+            cookies = cookie.parse(
+              (request as CustomSocket).handshake.headers.cookie || '',
+            );
+          } else {
+            cookies = cookie.parse(
+              (request as FastifyRequest).headers.cookie || '',
+            );
+          }
+          return cookies[AccessTokenName] ?? null;
         },
       ]),
       ignoreExpiration: false,

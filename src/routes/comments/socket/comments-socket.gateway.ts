@@ -1,13 +1,14 @@
 import {
   WebSocketGateway,
   SubscribeMessage,
-  MessageBody,
   WebSocketServer,
-  ConnectedSocket,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import { Comment } from '../domain/comments';
+import { UseGuards } from '@nestjs/common';
+import { WsJwtGuard } from 'src/shared/guards/socket.guard';
 
+@UseGuards(WsJwtGuard)
 @WebSocketGateway({
   namespace: 'CommentSoket',
   cors: {
@@ -31,21 +32,5 @@ export class CommentSocketGateway {
   emitUpdate(payload: Comment): void {
     const lectureId = payload.lecture.id;
     this.server.emit(`patch-${lectureId}`, payload);
-  }
-
-  @SubscribeMessage('join')
-  joinRoom(
-    @MessageBody('name') name: string,
-    @ConnectedSocket() client: Socket,
-  ) {
-    console.log('🚀 ~ CommentSocketGateway ~ client:', client);
-    console.log('🚀 ~ CommentSocketGateway ~ name:', name);
-    // join a room
-    // TODO: implement Auth
-  }
-
-  @SubscribeMessage('typing')
-  typing() {
-    // typing a Comment
   }
 }

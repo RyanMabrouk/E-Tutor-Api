@@ -41,7 +41,7 @@ describe('Auth Module', () => {
           firstName: newUserFirstName,
           lastName: newUserLastName,
         })
-        .expect(201);
+        .expect(200);
     });
 
     describe('Login', () => {
@@ -76,7 +76,7 @@ describe('Auth Module', () => {
           .send({
             hash,
           })
-          .expect(201);
+          .expect(200);
       });
 
       it('should fail for already confirmed email: /api/v1/auth/email/confirm (POST)', async () => {
