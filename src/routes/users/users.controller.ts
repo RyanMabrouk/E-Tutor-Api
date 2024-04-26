@@ -25,8 +25,6 @@ import { NullableType } from '../../utils/types/nullable.type';
 import { QueryUserDto } from './dto/query-user.dto';
 import { User } from './domain/user';
 import { UsersService } from './users.service';
-import { SuccessResponseType } from 'src/auth/types/response.type';
-import { successResponse } from 'src/auth/constants/response';
 
 @Roles(RoleEnum.admin)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -96,10 +94,8 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: User['id']): Promise<SuccessResponseType> {
+  @HttpCode(HttpStatus.OK)
+  async remove(@Param('id') id: User['id']): Promise<void> {
     await this.usersService.softDelete(id);
-    return {
-      ...successResponse,
-    };
   }
 }

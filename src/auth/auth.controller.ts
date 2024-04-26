@@ -19,12 +19,8 @@ import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRegisterLoginDto } from './dto/auth-register-login.dto';
-import {
-  LoginResponseType,
-  SuccessResponseType,
-} from './types/response.type';
+import { LoginResponseType } from './types/response.type';
 import { NullableType } from '../utils/types/nullable.type';
-import { successResponse } from './constants/response';
 import { User as ReqUser } from '../shared/decorators/user.decorator';
 import { User } from '../routes/users/domain/user';
 import { ConfigService } from '@nestjs/config';
@@ -76,16 +72,13 @@ export class AuthController {
   }
 
   @Post('email/register')
-  async register(
-    @Body() createUserDto: AuthRegisterLoginDto,
-  ): Promise<SuccessResponseType> {
+  @HttpCode(HttpStatus.OK)
+  async register(@Body() createUserDto: AuthRegisterLoginDto): Promise<void> {
     await this.service.register(createUserDto);
-    return {
-      ...successResponse,
-    };
   }
 
   @Post('email/confirm')
+  @HttpCode(HttpStatus.OK)
   async confirmEmail(
     @Body() confirmEmailDto: AuthConfirmEmailDto,
     @Res({ passthrough: true }) res: FastifyReply,
@@ -107,33 +100,25 @@ export class AuthController {
     });
     // Return response
     return { tokenExpires, ...rest };
-    // console.log(successResponse);
-    // return {
-    //   ...res,
-    // };
   }
 
   @Post('forgot/password')
+  @HttpCode(HttpStatus.OK)
   async forgotPassword(
     @Body() forgotPasswordDto: AuthForgotPasswordDto,
-  ): Promise<SuccessResponseType> {
+  ): Promise<void> {
     await this.service.forgotPassword(forgotPasswordDto.email);
-    return {
-      ...successResponse,
-    };
   }
 
   @Post('reset/password')
+  @HttpCode(HttpStatus.OK)
   async resetPassword(
     @Body() resetPasswordDto: AuthResetPasswordDto,
-  ): Promise<SuccessResponseType> {
+  ): Promise<void> {
     await this.service.resetPassword(
       resetPasswordDto.hash,
       resetPasswordDto.password,
     );
-    return {
-      ...successResponse,
-    };
   }
 
   @SerializeOptions({
@@ -176,20 +161,17 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.OK)
   public async logout(
     @ReqUser() user: JwtPayloadType,
     @Res({ passthrough: true }) res: FastifyReply,
-  ): Promise<SuccessResponseType> {
+  ): Promise<void> {
     await this.service.logout({
       sessionId: user.sessionId,
     });
     // Clear cookies
     void res.clearCookie(AccessTokenName);
     void res.clearCookie(RefreshTokenName);
-    // Return response
-    return {
-      ...successResponse,
-    };
   }
 
   @SerializeOptions({
@@ -207,12 +189,8 @@ export class AuthController {
 
   @Delete('me')
   @UseGuards(AuthGuard('jwt'))
-  public async delete(
-    @ReqUser() user: JwtPayloadType,
-  ): Promise<SuccessResponseType> {
+  @HttpCode(HttpStatus.OK)
+  public async delete(@ReqUser() user: JwtPayloadType): Promise<void> {
     await this.service.softDelete(user.id);
-    return {
-      ...successResponse,
-    };
   }
 }
