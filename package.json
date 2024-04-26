@@ -22,7 +22,7 @@
     "dev": "nest start --watch",
     "start:swc": "nest start -b swc -w",
     "debug": "nest start --debug --watch",
-    "prod": "npm run build && node dist/main",
+    "prod": "npm run build && node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "test": "jest --maxWorkers=2",
     "test:watch": "jest --watch",
