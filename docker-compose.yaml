@@ -54,5 +54,6 @@ services:
     depends_on:
       - api
       - metrics
+  
 volumes:
   boilerplate-db:

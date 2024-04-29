@@ -35,6 +35,7 @@ import { ReviewModule } from './routes/reviews/review.module';
 import { CommentsSocketModule } from './routes/comments/socket/comments-socket.module';
 import { PurshaseModule } from './routes/purshases/categories.module';
 import { ProgressModule } from './routes/progress/progress.module';
+import { AuthGoogleModule } from './auth-google/auth-google.module';
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
@@ -102,6 +103,7 @@ import { ProgressModule } from './routes/progress/progress.module';
     CommentModule,
     ReviewModule,
     ProgressModule,
+    AuthGoogleModule,
   ],
   /* providers: [
     {
