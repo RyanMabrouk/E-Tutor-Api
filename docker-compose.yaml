@@ -54,5 +54,12 @@ services:
     depends_on:
       - api
       - metrics
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
 volumes:
   boilerplate-db:
+  grafana_data:
