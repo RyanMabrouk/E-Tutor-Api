@@ -28,6 +28,9 @@ import { Roles } from '../roles/roles.decorator';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 import { User } from 'src/shared/decorators/user.decorator';
 import { filterObjectHelper } from 'src/shared/helpers/filterObjectHelper';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('sections')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'sections', version: '1' })
 export class SectionController {

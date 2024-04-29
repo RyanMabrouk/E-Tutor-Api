@@ -23,6 +23,9 @@ import { CreateProgressDto } from './dto/create-progress.dto';
 import { UpdateProgressDto } from './dto/update-progress.dto';
 import { LectureGuard } from '../lectures/guards/lecture.guard';
 import { PathToLectureId } from 'src/shared/decorators/PathToLectureId.decorator';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('progress')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'progress', version: '1' })
 export class ProgressController {

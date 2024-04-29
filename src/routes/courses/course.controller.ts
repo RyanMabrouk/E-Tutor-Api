@@ -26,7 +26,9 @@ import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
 import { User } from 'src/shared/decorators/user.decorator';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('courses')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'courses', version: '1' })
 export class CourseController {

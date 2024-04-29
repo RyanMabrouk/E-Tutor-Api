@@ -8,7 +8,9 @@ import { CreatePurshaseDto } from './dto/create-purshase.dto';
 // import { infinityPagination } from '../../utils/infinity-pagination';
 // import { Category } from './domain/purshase';
 // import { UpdateCategoryDto } from './dto/update-category.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('purshases')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'purshase', version: '1' })
 export class PurshasesController {

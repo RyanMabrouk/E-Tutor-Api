@@ -24,7 +24,9 @@ import { InfinityPaginationResultType } from 'src/utils/types/infinity-paginatio
 import { UpdateSubcategoryDto } from './dto/update-subcategory.dto';
 import { RoleEnum } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('subcategories')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'subcategories', version: '1' })
 export class SubcategoryController {

@@ -24,7 +24,9 @@ import { Category } from './domain/category';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { RoleEnum } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('categories')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'categories', version: '1' })
 export class CategoriesController {

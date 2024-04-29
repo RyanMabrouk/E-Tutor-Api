@@ -24,7 +24,9 @@ import { Chat } from './domain/chat';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { User } from 'src/shared/decorators/user.decorator';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('chat')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'chat', version: '1' })
 export class ChatController {

@@ -12,6 +12,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { FilesLocalService } from './files.service';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { extname } from 'path';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('files-local')
 @Controller({
   path: 'files',
   version: '1',

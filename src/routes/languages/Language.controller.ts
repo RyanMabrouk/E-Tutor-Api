@@ -24,7 +24,9 @@ import { Language } from './domain/language';
 import { UpdateLanguageDto } from './dto/update-language.dto';
 import { RoleEnum } from '../roles/roles.enum';
 import { Roles } from '../roles/roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('languages')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'languages', version: '1' })
 export class LanguageController {

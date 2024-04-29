@@ -1,6 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { HomeService } from './home.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('home')
 @Controller({
   path: 'info',
   version: '1',

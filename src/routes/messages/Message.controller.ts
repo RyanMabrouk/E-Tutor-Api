@@ -24,7 +24,9 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 import { User } from 'src/shared/decorators/user.decorator';
 import { MessagesSocketGateway } from './socket/messages-socket.gateway';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('messages')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'messages', version: '1' })
 export class MessageController {

@@ -2,7 +2,8 @@ import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesS3PresignedService } from './files.service';
 import { FileUploadDto } from './dto/file.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('files-s3-presigned')
 @Controller({
   path: 'files',
   version: '1',

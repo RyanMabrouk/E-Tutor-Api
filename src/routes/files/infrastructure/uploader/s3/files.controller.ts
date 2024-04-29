@@ -8,7 +8,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesS3Service } from './files.service';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('files-s3')
 @Controller({
   path: 'files',
   version: '1',

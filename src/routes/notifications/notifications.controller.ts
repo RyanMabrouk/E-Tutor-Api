@@ -24,7 +24,9 @@ import { UpdateNotificationsDto } from './dto/update-notifications.dto';
 import { Notification } from './domain/notifications';
 import { NotificationsSocketGateway } from './socket/notifications-socket.gateway';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('notifications')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'notifications', version: '1' })
 export class NotificationController {

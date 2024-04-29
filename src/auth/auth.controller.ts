@@ -30,11 +30,13 @@ import { JwtPayloadType } from './strategies/types/jwt-payload.type';
 import { JwtRefreshPayloadType } from './strategies/types/jwt-refresh-payload.type';
 import { FastifyReply } from 'fastify';
 import { UsersService } from 'src/routes/users/users.service';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller({
   path: 'auth',
   version: '1',
 })
+@ApiTags('auth')
 export class AuthController {
   constructor(
     private readonly service: AuthService,

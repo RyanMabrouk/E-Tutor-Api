@@ -27,7 +27,9 @@ import { Comment } from './domain/comments';
 import { CommentsWithRplies } from './types/types';
 import { LectureGuard } from '../lectures/guards/lecture.guard';
 import { PathToLectureId } from 'src/shared/decorators/PathToLectureId.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('comments')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'commentes', version: '1' })
 export class CommentController {

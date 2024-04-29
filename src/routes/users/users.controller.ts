@@ -25,7 +25,9 @@ import { NullableType } from '../../utils/types/nullable.type';
 import { QueryUserDto } from './dto/query-user.dto';
 import { User } from './domain/user';
 import { UsersService } from './users.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Roles(RoleEnum.admin)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({

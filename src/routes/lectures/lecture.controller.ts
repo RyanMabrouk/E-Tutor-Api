@@ -28,7 +28,9 @@ import { User } from 'src/shared/decorators/user.decorator';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 import { LectureGuard } from './guards/lecture.guard';
 import { PathToLectureId } from 'src/shared/decorators/PathToLectureId.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('lectures')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'lectures', version: '1' })
 export class LectureController {

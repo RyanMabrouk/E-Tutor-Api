@@ -22,7 +22,9 @@ import { User } from 'src/shared/decorators/user.decorator';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 import { ReviewService } from './review.service';
 import { ReviewsWithRatingCount } from './types/types';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('reviews')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({ path: 'reviews', version: '1' })
 export class ReviewController {
