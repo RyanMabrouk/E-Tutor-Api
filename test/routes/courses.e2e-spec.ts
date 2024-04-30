@@ -24,10 +24,10 @@ import { getSubcategoryId } from './subcategories.e2e-spec';
 import { getLanguageId } from './language.e2e-spec';
 import { convertAsyncObjectToSync } from '../utils/helpers/convertAsyncObjectToSync';
 import { replacePaylaodPlaceholders } from '../utils/helpers/replacePaylaodPlaceholders';
-import { isNullOrType } from '../utils/helpers/isNullOrType';
+import { isNullOrType } from '../utils/helpers/jest-validators/isNullOrType';
 import { User } from '../../src/routes/users/domain/user';
 import { CourseStatusType } from '../../src/routes/courses/types/CourseStatusType';
-import { getAdminCookies } from '../utils/helpers/getAdminCookies';
+import { getAdminCookies } from '../utils/helpers/get-cookies/getAdminCookies';
 import { AuthUpdateDto } from 'src/auth/dto/auth-update.dto';
 expect.extend({
   toBeNullOrType: isNullOrType,

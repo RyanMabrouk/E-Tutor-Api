@@ -7,14 +7,13 @@ import {
   INSTRUCTOR_PASSWORD,
   TESTER_EMAIL,
   TESTER_PASSWORD,
-  testFileId,
 } from '../utils/constants';
 import { faker } from '@faker-js/faker';
 import { testBuilder } from '../utils/test.builder';
 import request from 'supertest';
 import { convertAsyncObjectToSync } from '../utils/helpers/convertAsyncObjectToSync';
 import { replacePaylaodPlaceholders } from '../utils/helpers/replacePaylaodPlaceholders';
-import { getAdminCookies } from '../utils/helpers/getAdminCookies';
+import { getAdminCookies } from '../utils/helpers/get-cookies/getAdminCookies';
 import { Section } from 'src/routes/sections/domain/section';
 import { Lecture } from 'src/routes/lectures/domain/lecture';
 import { FileType } from 'src/routes/files/domain/file';
@@ -23,6 +22,7 @@ import { UpdateLectureDto } from 'src/routes/lectures/dto/update-lecture.dto';
 import { GeneralDomainMock } from '../utils/GeneralDomainMock';
 import { getSectionId } from './sections.e2e-spec';
 import { AddCourseToUser, getCourseId } from './courses.e2e-spec';
+import { getTestFileId } from '../utils/getTestFileId';
 
 // Constants for this test
 const route = '/api/v1/lectures';
@@ -165,7 +165,7 @@ const instructorTestCases: TestCasesArrayType = [
 
 const placeHolders = {
   sectionId: getSectionId,
-  fileId: async () => await testFileId,
+  fileId: getTestFileId,
 };
 
 export const getLectureId = async (
@@ -219,7 +219,7 @@ const placeHoldersByAdmin = {
     const id = await getSectionId(cookies);
     return id;
   },
-  fileId: async () => await testFileId,
+  fileId: getTestFileId,
   id: async () => {
     const cookies = await getAdminCookies();
     const id = await getLectureId(cookies);

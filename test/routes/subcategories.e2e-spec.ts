@@ -15,7 +15,7 @@ import { Category } from 'src/routes/categories/domain/category';
 import { UpdateSubcategoryDto } from 'src/routes/subcategories/dto/update-subcategory.dto';
 import request from 'supertest';
 import { getCategoryId } from './categories.e2e-spec';
-import { getAdminCookies } from '../utils/helpers/getAdminCookies';
+import { getAdminCookies } from '../utils/helpers/get-cookies/getAdminCookies';
 
 // Constants for this test
 const route = '/api/v1/subcategories';

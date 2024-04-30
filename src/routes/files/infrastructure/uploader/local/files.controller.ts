@@ -46,4 +46,10 @@ export class FilesLocalController {
     const stream = this.filesService.downloadFile(path);
     return void res.send(stream);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/data/:path')
+  getOne(@Param('path') path: string) {
+    return this.filesService.getOne(path);
+  }
 }

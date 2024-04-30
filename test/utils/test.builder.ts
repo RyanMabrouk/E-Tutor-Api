@@ -3,7 +3,7 @@ import request from 'supertest';
 import { APP_URL } from './constants';
 import { replacePaylaodPlaceholders } from './helpers/replacePaylaodPlaceholders';
 import { convertAsyncObjectToSync } from './helpers/convertAsyncObjectToSync';
-import { loginForCookies } from './helpers/loginForCookies';
+import { loginForCookies } from './helpers/get-cookies/loginForCookies';
 type getPayloadPlaceholderIdsType = {
   [key: string]: (cookies: string) => Promise<number | string | null>;
 };

@@ -1,4 +1,4 @@
-import { INSTRUCTOR_EMAIL, INSTRUCTOR_PASSWORD } from '../constants';
+import { INSTRUCTOR_EMAIL, INSTRUCTOR_PASSWORD } from '../../constants';
 import { loginForCookies } from './loginForCookies';
 
 export const getInstructorrCookies = async () => {

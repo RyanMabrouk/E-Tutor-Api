@@ -8,12 +8,14 @@ import { TypeOrmConfigService } from '../../typeorm-config.service';
 import { RoleSeedModule } from './role/role-seed.module';
 import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
+import { FileSeedModule } from './files/file-seed.module';
 
 @Module({
   imports: [
     RoleSeedModule,
     StatusSeedModule,
     UserSeedModule,
+    FileSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],

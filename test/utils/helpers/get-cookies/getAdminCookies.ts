@@ -1,4 +1,4 @@
-import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../constants';
+import { ADMIN_EMAIL, ADMIN_PASSWORD } from '../../constants';
 import { loginForCookies } from './loginForCookies';
 
 export const getAdminCookies = async () => {

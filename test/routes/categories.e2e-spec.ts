@@ -13,7 +13,7 @@ import { GeneralDomainKeys } from 'src/shared/domain/general.domain';
 import { CreateCategoryDto } from 'src/routes/categories/dto/create-category.dto';
 import { UpdateCategoryDto } from 'src/routes/categories/dto/update-category.dto';
 import request from 'supertest';
-import { getAdminCookies } from '../utils/helpers/getAdminCookies';
+import { getAdminCookies } from '../utils/helpers/get-cookies/getAdminCookies';
 import { getUniqueName } from '../utils/helpers/getUniqueName';
 
 // Constants for this test

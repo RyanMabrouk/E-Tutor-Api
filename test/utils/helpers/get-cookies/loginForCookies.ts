@@ -1,6 +1,6 @@
 import request from 'supertest';
-import { APP_URL } from '../constants';
-import { formatCookiesFromRes } from './formatCookiesFromRes';
+import { APP_URL } from '../../constants';
+import { formatCookiesFromRes } from '../formatCookiesFromRes';
 
 export async function loginForCookies({
   email,

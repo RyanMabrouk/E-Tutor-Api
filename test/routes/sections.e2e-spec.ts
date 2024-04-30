@@ -14,7 +14,7 @@ import request from 'supertest';
 import { Course } from 'src/routes/courses/domain/course';
 import { convertAsyncObjectToSync } from '../utils/helpers/convertAsyncObjectToSync';
 import { replacePaylaodPlaceholders } from '../utils/helpers/replacePaylaodPlaceholders';
-import { getAdminCookies } from '../utils/helpers/getAdminCookies';
+import { getAdminCookies } from '../utils/helpers/get-cookies/getAdminCookies';
 import { Section } from 'src/routes/sections/domain/section';
 import { CreateSectionDto } from 'src/routes/sections/dto/create-section.dto';
 import { UpdateSectionDto } from 'src/routes/sections/dto/update-section.dto';

@@ -5,7 +5,6 @@ import {
   APP_URL,
   TESTER_EMAIL,
   TESTER_PASSWORD,
-  testUserIds,
 } from '../utils/constants';
 import { GeneralDomainMock } from '../utils/GeneralDomainMock';
 import { faker } from '@faker-js/faker';
@@ -15,7 +14,10 @@ import { UpdateChatDto } from 'src/routes/chat/dto/update-chat.dto';
 import { User } from 'src/routes/users/domain/user';
 import { Chat } from 'src/routes/chat/domain/chat';
 import request from 'supertest';
-import { getAdminCookies } from '../utils/helpers/getAdminCookies';
+import { getAdminCookies } from '../utils/helpers/get-cookies/getAdminCookies';
+import { getInstructorId } from './users.e2e-spec';
+import { convertAsyncObjectToSync } from '../utils/helpers/convertAsyncObjectToSync';
+import { replacePaylaodPlaceholders } from '../utils/helpers/replacePaylaodPlaceholders';
 
 // Constants for this test
 const route = '/api/v1/chat';
@@ -27,7 +29,7 @@ const mock: Chat = {
 };
 const postPayload: CreateChatDto = {
   title: faker.lorem.word(),
-  members: testUserIds.map((id) => ({ id }) as User),
+  members: [{ id: ':instructorId' }] as User[],
 };
 const patchPayload: UpdateChatDto = {
   title: faker.lorem.word(),
@@ -112,14 +114,21 @@ const unautherizedTestCases: TestCasesArrayType = [
     expectedStatus: 401,
   },
 ];
-
+const placeHolders = {
+  instructorId: getInstructorId,
+};
 export const getChatId = async (cookies: string) => {
+  const placeholders = await convertAsyncObjectToSync(cookies, placeHolders);
+  const validPostPayload = replacePaylaodPlaceholders(
+    postPayload,
+    placeholders,
+  );
   const {
     body: { id },
   } = await request(APP_URL)
     .post(route)
     .set('Cookie', cookies)
-    .send(postPayload);
+    .send(validPostPayload);
   if (!id) throw new Error(`Chat POST method failed`);
   return id;
 };
@@ -127,7 +136,10 @@ export const getChatId = async (cookies: string) => {
 testBuilder({
   route,
   testCases,
-  getPayloadPlaceholderIds: { id: getChatId },
+  getPayloadPlaceholderIds: {
+    id: getChatId,
+    instructorId: getInstructorId,
+  },
   user: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
 });
 

@@ -74,4 +74,13 @@ export class FilesLocalService {
       }),
     };
   }
+
+  async getOne(path: string): Promise<FileType> {
+    const file = await this.fileRepository.findOne({
+      path: `/${this.configService.get('app.apiPrefix', {
+        infer: true,
+      })}/v1/files/${path}`,
+    });
+    return file;
+  }
 }
