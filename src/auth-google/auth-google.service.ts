@@ -42,12 +42,14 @@ export class AuthGoogleService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
+    console.log(data);
 
     return {
       id: data.sub,
       email: data.email,
       firstName: data.given_name,
       lastName: data.family_name,
+      picture: data.picture,
     };
   }
 }

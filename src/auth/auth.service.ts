@@ -128,6 +128,8 @@ export class AuthService {
   ): Promise<LoginServiceResponseType> {
     let user: NullableType<User> = null;
     const socialEmail = socialData.email?.toLowerCase();
+    console.log(socialEmail);
+
     let userByEmail: NullableType<User> = null;
 
     if (socialEmail) {
@@ -135,22 +137,10 @@ export class AuthService {
         email: socialEmail,
       });
     }
-
-    if (socialData.id) {
-      user = await this.usersService.findOne({
-        socialId: socialData.id,
-        provider: authProvider,
-      });
-    }
-
-    if (user) {
-      if (socialEmail && !userByEmail) {
-        user.email = socialEmail;
-      }
-      await this.usersService.update(user.id, user);
-    } else if (userByEmail) {
+    console.log(userByEmail);
+    if (userByEmail) {
       user = userByEmail;
-    } else if (socialData.id) {
+    } else {
       const role = {
         id: RoleEnum.user,
       };
@@ -168,11 +158,52 @@ export class AuthService {
         status,
         courses: [],
       });
-
-      user = await this.usersService.findOne({
-        id: user?.id,
-      });
     }
+
+    // if (socialEmail) {
+    //   userByEmail = await this.usersService.findOne({
+    //     email: socialEmail,
+    //   });
+    // }
+    // console.log(userByEmail);
+
+    // if (socialData.id) {
+    //   user = await this.usersService.findOne({
+    //     socialId: socialData.id,
+    //     provider: authProvider,
+    //   });
+    // }
+
+    // if (user) {
+    //   if (socialEmail && !userByEmail) {
+    //     user.email = socialEmail;
+    //   }
+    //   await this.usersService.update(user.id, user);
+    // } else if (userByEmail) {
+    //   user = userByEmail;
+    // } else if (socialData.id) {
+    //   const role = {
+    //     id: RoleEnum.user,
+    //   };
+    //   const status = {
+    //     id: StatusEnum.active,
+    //   };
+
+    //   user = await this.usersService.create({
+    //     email: socialEmail ?? null,
+    //     firstName: socialData.firstName ?? null,
+    //     lastName: socialData.lastName ?? null,
+    //     socialId: socialData.id,
+    //     provider: authProvider,
+    //     role,
+    //     status,
+    //     courses: [],
+    //   });
+
+    //   user = await this.usersService.findOne({
+    //     id: user?.id,
+    //   });
+    // }
 
     if (!user) {
       throw new HttpException(
