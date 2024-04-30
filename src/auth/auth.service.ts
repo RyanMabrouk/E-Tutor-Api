@@ -128,7 +128,6 @@ export class AuthService {
   ): Promise<LoginServiceResponseType> {
     let user: NullableType<User> = null;
     const socialEmail = socialData.email?.toLowerCase();
-    console.log(socialEmail);
 
     let userByEmail: NullableType<User> = null;
 
@@ -137,7 +136,6 @@ export class AuthService {
         email: socialEmail,
       });
     }
-    console.log(userByEmail);
     if (userByEmail) {
       user = userByEmail;
     } else {
@@ -342,7 +340,6 @@ export class AuthService {
       sessionId: session.id,
       hash: SessionHash,
     });
-    console.log(token, refreshToken, tokenExpires, user);
 
     return {
       refreshToken,

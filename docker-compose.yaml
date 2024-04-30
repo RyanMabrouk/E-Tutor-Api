@@ -52,7 +52,7 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
     ports:
-      - 9090:9090
+      - ${PROMETHEUS_PORT}:${PROMETHEUS_PORT}
     depends_on:
       - api
       - metrics

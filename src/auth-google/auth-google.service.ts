@@ -11,8 +11,12 @@ export class AuthGoogleService {
 
   constructor(private configService: ConfigService<AllConfigType>) {
     this.google = new OAuth2Client(
-      configService.getOrThrow('google.clientId', { infer: true }),
-      configService.getOrThrow('google.clientSecret', { infer: true }),
+      // '250111890042-ema26th73h1k9gpnj8trgvplk6vqfc4m.apps.googleusercontent.com',
+      // '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',
+      // configService.get('google.clientId', { infer: true }),
+      // configService.get('google.clientSecret', { infer: true }),
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
     );
   }
 
@@ -21,13 +25,9 @@ export class AuthGoogleService {
   ): Promise<SocialInterface> {
     const ticket = await this.google.verifyIdToken({
       idToken: loginDto.idToken,
-      audience: [
-        this.configService.getOrThrow('google.clientId', { infer: true }),
-      ],
+      audience: [process.env.GOOGLE_CLIENT_ID as string],
     });
-
     const data = ticket.getPayload();
-
     if (!data) {
       throw new HttpException(
         {
@@ -39,8 +39,6 @@ export class AuthGoogleService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
-    console.log(data);
-
     return {
       id: data.sub,
       email: data.email,

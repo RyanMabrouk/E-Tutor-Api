@@ -86,9 +86,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<LoginResponseType> {
     const response = await this.service.confirmEmail(confirmEmailDto.hash);
-    console.log(response);
     const { refreshToken, token, tokenExpires, ...rest } = response;
-    console.log(refreshToken, token);
     void res.clearCookie(RefreshTokenName);
     void res.clearCookie(AccessTokenName);
 
