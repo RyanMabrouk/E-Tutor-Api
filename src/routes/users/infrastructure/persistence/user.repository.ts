@@ -15,6 +15,10 @@ export abstract class UserRepository extends GeneralRepositoryType<
     fields: EntityCondition<User>,
     relations?: FindOneOptions<UserEntity>['relations'],
   ): Promise<User>;
+  abstract findOneOrNull(
+    fields: EntityCondition<User>,
+    relations?: FindOneOptions<UserEntity>['relations'],
+  ): Promise<User | null>;
 
   abstract isValidEmail({
     email,

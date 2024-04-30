@@ -49,6 +49,7 @@ export class AuthGoogleController {
       'google',
       socialData,
     );
+    console.log(response);
     const { refreshToken, token, tokenExpires, ...rest } = response;
     void res.clearCookie(AccessTokenName);
     void res.clearCookie(RefreshTokenName);

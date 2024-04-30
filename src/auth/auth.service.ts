@@ -132,10 +132,11 @@ export class AuthService {
     let userByEmail: NullableType<User> = null;
 
     if (socialEmail) {
-      userByEmail = await this.usersService.findOne({
+      userByEmail = await this.usersService.findOneOrNull({
         email: socialEmail,
       });
     }
+    console.log(userByEmail);
     if (userByEmail) {
       user = userByEmail;
     } else {

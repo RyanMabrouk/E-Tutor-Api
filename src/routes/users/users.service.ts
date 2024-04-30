@@ -99,8 +99,11 @@ export class UsersService {
     });
   }
 
-  findOne(fields: EntityCondition<User>): Promise<User> {
+  findOne(fields: EntityCondition<User>): Promise<User | null> {
     return this.usersRepository.findOne(fields);
+  }
+  findOneOrNull(fields: EntityCondition<User>): Promise<User | null> {
+    return this.usersRepository.findOneOrNull(fields);
   }
 
   async update(

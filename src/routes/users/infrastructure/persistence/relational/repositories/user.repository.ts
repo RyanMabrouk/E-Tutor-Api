@@ -63,6 +63,20 @@ export class UsersRelationalRepository implements UserRepository {
 
     return UserMapper.toDomain(entity);
   }
+  async findOneOrNull(
+    fields: EntityCondition<User>,
+    relations?: FindOneOptions<UserEntity>['relations'],
+  ): Promise<User | null> {
+    const entity = await this.usersRepository.findOne({
+      where: fields as FindOptionsWhere<UserEntity>,
+      relations,
+    });
+    if (!entity) {
+      return null;
+    }
+
+    return UserMapper.toDomain(entity);
+  }
 
   async isValidEmail({
     email,
