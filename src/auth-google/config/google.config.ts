@@ -13,7 +13,6 @@ class EnvironmentVariablesValidator {
 
 export default registerAs<GoogleConfig>('google', () => {
   validateConfig(process.env, EnvironmentVariablesValidator);
-  console.log(process.env.GOOGLE_CLIENT_ID);
 
   return {
     clientId: process.env.GOOGLE_CLIENT_ID,

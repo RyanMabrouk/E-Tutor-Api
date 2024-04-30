@@ -3,4 +3,4 @@ global:
 scrape_configs:
   - job_name: 'nestjs-app'
     static_configs:
-      - targets: ['host.docker.internal:9090']
+      - targets: ['host.docker.internal:${METRICS_PORT}']
