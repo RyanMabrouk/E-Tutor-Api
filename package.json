@@ -28,7 +28,7 @@
     "test:watch": "jest --watch",
     "test:cov": "env-cmd jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "env-cmd jest --config ./test/jest-e2e.json",
+    "test:e2e": "npm run seed && env-cmd jest --config ./test/jest-e2e.json",
     "test": "npm run test:unit && npm run test:e2e",
     "prepare": "is-ci || husky",
     "release": "release-it",
