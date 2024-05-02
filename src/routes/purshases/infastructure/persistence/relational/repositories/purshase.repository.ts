@@ -4,7 +4,7 @@ import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { PurshaseRepository } from '../../purshase.repository';
-import { PurshaseEntity } from '../entities/purshase';
+import { PurshaseEntity } from '../entities/purshase.entity';
 import { PurshaseMapper } from '../mappers/purshase.mapper';
 import { Purshase } from 'src/routes/purshases/domain/purshase';
 import {

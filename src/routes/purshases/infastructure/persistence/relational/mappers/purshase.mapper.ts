@@ -1,5 +1,5 @@
 import { GeneralDomainKeysArray } from 'src/shared/domain/general.domain';
-import { PurshaseEntity } from '../entities/purshase';
+import { PurshaseEntity } from '../entities/purshase.entity';
 import { omit } from 'lodash';
 import { Purshase } from '../../../../domain/purshase';
 

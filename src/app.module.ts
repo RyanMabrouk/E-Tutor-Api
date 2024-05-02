@@ -36,6 +36,7 @@ import { CommentsSocketModule } from './routes/comments/socket/comments-socket.m
 import { PurshaseModule } from './routes/purshases/categories.module';
 import { ProgressModule } from './routes/progress/progress.module';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
+import googleConfig from './auth-google/config/google.config';
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
@@ -43,7 +44,14 @@ import { AuthGoogleModule } from './auth-google/auth-google.module';
     // CacheModule.register(),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, authConfig, appConfig, mailConfig, fileConfig],
+      load: [
+        databaseConfig,
+        authConfig,
+        appConfig,
+        mailConfig,
+        fileConfig,
+        googleConfig,
+      ],
       envFilePath: ['.env'],
     }),
     TypeOrmModule.forRootAsync({
