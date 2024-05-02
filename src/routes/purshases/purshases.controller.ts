@@ -3,12 +3,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { PurshasesService } from './purshases.service';
 import { CreatePurshaseDto } from './dto/create-purshase.dto';
-// import { QueryCategoryDto } from './dto/query-category.dto';
-// import { InfinityPaginationResultType } from '../../utils/types/infinity-pagination-result.type';
-// import { infinityPagination } from '../../utils/infinity-pagination';
-// import { Category } from './domain/purshase';
-// import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { User } from 'src/shared/decorators/user.decorator';
+import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 
 @ApiTags('purshases')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -17,8 +14,9 @@ export class PurshasesController {
   constructor(private readonly purshasesService: PurshasesService) {}
 
   @Post()
-  create(@Body() cart: CreatePurshaseDto) {
-    return this.purshasesService.create(cart);
+  create(@Body() cart: CreatePurshaseDto, @User() user: JwtPayloadType) {
+    console.log(user);
+    return this.purshasesService.create(cart, user);
   }
 
   // @Get()
