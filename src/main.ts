@@ -24,8 +24,6 @@ import {
 import { fastifyCookie } from '@fastify/cookie';
 import helmet from '@fastify/helmet';
 import fastifyMultipart from '@fastify/multipart';
-import responseTime from 'response-time';
-import { Request, Response } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
@@ -83,50 +81,36 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document);
 
-  // Add hooks to measure response time
-  // app
-  //   .getHttpAdapter()
-  //   .getInstance()
-  //   .addHook('onRequest', (request, reply, done) => {
-  //     request['startTime'] = process.hrtime();
-  //     done();
-  //   });
+  //Add hooks to measure response time
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .addHook('onRequest', (request, reply, done) => {
+      request['startTime'] = process.hrtime();
+      done();
+    });
 
-  // app
-  //   .getHttpAdapter()
-  //   .getInstance()
-  //   .addHook('onSend', (request, reply, payload, done) => {
-  //     const diff = process.hrtime(request['startTime']);
-  //     const time = diff[0] * 1e3 + diff[1] * 1e-6; // Convert to milliseconds
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .addHook('onSend', (request, reply, payload, done) => {
+      const diff = process.hrtime(request['startTime']);
+      const time = diff[0] * 1e3 + diff[1] * 1e-6; // Convert to milliseconds
 
-  //     if (request.raw.url) {
-  //       restResponseTimeHistogram.observe(
-  //         {
-  //           method: request.method,
-  //           route: request.raw.url,
-  //           status_code: reply.statusCode,
-  //         },
-  //         time,
-  //       );
-  //     }
-
-  //     done();
-  //   });
-
-  app.use(
-    responseTime((req: Request, res: Response, time: number) => {
-      if (req?.route?.path) {
+      if (request.raw.url) {
         restResponseTimeHistogram.observe(
           {
-            method: req.method,
-            route: req.route.path,
-            status_code: res.statusCode,
+            method: request.method,
+            route: request.raw.url,
+            status_code: reply.statusCode,
           },
-          time * 1000,
+          time,
         );
       }
-    }),
-  );
+
+      done();
+    });
+
   await app.listen(
     configService.getOrThrow('app.port', { infer: true }),
     '0.0.0.0',
