@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PurshaseEntity } from './entities/purshase';
+import { PurshaseEntity } from './entities/purshase.entity';
 import { PurshaseRepository } from '../purshase.repository';
 import { PurshaseRelationalRepository } from './repositories/purshase.repository';
 

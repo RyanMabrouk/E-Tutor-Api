@@ -99,8 +99,11 @@ export class UsersService {
     });
   }
 
-  findOne(fields: EntityCondition<User>): Promise<User | null> {
-    return this.usersRepository.findOne(fields);
+  findOne(
+    fields: EntityCondition<User>,
+    relations?: string[],
+  ): Promise<User | null> {
+    return this.usersRepository.findOne(fields, relations);
   }
   findOneOrNull(fields: EntityCondition<User>): Promise<User | null> {
     return this.usersRepository.findOneOrNull(fields);
