@@ -16,6 +16,7 @@ RUN sed -i 's/\r//g' /opt/wait-for-it.sh
 RUN sed -i 's/\r//g' /opt/startup.relational.dev.sh
 
 WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/app/files
 RUN if [ ! -f .env ]; then cp env-example .env; fi
 RUN npm run build
 
