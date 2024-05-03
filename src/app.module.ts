@@ -33,10 +33,11 @@ import { LectureModule } from './routes/lectures/lecture.module';
 import { CommentModule } from './routes/comments/comments.module';
 import { ReviewModule } from './routes/reviews/review.module';
 import { CommentsSocketModule } from './routes/comments/socket/comments-socket.module';
-import { PurshaseModule } from './routes/purshases/categories.module';
+import { PurshaseModule } from './routes/purshases/purshases.module';
 import { ProgressModule } from './routes/progress/progress.module';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import googleConfig from './auth-google/config/google.config';
+import { CouponsModule } from './routes/coupons/coupons.module';
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
@@ -112,6 +113,7 @@ import googleConfig from './auth-google/config/google.config';
     ReviewModule,
     ProgressModule,
     AuthGoogleModule,
+    CouponsModule,
   ],
   /* providers: [
     {

@@ -1,49 +1,96 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PurshaseRepository } from './infastructure/persistence/purshase.repository';
 import { FilterPurshaseDto, SortPurshaseDto } from './dto/query-purshase.dto';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { Purshase } from './domain/purshase';
 import { CreatePurshaseDto } from './dto/create-purshase.dto';
 import Stripe from 'stripe';
+import { CourseService } from '../courses/course.service';
+import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/domain/user';
+import { CouponsService } from '../coupons/coupons.service';
 
 @Injectable()
 export class PurshasesService {
   private stripe: Stripe;
 
-  constructor(private readonly purshaseRepository: PurshaseRepository) {
+  constructor(
+    private readonly purshaseRepository: PurshaseRepository,
+    private readonly coursesService: CourseService,
+    private readonly usersService: UsersService,
+    private readonly couponsService: CouponsService,
+  ) {
     const stripeSecret = process.env.STRIPE_SECRET_KEY as string;
     this.stripe = new Stripe(stripeSecret, {
       apiVersion: '2024-04-10',
     });
   }
-  checkout(cart) {
-    console.log(cart);
+  async checkout(cart: CreatePurshaseDto) {
+    const coursesIds = cart.courses;
+    const courses = await Promise.all(
+      coursesIds.map(async (course) => {
+        return await this.coursesService.findOne({ id: course.id });
+      }),
+    );
+    const subTotal = courses.reduce((acc, course) => acc + course.price, 0);
+    const discount = courses.reduce((acc, course) => acc + course.discount, 0);
+    const total = subTotal - discount;
+    // const coupon = await this.couponsService.findOne({ code: cart.couponCode });
     return this.stripe.paymentIntents.create({
-      amount: 100 * 100,
+      amount: total * 100,
       currency: 'usd',
       payment_method_types: ['card'],
     });
   }
-  create(createPurshaseDto: CreatePurshaseDto) {
-    console.log(createPurshaseDto);
-    return this.checkout(createPurshaseDto);
+  async create(
+    createPurshaseDto: CreatePurshaseDto,
+    userPayload: JwtPayloadType,
+  ) {
+    const user = (await this.usersService.findOne({ id: userPayload.id }, [
+      'courses',
+    ])) as User;
 
-    // return this.stripe.checkout.sessions.create({
-    //   line_items: [
-    //     {
-    //       price_data: {
-    //         currency: 'usd',
-    //         product_data: {
-    //           name: 'T-Shirt',
-    //         },
-    //       },
-    //       quantity: 1,
-    //     },
-    //   ],
-    //   mode: 'payment',
-    //   success_url: 'http://localhost:3000/success',
-    //   cancel_url: 'http://localhost:3000/cancel',
-    // });
+    const coursesIds = createPurshaseDto.courses;
+    if (
+      user &&
+      user.courses.some((userCourse) => {
+        return coursesIds.some((dtoCourse) => userCourse.id === dtoCourse.id);
+      })
+    ) {
+      throw new BadRequestException('Course already purchased');
+    }
+    const courses = await Promise.all(
+      coursesIds.map(async (course) => {
+        return await this.coursesService.findOne({ id: course.id });
+      }),
+    );
+
+    const intent = await this.checkout(createPurshaseDto);
+    if (!intent) {
+      throw new BadRequestException('Payment failed');
+    }
+    user.courses.push(...courses);
+    const userId = user.id as string | number;
+    await this.usersService.update(userId, user as User);
+    const discount = courses.reduce((acc, course) => acc + course.discount, 0);
+    const subTotal = courses.reduce((acc, course) => acc + course.price, 0);
+
+    const purshaseDto = {
+      discount,
+      user,
+      courses,
+      totalPrice: subTotal,
+    };
+    console.log(purshaseDto);
+    const purshase = await this.purshaseRepository.create({
+      discount,
+      user,
+      courses,
+      totalPrice: subTotal,
+    });
+
+    return purshase;
   }
 
   async findAll({
@@ -65,15 +112,4 @@ export class PurshasesService {
   async findOne({ id }: { id: number }): Promise<Purshase | null> {
     return this.purshaseRepository.findOne({ id });
   }
-
-  // async update(
-  //   { id }: { id: number },
-  //   data: UpdateCategoryDto,
-  // ): Promise<Category | null> {
-  //   return this.purshaseRepository.update(id, data);
-  // }
-
-  // async delete({ id }: { id: number }): Promise<void> {
-  //   return this.purshaseRepository.softDelete(id);
-  // }
 }
