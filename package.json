@@ -189,14 +189,14 @@
     ],
     "rootDir": ".",
     "testRegex": [
-      ".*\\.spec\\.ts$",
-      ".*\\.e2e-spec\\.ts$"
+      ".*\\.spec\\.ts$"
     ],
     "transform": {
       "^.+\\.ts$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "src/**/*.controller.ts"
+      "src/**/*.controller.ts",
+      "src/**/*.service.ts"
     ],
     "coverageDirectory": "./coverage",
     "testEnvironment": "node"
