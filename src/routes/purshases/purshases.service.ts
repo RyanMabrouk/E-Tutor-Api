@@ -26,7 +26,7 @@ export class PurshasesService {
   }
   create(createPurshaseDto: CreatePurshaseDto) {
     console.log(createPurshaseDto);
-    return this.checkout({ souahi: 'azra' });
+    return this.checkout(createPurshaseDto);
 
     // return this.stripe.checkout.sessions.create({
     //   line_items: [
