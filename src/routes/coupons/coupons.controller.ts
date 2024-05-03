@@ -57,8 +57,8 @@ export class CouponsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.couponService.findOne({ id });
+  findOne(@Param('code') code: string) {
+    return this.couponService.findOne({ code });
   }
 
   @Roles(RoleEnum.admin)
@@ -73,7 +73,7 @@ export class CouponsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCouponDto: UpdateCouponDto,
   ) {
-    return this.couponService.update({ id }, updateCouponDto);
+    return this.couponService.update(id, updateCouponDto);
   }
 
   @Roles(RoleEnum.admin)

@@ -35,12 +35,16 @@ export class PurshasesService {
     );
     const subTotal = courses.reduce((acc, course) => acc + course.price, 0);
     const discount = courses.reduce((acc, course) => acc + course.discount, 0);
-    const total = subTotal - discount;
-    // const coupon = await this.couponsService.findOne({ code: cart.couponCode });
+    const coupon = await this.couponsService.findOne({ code: cart.couponCode });
+    const total = subTotal - discount - (coupon ? coupon.value : 0);
     return this.stripe.paymentIntents.create({
       amount: total * 100,
       currency: 'usd',
       payment_method_types: ['card'],
+      metadata: {
+        courses: JSON.stringify(coursesIds),
+        coupon: coupon ? coupon.code : null,
+      },
     });
   }
   async create(
@@ -50,6 +54,9 @@ export class PurshasesService {
     const user = (await this.usersService.findOne({ id: userPayload.id }, [
       'courses',
     ])) as User;
+    const coupon = await this.couponsService.findOne({
+      code: createPurshaseDto.couponCode,
+    });
 
     const coursesIds = createPurshaseDto.courses;
     if (
@@ -65,6 +72,7 @@ export class PurshasesService {
         return await this.coursesService.findOne({ id: course.id });
       }),
     );
+    console.log(courses);
 
     const intent = await this.checkout(createPurshaseDto);
     if (!intent) {
@@ -73,16 +81,20 @@ export class PurshasesService {
     user.courses.push(...courses);
     const userId = user.id as string | number;
     await this.usersService.update(userId, user as User);
+    const incrementedCoupon = (coupon.numberOfUses += 1);
+
+    await this.couponsService.update(coupon.id, {
+      numberOfUses: incrementedCoupon,
+    });
     const discount = courses.reduce((acc, course) => acc + course.discount, 0);
     const subTotal = courses.reduce((acc, course) => acc + course.price, 0);
 
-    const purshaseDto = {
-      discount,
-      user,
-      courses,
-      totalPrice: subTotal,
-    };
-    console.log(purshaseDto);
+    // const purshaseDto = {
+    //   discount,
+    //   user,
+    //   courses,
+    //   totalPrice: subTotal,
+    // };
     const purshase = await this.purshaseRepository.create({
       discount,
       user,

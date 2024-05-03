@@ -26,8 +26,8 @@ export class CouponsService {
     });
   }
 
-  async findOne({ id }: { id: number }): Promise<Coupon> {
-    return this.couponRepository.findOne({ id });
+  async findOne({ code }: { code: string }): Promise<Coupon> {
+    return this.couponRepository.findOne({ code });
   }
 
   async create(data: CreateCouponDto): Promise<Coupon> {
@@ -42,10 +42,7 @@ export class CouponsService {
     return coupon;
   }
 
-  async update(
-    { id }: { id: number },
-    data: UpdateCouponDto,
-  ): Promise<Coupon | null> {
+  async update(id: number, data: UpdateCouponDto): Promise<Coupon | null> {
     return this.couponRepository.update(id, data);
   }
 

@@ -52,7 +52,7 @@ describe('UsersService', () => {
   });
 
   it('should return a category', async () => {
-    expect(await service.findOne({ id: 1 })).toEqual({ id: 1 });
+    expect(await service.findOne({ code: 'AZAZTA' })).toEqual({ id: 1 });
     expect(categoryRepository.findOne).toHaveBeenCalled();
   });
 
@@ -71,7 +71,7 @@ describe('UsersService', () => {
     const updateCouponDto = {
       numberOfUses: 1,
     };
-    await service.update({ id: 1 }, updateCouponDto);
+    await service.update(1, updateCouponDto);
     expect(categoryRepository.update).toHaveBeenCalled();
   });
   it('should delete a category', async () => {

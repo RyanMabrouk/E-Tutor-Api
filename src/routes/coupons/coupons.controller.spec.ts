@@ -56,7 +56,7 @@ describe('CouponsController', () => {
   });
 
   it('should return a category', async () => {
-    const result = await controller.findOne(1);
+    const result = await controller.findOne('AZAZTA');
     expect(result).toEqual(couponMock);
   });
 
