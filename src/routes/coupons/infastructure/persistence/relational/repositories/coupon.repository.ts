@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsRelationByString, FindOptionsRelations, FindOptionsWhere, Repository } from 'typeorm';
 import { CouponEntity } from '../entities/coupon.entity';
 import { CouponMapper } from '../mappers/coupon.mapper';
 
@@ -19,6 +19,20 @@ export class CouponRelationalRepository implements CouponRepository {
     @InjectRepository(CouponEntity)
     private readonly couponRepository: Repository<CouponEntity>,
   ) {}
+
+  async findOneOrNull(
+    fields: EntityCondition<Coupon>,
+    relations?: FindOneOptions<CouponEntity>['relations'],
+  ): Promise<Coupon | null> {
+    const entity = await this.couponRepository.findOne({
+      where: fields as FindOptionsWhere<CouponEntity>,
+      relations,
+    });
+    if (!entity) {
+      return null;
+    }
+    return CouponMapper.toDomain(entity);
+  }
 
   async create(data: Coupon): Promise<Coupon> {
     const persistenceModel = CouponMapper.toPersistence(data);

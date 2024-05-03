@@ -31,7 +31,7 @@ export class CouponsService {
   }
 
   async create(data: CreateCouponDto): Promise<Coupon> {
-    const isRepeatedCode = await this.couponRepository.findOne({
+    const isRepeatedCode = await this.couponRepository.findOneOrNull({
       code: data.code,
     });
 
