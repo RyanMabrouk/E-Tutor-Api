@@ -47,7 +47,10 @@ describe('CategoriesController', () => {
 
   it('should return an array of categories', async () => {
     const result = await controller.findAll({ page: 1, limit: 10 });
-    expect(result).toEqual([categoryMock]);
+    expect(result).toEqual({
+      data: [categoryMock],
+      hasNextPage: expect.any(Boolean),
+    });
   });
 
   it('should return a category', async () => {

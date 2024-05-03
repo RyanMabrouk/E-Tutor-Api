@@ -27,6 +27,7 @@ export class NotificationService {
     createPayload: CreateNotificationsDto,
     user_id: User['id'],
   ): Promise<Notification> {
+    console.log(createPayload, user_id);
     const validationPromises = createPayload.receivers.map((e) =>
       this.userService.validateUser(e.id),
     );
@@ -53,6 +54,7 @@ export class NotificationService {
     paginationOptions: IPaginationOptions;
     userId: User['id'];
   }): Promise<Notification[]> {
+    console.log(filterOptions, sortOptions, paginationOptions, userId);
     return this.notificationRepo.findManyWithPagination({
       filterOptions,
       sortOptions,
