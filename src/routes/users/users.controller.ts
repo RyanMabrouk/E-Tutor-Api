@@ -25,6 +25,9 @@ import { UsersService } from './users.service';
 import { ApiTags } from '@nestjs/swagger';
 import { User as UserDecorator } from 'src/shared/decorators/user.decorator';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
+import { RolesGuard } from '../roles/roles.guard';
+import { RoleEnum } from '../roles/roles.enum';
+import { Roles } from '../roles/roles.decorator';
 
 @ApiTags('users')
 @UseGuards(AuthGuard('jwt'))
@@ -38,6 +41,8 @@ export class UsersController {
   @SerializeOptions({
     groups: ['admin'],
   })
+  @Roles(RoleEnum.admin)
+  @UseGuards(RolesGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createProfileDto: CreateUserDto): Promise<User> {
@@ -94,6 +99,8 @@ export class UsersController {
     return this.usersService.update(id, updateProfileDto);
   }
 
+  @Roles(RoleEnum.admin)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: User['id']): Promise<void> {
