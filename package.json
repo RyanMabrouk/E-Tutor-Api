@@ -28,6 +28,7 @@
     "test:watch": "jest --watch",
     "test:cov": "env-cmd jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "routes/subcategories": "nyc --reporter=html --reporter=text jest --coverage",
     "e2e": "env-cmd jest --config ./test/jest-e2e.json",
     "prepare": "is-ci || husky",
     "release": "release-it",
@@ -183,14 +184,14 @@
     ],
     "rootDir": ".",
     "testRegex": [
-      ".*\\.spec\\.ts$",
-      ".*\\.e2e-spec\\.ts$"
+      ".*\\.spec\\.ts$"
     ],
     "transform": {
       "^.+\\.ts$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "src/**/*.controller.ts"
+      "src/**/*.controller.ts",
+      "src/**/*.service.ts"
     ],
     "coverageDirectory": "./coverage",
     "testEnvironment": "node"
