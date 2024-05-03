@@ -68,8 +68,8 @@ export class CourseEntity extends GeneralEntity implements Course {
   @JoinColumn()
   trailer: FileEntity;
 
-  @Column({ type: 'json', nullable: true })
-  description: JSON | null;
+  @Column({ type: 'text', nullable: true })
+  description: string | null;
 
   @Column({ type: 'text', array: true, nullable: true })
   subjects: string[] | null;

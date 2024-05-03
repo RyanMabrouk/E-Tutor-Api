@@ -8,7 +8,6 @@ import {
   ArrayNotEmpty,
   IsNumber,
   IsPositive,
-  IsJSON,
   IsEnum,
   IsOptional,
 } from 'class-validator';
@@ -94,8 +93,9 @@ export class CreateCourseDto
   trailer?: FileType | null = null;
 
   @IsOptional()
-  @IsJSON()
-  description?: JSON | null = null;
+  @IsString()
+  @IsNotEmpty()
+  description?: string | null = null;
 
   @IsOptional()
   @IsArray()
