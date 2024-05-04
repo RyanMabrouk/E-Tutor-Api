@@ -14,6 +14,9 @@ import { ConfirmPurshaseDto } from './dto/confirm-payement.dto';
 import { Course } from '../courses/domain/course';
 import { MailService } from 'src/shared/services/mail/mail.service';
 import { RefundPurshaseDto } from './dto/request-refund.dto';
+import { EntityCondition } from 'src/utils/types/entity-condition.type';
+import { GiftCoursesDto } from './dto/gift-courses.dto';
+import { ConfirmGiftPurshaseDto } from './dto/confirm-gift-payement.dto';
 
 @Injectable()
 export class PurshasesService {
@@ -92,9 +95,9 @@ export class PurshasesService {
 
   async confirmPayement(
     confirmPurshaseDto: ConfirmPurshaseDto,
-    userPayload: JwtPayloadType,
+    userId: JwtPayloadType['id'],
   ) {
-    const user = (await this.usersService.findOne({ id: userPayload.id }, [
+    const user = (await this.usersService.findOne({ id: userId }, [
       'courses',
     ])) as User;
     const { paymentIntentId, card } = confirmPurshaseDto;
@@ -149,6 +152,54 @@ export class PurshasesService {
     return purshase;
   }
 
+  async giftCourses(giftCoursesDto: GiftCoursesDto) {
+    const user = (await this.usersService.findOne(
+      { id: giftCoursesDto.recieverId },
+      ['courses'],
+    )) as User;
+    const coupon = await this.couponsService.findOne({
+      code: giftCoursesDto.couponCode,
+    });
+    const isCouponExpired = coupon && coupon.expiryDate < new Date();
+    if (isCouponExpired) {
+      throw new BadRequestException('Coupon expired');
+    }
+
+    const coursesIds = giftCoursesDto.courses;
+    if (
+      user &&
+      user.courses.some((userCourse) => {
+        return coursesIds.some((dtoCourse) => userCourse.id === dtoCourse.id);
+      })
+    ) {
+      throw new BadRequestException('Course already purchased');
+    }
+    const courses = await Promise.all(
+      coursesIds.map(async (course) => {
+        return await this.coursesService.findOne({ id: course.id });
+      }),
+    );
+    console.log(courses);
+
+    const intent = await this.checkout(giftCoursesDto);
+    if (!intent) {
+      throw new BadRequestException('Payment failed');
+    }
+    return intent;
+  }
+
+  async confirmGiftPayment(confirmGiftPurshaseDto: ConfirmGiftPurshaseDto) {
+    const user = await this.usersService.findOne({
+      id: confirmGiftPurshaseDto.recieverId,
+    });
+    const purshase = await this.confirmPayement(
+      confirmGiftPurshaseDto,
+      user?.id as number,
+    );
+
+    return purshase;
+  }
+
   async createRefund(refundPurshaseDto: RefundPurshaseDto) {
     const purshase = await this.purshaseRepository.findOne({
       paymentIntentId: refundPurshaseDto.paymentIntentId,
@@ -178,7 +229,16 @@ export class PurshasesService {
     });
   }
 
-  async findOne({ id }: { id: number }): Promise<Purshase | null> {
-    return this.purshaseRepository.findOne({ id });
+  async findOne({
+    field,
+  }: {
+    field: EntityCondition<Purshase>;
+  }): Promise<Purshase | null> {
+    console.log(field);
+    return this.purshaseRepository.findOne(field);
+  }
+
+  async delete({ id }: { id: Purshase['id'] }): Promise<void> {
+    await this.purshaseRepository.softDelete(id);
   }
 }

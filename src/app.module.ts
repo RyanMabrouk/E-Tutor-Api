@@ -38,6 +38,7 @@ import { ProgressModule } from './routes/progress/progress.module';
 import { AuthGoogleModule } from './auth-google/auth-google.module';
 import googleConfig from './auth-google/config/google.config';
 import { CouponsModule } from './routes/coupons/coupons.module';
+import { RefundsModule } from './routes/refund/refund.module';
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
@@ -114,6 +115,7 @@ import { CouponsModule } from './routes/coupons/coupons.module';
     ProgressModule,
     AuthGoogleModule,
     CouponsModule,
+    forwardRef(() => RefundsModule),
   ],
   /* providers: [
     {
