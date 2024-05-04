@@ -45,6 +45,7 @@ export class PurshasesService {
     const discount = courses.reduce((acc, course) => acc + course.discount, 0);
     const coupon = await this.couponsService.findOne({ code: cart.couponCode });
     const total = subTotal - discount - (coupon ? coupon.value : 0);
+
     return this.stripe.paymentIntents.create({
       amount: total * 100,
       currency: 'usd',
@@ -87,9 +88,14 @@ export class PurshasesService {
     console.log(courses);
 
     const intent = await this.checkout(createPurshaseDto);
+    console.log(intent)
     if (!intent) {
       throw new BadRequestException('Payment failed');
     }
+    const incremetedNumOfUses = coupon.numberOfUses + 1;
+    await this.couponsService.update(coupon.id, {
+      numberOfUses: incremetedNumOfUses,
+    });
     return intent;
   }
 
