@@ -16,6 +16,12 @@ export class PurshaseEntity extends GeneralEntity implements Purshase {
   @Column()
   totalPrice: number;
 
+  @Column({ nullable: true })
+  expiryDate: Date;
+
+  @Column({ nullable: true })
+  couponCode: string;
+
   @ManyToOne(() => CourseEntity)
   courses: CourseEntity[];
 

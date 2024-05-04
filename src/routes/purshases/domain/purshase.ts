@@ -8,4 +8,6 @@ export class Purshase extends GeneralDomain {
   totalPrice: number;
   courses: Course[];
   user: User;
+  expiryDate: Date;
+  couponCode: string;
 }

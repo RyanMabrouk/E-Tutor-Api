@@ -10,6 +10,8 @@ import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/domain/user';
 import { CouponsService } from '../coupons/coupons.service';
+import { ConfirmPurshaseDto } from './dto/confirm-payement.dto';
+import { Course } from '../courses/domain/course';
 
 @Injectable()
 export class PurshasesService {
@@ -57,6 +59,10 @@ export class PurshasesService {
     const coupon = await this.couponsService.findOne({
       code: createPurshaseDto.couponCode,
     });
+    const isCouponExpired = coupon && coupon.expiryDate < new Date();
+    if (isCouponExpired) {
+      throw new BadRequestException('Coupon expired');
+    }
 
     const coursesIds = createPurshaseDto.courses;
     if (
@@ -78,29 +84,48 @@ export class PurshasesService {
     if (!intent) {
       throw new BadRequestException('Payment failed');
     }
-    user.courses.push(...courses);
-    const userId = user.id as string | number;
-    await this.usersService.update(userId, user as User);
-    const incrementedCoupon = (coupon.numberOfUses += 1);
+    return intent;
+  }
 
-    await this.couponsService.update(coupon.id, {
-      numberOfUses: incrementedCoupon,
+  async confirmPayement(
+    confirmPurshaseDto: ConfirmPurshaseDto,
+    userPayload: JwtPayloadType,
+  ) {
+    const user = (await this.usersService.findOne({ id: userPayload.id }, [
+      'courses',
+    ])) as User;
+    const { clientSecret, card } = confirmPurshaseDto;
+    console.log(clientSecret, card.paymentMethod.id);
+
+    const payment = await this.stripe.paymentIntents.confirm(clientSecret, {
+      payment_method: card.paymentMethod.id,
     });
-    const discount = courses.reduce((acc, course) => acc + course.discount, 0);
-    const subTotal = courses.reduce((acc, course) => acc + course.price, 0);
 
-    // const purshaseDto = {
-    //   discount,
-    //   user,
-    //   courses,
-    //   totalPrice: subTotal,
-    // };
+    if (payment.status !== 'succeeded') {
+      throw new BadRequestException('Payment failed');
+    }
+    const { courses: coursesIds, coupon } = payment.metadata;
+    const parsedCoursesIds = JSON.parse(coursesIds) as { id: Course['id'] }[];
+
+    const courses = await Promise.all(
+      parsedCoursesIds.map(async (courseId) => {
+        return await this.coursesService.findOne({ id: courseId.id });
+      }),
+    );
+
     const purshase = await this.purshaseRepository.create({
-      discount,
       user,
       courses,
-      totalPrice: subTotal,
+      totalPrice: payment.amount / 100,
+      couponCode: coupon,
+      discount:
+        courses.reduce((acc, course) => acc + course.price, 0) -
+        payment.amount / 100,
+      expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     });
+
+    user.courses.push(...courses);
+    await this.usersService.update(user.id, user);
 
     return purshase;
   }
