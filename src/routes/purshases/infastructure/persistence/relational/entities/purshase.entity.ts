@@ -19,6 +19,9 @@ export class PurshaseEntity extends GeneralEntity implements Purshase {
   @Column({ nullable: true })
   expiryDate: Date;
 
+  @Column()
+  paymentIntentId: string;
+
   @Column({ nullable: true })
   couponCode: string;
 

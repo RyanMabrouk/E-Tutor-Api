@@ -7,6 +7,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { User } from 'src/shared/decorators/user.decorator';
 import { JwtPayloadType } from 'src/auth/strategies/types/jwt-payload.type';
 import { ConfirmPurshaseDto } from './dto/confirm-payement.dto';
+import { RefundPurshaseDto } from './dto/request-refund.dto';
 
 @ApiTags('purshases')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -24,6 +25,10 @@ export class PurshasesController {
     @User() user: JwtPayloadType,
   ) {
     return this.purshasesService.confirmPayement(confirmPurshaseDto, user);
+  }
+  @Post('/refund')
+  refundPayement(@Body() confirmPurshaseDto: RefundPurshaseDto) {
+    return this.purshasesService.createRefund(confirmPurshaseDto);
   }
 
   // @Get()

@@ -5,6 +5,8 @@ import { PurshasesService } from './purshases.service';
 import { CourseModule } from '../courses/course.module';
 import { UsersModule } from '../users/users.module';
 import { CouponsModule } from '../coupons/coupons.module';
+import { MailModule } from 'src/shared/services/mail/mail.module';
+
 const infrastructurePersistenceModule = RelationalPurshasePersistenceModule;
 @Module({
   imports: [
@@ -12,6 +14,7 @@ const infrastructurePersistenceModule = RelationalPurshasePersistenceModule;
     CourseModule,
     UsersModule,
     CouponsModule,
+    MailModule,
   ],
   controllers: [PurshasesController],
   providers: [PurshasesService],

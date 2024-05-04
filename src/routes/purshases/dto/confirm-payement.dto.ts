@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 export class ConfirmPurshaseDto {
   @IsString()
   @IsOptional()
-  clientSecret: string;
+  paymentIntentId: string;
 
   @IsNotEmpty()
   card: any;

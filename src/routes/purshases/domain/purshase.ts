@@ -10,4 +10,5 @@ export class Purshase extends GeneralDomain {
   user: User;
   expiryDate: Date;
   couponCode: string;
+  paymentIntentId: string;
 }

@@ -12,6 +12,8 @@ import { User } from '../users/domain/user';
 import { CouponsService } from '../coupons/coupons.service';
 import { ConfirmPurshaseDto } from './dto/confirm-payement.dto';
 import { Course } from '../courses/domain/course';
+import { MailService } from 'src/shared/services/mail/mail.service';
+import { RefundPurshaseDto } from './dto/request-refund.dto';
 
 @Injectable()
 export class PurshasesService {
@@ -22,6 +24,7 @@ export class PurshasesService {
     private readonly coursesService: CourseService,
     private readonly usersService: UsersService,
     private readonly couponsService: CouponsService,
+    private readonly mailService: MailService,
   ) {
     const stripeSecret = process.env.STRIPE_SECRET_KEY as string;
     this.stripe = new Stripe(stripeSecret, {
@@ -94,10 +97,10 @@ export class PurshasesService {
     const user = (await this.usersService.findOne({ id: userPayload.id }, [
       'courses',
     ])) as User;
-    const { clientSecret, card } = confirmPurshaseDto;
-    console.log(clientSecret, card.paymentMethod.id);
+    const { paymentIntentId, card } = confirmPurshaseDto;
+    console.log(paymentIntentId, card.paymentMethod.id);
 
-    const payment = await this.stripe.paymentIntents.confirm(clientSecret, {
+    const payment = await this.stripe.paymentIntents.confirm(paymentIntentId, {
       payment_method: card.paymentMethod.id,
     });
 
@@ -113,6 +116,21 @@ export class PurshasesService {
       }),
     );
 
+    await this.mailService.confirmPayment({
+      to: user.email as string,
+      data: {
+        purchaseDetails: {
+          user,
+          courses,
+          expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          discount:
+            courses.reduce((acc, course) => acc + course.price, 0) -
+            payment.amount / 100,
+          totalPrice: payment.amount / 100,
+        },
+      },
+    });
+
     const purshase = await this.purshaseRepository.create({
       user,
       courses,
@@ -122,12 +140,26 @@ export class PurshasesService {
         courses.reduce((acc, course) => acc + course.price, 0) -
         payment.amount / 100,
       expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      paymentIntentId: payment.id,
     });
 
     user.courses.push(...courses);
     await this.usersService.update(user.id, user);
 
     return purshase;
+  }
+
+  async createRefund(refundPurshaseDto: RefundPurshaseDto) {
+    const purshase = await this.purshaseRepository.findOne({
+      paymentIntentId: refundPurshaseDto.paymentIntentId,
+    });
+    console.log(purshase);
+    if (!purshase) {
+      throw new BadRequestException('Purshase not found');
+    }
+    return this.stripe.refunds.create({
+      payment_intent: purshase.paymentIntentId,
+    });
   }
 
   async findAll({

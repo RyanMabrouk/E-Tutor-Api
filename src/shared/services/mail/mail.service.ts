@@ -6,6 +6,8 @@ import { AllConfigType } from 'src/config/config.type';
 import { MaybeType } from '../../../utils/types/maybe.type';
 import { MailerService } from '../mailer/mailer.service';
 import path from 'path';
+import { User } from 'src/routes/users/domain/user';
+import { Course } from 'src/routes/courses/domain/course';
 
 @Injectable()
 export class MailService {
@@ -118,6 +120,57 @@ export class MailService {
         text2,
         text3,
         text4,
+      },
+    });
+  }
+  async confirmPayment(
+    mailData: MailData<{
+      purchaseDetails: {
+        user: User;
+        courses: Course[];
+        totalPrice: number;
+        discount: number;
+        expiryDate: Date;
+      };
+    }>,
+  ): Promise<void> {
+    const metadata = mailData.data.purchaseDetails;
+    const user_fullname =
+      metadata.user.firstName + ' ' + metadata.user.lastName;
+    const total_price = metadata.courses.map((c: Course) => c.price);
+    const coursesTitles = metadata.courses.map((c: Course) => c.title);
+    const discount = metadata.discount;
+    const expiry_date = metadata.expiryDate;
+
+    const paymentConfirmationTitle = 'Payment Confirmation';
+
+    await this.mailerService.sendMail({
+      to: mailData.to,
+      subject: paymentConfirmationTitle,
+      text: `${paymentConfirmationTitle}`,
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', {
+          infer: true,
+        }),
+        'src',
+        'shared',
+        'services',
+        'mail',
+        'mail-templates',
+        'confirmed-payement.hbs',
+      ),
+      context: {
+        title: paymentConfirmationTitle,
+        purchaseDetails: mailData.data.purchaseDetails,
+        app_name: this.configService.get('app.name', {
+          infer: true,
+        }),
+        actionTitle: paymentConfirmationTitle,
+        user_fullname,
+        total_price,
+        courses: coursesTitles,
+        discount,
+        expiry_date,
       },
     });
   }
