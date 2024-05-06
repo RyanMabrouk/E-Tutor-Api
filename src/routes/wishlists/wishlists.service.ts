@@ -59,7 +59,7 @@ export class WishlistService {
   }
 
   async findOne(id: number): Promise<Wishlist> {
-    return this.wishlistRepository.findOne({ id: id });
+    return this.wishlistRepository.findOne({ id: id }, ['courses', 'user']);
   }
 
   async update(

@@ -52,9 +52,13 @@ export class WishlistRelationalRepository implements WishlistRepository {
     return entities.map((user) => WishlistMapper.toDomain(user));
   }
 
-  async findOne(fields: EntityCondition<Wishlist>): Promise<Wishlist> {
+  async findOne(
+    fields: EntityCondition<Wishlist>,
+    relations?: string[],
+  ): Promise<Wishlist> {
     const entity = await this.wishlistRepository.findOne({
       where: fields as FindOptionsWhere<WishlistEntity>,
+      relations,
     });
     if (!entity) {
       throw new BadRequestException('Wishlist not found');
