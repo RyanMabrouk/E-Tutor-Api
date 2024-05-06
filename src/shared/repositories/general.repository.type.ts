@@ -17,7 +17,10 @@ export abstract class GeneralRepositoryType<Domain, Filter, Sort, DomainId> {
     paginationOptions: IPaginationOptions;
   }): Promise<Domain[]>;
 
-  abstract findOne(fields: EntityCondition<Domain>): Promise<Domain>;
+  abstract findOne(
+    fields: EntityCondition<Domain>,
+    relations?: string[],
+  ): Promise<Domain>;
 
   abstract update(id: DomainId, payload: DeepPartial<Domain>): Promise<Domain>;
 
