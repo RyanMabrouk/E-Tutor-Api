@@ -22,6 +22,7 @@ import {
   CourseStatusEnum,
   CourseStatusType,
 } from 'src/routes/courses/types/CourseStatusType';
+import { WishlistEntity } from 'src/routes/wishlists/infastructure/persistence/relational/entities/wishlist.entity';
 @Entity({
   name: 'courses',
 })
@@ -97,6 +98,12 @@ export class CourseEntity extends GeneralEntity implements Course {
   })
   @JoinTable()
   instructors: UserEntity[];
+
+  @ManyToMany(() => WishlistEntity, {
+    eager: true,
+  })
+  @JoinTable()
+  wishlists: WishlistEntity[];
 
   @Column({
     type: 'enum',

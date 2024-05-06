@@ -6,6 +6,7 @@ import { FileType } from 'src/routes/files/domain/file';
 import { User } from 'src/routes/users/domain/user';
 import { CourseLevelType } from '../types/CourseLevelType';
 import { CourseStatusType } from '../types/CourseStatusType';
+import { Wishlist } from 'src/routes/wishlists/domain/wishlist';
 
 export class Course extends GeneralDomain {
   id: number;
@@ -31,6 +32,7 @@ export class Course extends GeneralDomain {
   congratsMessage: string | null;
   price: number;
   discount: number;
+  wishlists: Wishlist[];
   // Must exist
   instructors: User[];
   status: CourseStatusType;

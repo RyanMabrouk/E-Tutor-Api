@@ -53,10 +53,12 @@ export class UsersRelationalRepository implements UserRepository {
     fields: EntityCondition<User>,
     relations?: FindOneOptions<UserEntity>['relations'],
   ): Promise<User> {
+    console.log(fields);
     const entity = await this.usersRepository.findOne({
       where: fields as FindOptionsWhere<UserEntity>,
       relations,
     });
+    console.log(entity);
     if (!entity) {
       throw new BadRequestException('User not found');
     }

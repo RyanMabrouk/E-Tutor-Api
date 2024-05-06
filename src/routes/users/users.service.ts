@@ -151,6 +151,7 @@ export class UsersService {
     }
 
     if (clonedPayload.role) this.vlaidteRole(clonedPayload.role as RoleDto);
+
     if (clonedPayload.status)
       this.validateStatus(clonedPayload.status as StatusDto);
     try {
@@ -162,7 +163,10 @@ export class UsersService {
             ) as Course[])
           : [],
       };
-      const updated = await this.usersRepository.update(id, validPayload);
+      const updated = await this.usersRepository.update(
+        id,
+        validPayload as any,
+      );
       return updated;
     } catch (err) {
       throw new UnprocessableEntityException(err.message);
