@@ -70,12 +70,12 @@ export class WishlistController {
     return await this.wishlistsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch()
   update(
-    @Param('id', ParseIntPipe) id: number,
     @Body() updateWishlisttDto: UpdateWishlistDto,
+    @User() user: JwtPayloadType,
   ) {
-    return this.wishlistsService.update(id, updateWishlisttDto);
+    return this.wishlistsService.update(user.id as number, updateWishlisttDto);
   }
 
   @Delete(':id')
