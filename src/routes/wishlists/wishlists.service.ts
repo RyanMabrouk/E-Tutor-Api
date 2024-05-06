@@ -33,6 +33,7 @@ export class WishlistService {
         ...createPayload,
         user,
       });
+      await this.userRepository.update(user.id, { wishlist: created });
       return created;
     } catch (err) {
       throw new BadRequestException(err.message);
@@ -62,11 +63,24 @@ export class WishlistService {
   }
 
   async update(
-    id: number,
+    user_id: number,
     updatePayload: UpdateWishlistDto,
   ): Promise<Wishlist | null> {
+    const user = await this.userRepository.findOne({ id: user_id }, [
+      'wishlist',
+    ]);
+    const wishlist = user.wishlist;
+    if (!wishlist)
+      throw new HttpException(
+        'You dont have a wishlist yet !',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+
     try {
-      const updated = await this.wishlistRepository.update(id, updatePayload);
+      const updated = await this.wishlistRepository.update(
+        wishlist?.id,
+        updatePayload,
+      );
       return updated;
     } catch (err) {
       throw new HttpException(

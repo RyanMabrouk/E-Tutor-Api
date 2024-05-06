@@ -8,6 +8,7 @@ import {
   ManyToMany,
   JoinTable,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
@@ -117,5 +118,6 @@ export class UserEntity extends GeneralEntity implements User {
   courses: CourseEntity[];
 
   @OneToOne(() => WishlistEntity)
+  @JoinColumn()
   wishlist?: WishlistEntity | null;
 }
