@@ -27,4 +27,6 @@ export abstract class UserRepository extends GeneralRepositoryType<
     email: string;
     id: User['id'];
   }): Promise<boolean>;
+
+  abstract findAllUsers(): Promise<User[]>;
 }

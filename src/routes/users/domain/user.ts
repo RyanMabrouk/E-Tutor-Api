@@ -22,6 +22,8 @@ export class User extends GeneralDomain {
   photo?: FileType | null;
   role?: Role | null;
 
+  learningGoal?: number | null;
+
   courses: Course[];
 
   @Expose({ groups: ['me', 'admin'] })

@@ -80,6 +80,9 @@ export class UserEntity extends GeneralEntity implements User {
   @Column({ type: 'text', nullable: true })
   username?: string | null;
 
+  @Column({ nullable: true, type: 'int' })
+  learningGoal?: number | null;
+
   @Column({ type: 'text', nullable: true })
   title?: string | null;
 

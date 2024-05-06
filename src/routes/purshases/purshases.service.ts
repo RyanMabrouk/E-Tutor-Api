@@ -88,7 +88,7 @@ export class PurshasesService {
     console.log(courses);
 
     const intent = await this.checkout(createPurshaseDto);
-    console.log(intent)
+    console.log(intent);
     if (!intent) {
       throw new BadRequestException('Payment failed');
     }

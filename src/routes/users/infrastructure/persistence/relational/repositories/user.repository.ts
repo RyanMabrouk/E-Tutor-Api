@@ -108,4 +108,13 @@ export class UsersRelationalRepository implements UserRepository {
   async softDelete(id: User['id']): Promise<void> {
     await this.usersRepository.softDelete(id);
   }
+  async findAllUsers(): Promise<User[]> {
+    const queryBuilder = this.usersRepository.createQueryBuilder();
+    const entities = await queryBuilder
+      .select(['user.id', 'user.learningGoal'])
+      .from('user', 'user')
+      .getMany();
+
+    return entities.map((user) => UserMapper.toDomain(user));
+  }
 }

@@ -99,6 +99,10 @@ export class UsersService {
     });
   }
 
+  findAllUsers(): Promise<User[]> {
+    return this.usersRepository.findAllUsers();
+  }
+
   findOne(
     fields: EntityCondition<User>,
     relations?: string[],

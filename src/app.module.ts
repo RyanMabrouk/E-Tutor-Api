@@ -39,6 +39,8 @@ import { AuthGoogleModule } from './auth-google/auth-google.module';
 import googleConfig from './auth-google/config/google.config';
 import { CouponsModule } from './routes/coupons/coupons.module';
 import { RefundsModule } from './routes/refund/refund.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
@@ -86,7 +88,7 @@ import { RefundsModule } from './routes/refund/refund.module';
             inject: [ConfigService],
           },
         ],
-        imports: [ConfigModule],
+        imports: [ConfigModule, ScheduleModule.forRoot()],
         inject: [ConfigService],
       }),
     ),

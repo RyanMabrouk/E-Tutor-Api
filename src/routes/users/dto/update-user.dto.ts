@@ -28,6 +28,9 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   lastName?: string | null;
 
   @IsOptional()
+  learningGoal?: number | null;
+
+  @IsOptional()
   photo?: FileDto | null;
 
   @IsOptional()

@@ -15,11 +15,14 @@ import {
   SortNotificationsDto,
 } from './dto/query-notifications.dto';
 import { Notification } from './domain/notifications';
+import { Cron } from '@nestjs/schedule';
+import { NotificationsSocketGateway } from './socket/notifications-socket.gateway';
 
 @Injectable()
 export class NotificationService {
   constructor(
     private readonly notificationRepo: NotificationsRepository,
+    private readonly notifSocket: NotificationsSocketGateway,
     private readonly userService: UsersService,
   ) {}
 
@@ -36,6 +39,25 @@ export class NotificationService {
       const created = await this.notificationRepo.create({
         ...createPayload,
         sender: { id: user_id } as User,
+      });
+      return created;
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
+  }
+
+  async createNotifFromApp(
+    createPayload: CreateNotificationsDto,
+  ): Promise<Notification> {
+    console.log(createPayload);
+    const validationPromises = createPayload.receivers.map((e) =>
+      this.userService.validateUser(e.id),
+    );
+    await Promise.all(validationPromises);
+    try {
+      const created = await this.notificationRepo.create({
+        ...createPayload,
+        sender: null,
       });
       return created;
     } catch (err) {
@@ -104,6 +126,30 @@ export class NotificationService {
         },
         HttpStatus.FORBIDDEN,
       );
+    }
+  }
+
+  // @Cron(CronExpression.EVERY_10_SECONDS, { name: 'sendReminder' })
+  @Cron('0 9 * * *', { name: 'sendReminder' }) // 9am every day
+  async sendReminders() {
+    const users = await this.userService.findAllUsers();
+    console.log(users);
+    for (const user of users) {
+      console.log(user);
+      const learningGoal = user?.learningGoal;
+      console.log(learningGoal);
+
+      if (!learningGoal) {
+        continue;
+      }
+      console.log(user);
+
+      const notif = await this.createNotifFromApp({
+        receivers: [{ id: user.id } as User],
+        content: `Did you complete your daily ${learningGoal} mins learing goal today ? 🤔`,
+        seen: false,
+      });
+      this.notifSocket.emitCreate(notif);
     }
   }
 }
