@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   JoinTable,
+  OneToOne,
 } from 'typeorm';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
@@ -19,6 +20,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { User } from '../../../../domain/user';
 import { GeneralEntity } from 'src/shared/entities/general.entity';
 import { CourseEntity } from 'src/routes/courses/infastructure/persistence/relational/entities/course.entity';
+import { WishlistEntity } from 'src/routes/wishlists/infastructure/persistence/relational/entities/wishlist.entity';
 
 @Entity({
   name: 'user',
@@ -113,4 +115,7 @@ export class UserEntity extends GeneralEntity implements User {
   @ManyToMany(() => CourseEntity)
   @JoinTable()
   courses: CourseEntity[];
+
+  @OneToOne(() => WishlistEntity)
+  wishlist?: WishlistEntity | null;
 }

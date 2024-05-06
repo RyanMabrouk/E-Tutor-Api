@@ -40,6 +40,7 @@ import googleConfig from './auth-google/config/google.config';
 import { CouponsModule } from './routes/coupons/coupons.module';
 import { RefundsModule } from './routes/refund/refund.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { WishlistModule } from './routes/wishlists/wishlists.module';
 
 //import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 //import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -118,6 +119,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     AuthGoogleModule,
     CouponsModule,
     forwardRef(() => RefundsModule),
+    WishlistModule,
   ],
   /* providers: [
     {

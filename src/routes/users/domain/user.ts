@@ -4,6 +4,7 @@ import { Role } from 'src/routes/roles/domain/role';
 import { GeneralDomain } from 'src/shared/domain/general.domain';
 import { Status } from 'src/routes/statuses/domain/status';
 import { Course } from 'src/routes/courses/domain/course';
+import { Wishlist } from 'src/routes/wishlists/domain/wishlist';
 
 export class User extends GeneralDomain {
   id: number | string;
@@ -21,6 +22,7 @@ export class User extends GeneralDomain {
   youtube?: string | null;
   photo?: FileType | null;
   role?: Role | null;
+  wishlist?: Wishlist | null;
 
   learningGoal?: number | null;
 
