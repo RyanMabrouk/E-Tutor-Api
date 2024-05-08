@@ -86,44 +86,44 @@ export class CreateCourseDto
 
   @IsOptional()
   @Validate(IsObjectWithStringIdConstraint)
-  thumbnail?: FileType | null = null;
+  thumbnail?: FileType | null;
 
   @IsOptional()
   @Validate(IsObjectWithStringIdConstraint)
-  trailer?: FileType | null = null;
+  trailer?: FileType | null;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  description?: string | null = null;
+  description?: string | null;
 
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  subjects?: string[] | null = null;
+  subjects?: string[] | null;
 
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  audience?: string[] | null = null;
+  audience?: string[] | null;
 
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  requirements?: string[] | null = null;
+  requirements?: string[] | null;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  welcomeMessage?: string | null = null;
+  welcomeMessage?: string | null;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  congratsMessage?: string | null = null;
+  congratsMessage?: string | null;
 
   @IsOptional()
   @IsNumber()
