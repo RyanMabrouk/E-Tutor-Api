@@ -34,7 +34,7 @@ expect.extend({
 });
 // Constants for this test
 const route = '/api/v1/courses';
-const mock: Course = {
+const mock: Omit<Course, 'wishlists'> = {
   id: expect.any(Number) as number,
   title: expect.any(String) as string,
   subtitle: expect.any(String) as string,
@@ -51,7 +51,7 @@ const mock: Course = {
   // @ts-expect-error valid
   trailer: expect.toBeNullOrType('object') as FileType | null,
   // @ts-expect-error valid
-  description: expect.toBeNullOrType('string') as JSON | null,
+  description: expect.toBeNullOrType('string') as string | null,
   // @ts-expect-error valid
   subjects: expect.toBeNullOrType('array') as string[] | null,
   // @ts-expect-error valid
