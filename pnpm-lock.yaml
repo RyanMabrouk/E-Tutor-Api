@@ -123,8 +123,8 @@ dependencies:
     specifier: 10.4.5
     version: 10.4.5(@nestjs/common@10.3.3)(@nestjs/core@10.3.3)(class-validator@0.14.1)(rxjs@7.8.1)
   nodemailer:
-    specifier: 6.9.12
-    version: 6.9.12
+    specifier: 6.9.15
+    version: 6.9.15
   npm:
     specifier: ^10.5.2
     version: 10.7.0
@@ -9173,8 +9173,8 @@ packages:
     hasBin: true
     dev: false
 
-  /nodemailer@6.9.12:
-    resolution: {integrity: sha512-pnLo7g37Br3jXbF0bl5DekBJihm2q+3bB3l2o/B060sWmb5l+VqeScAQCBqaQ+5ezRZFzW5SciZNGdRDEbq89w==}
+  /nodemailer@6.9.15:
+    resolution: {integrity: sha512-AHf04ySLC6CIfuRtRiEYtGEXgRfa6INgWGluDhnxTZhHSKvrBu7lc1VVchQ0d8nPc4cFaZoPq8vkyNoZr0TpGQ==}
     engines: {node: '>=6.0.0'}
     dev: false
 
